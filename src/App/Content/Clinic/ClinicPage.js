@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { Link,withRouter } from 'react-router-dom'
 import "react-table/react-table.css";
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -18,11 +18,8 @@ class ClinicPage extends React.Component {
     }
     
     componentDidMount(){
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;  
         const id = window.location.pathname.split("/")[2];
-        console.log(id);
-        axios.get("http://localhost:8080/api/clinic/"+id).then(response => {
+        axios.get("http://localhost:8080/api/clinic/"+ id).then(response => {
                 console.log(response.data);
                 this.setState({
                     id: response.data.id,
@@ -30,6 +27,18 @@ class ClinicPage extends React.Component {
                 })
             }) .catch((error) => console.log(error))
         }
+
+    visitPredefExam = () =>{
+        const id=window.location.pathname.split("/")[2];
+        console.log(id);
+        this.props.history.push('/predefined-examinations/'+id);
+    }
+
+    visitDoctors= () =>{
+        const id=window.location.pathname.split("/")[2];
+        console.log(id);
+        this.props.history.push('/doctors-list/'+id);
+    }
 
     render() {
         return(
@@ -41,12 +50,12 @@ class ClinicPage extends React.Component {
                 <h3>{this.state.name}</h3>
 
                 <div className="btn-predefined-exam">
-                    <Link to="/predefined-examinations" className="btn link-btn-patient predefined-btn">Predefined examinations</Link>
-                </div>
+                 <button className="btn link-btn-patient predefined-btn" onClick={() => this.visitPredefExam()}>Predefined examinations</button>
+               </div>
 
                 <div className="btn-predefined-exam">
-                    <Link to="/doctors-list" className="btn link-btn-patient predefined-btn">Doctors of the clinic</Link>
-                </div>
+                 <button className="btn link-btn-patient predefined-btn" onClick={() => this.visitDoctors()}>Doctors of the clinic</button>
+               </div>
 
                 <Footer/>
             </div>
@@ -55,4 +64,4 @@ class ClinicPage extends React.Component {
         }
     }
     
-export default ClinicPage;
+export default withRouter (ClinicPage);
