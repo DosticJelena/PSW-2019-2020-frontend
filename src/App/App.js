@@ -26,6 +26,7 @@ import PredefinedExaminations from './Content/Clinic/PredefinedExaminations/Pred
 import Drug from './Content/Codebook/Drug/Drug';
 import Diagnosis from './Content/Codebook/Diagnosis/Diagnosis';
 import ReservationRequests from './Content/ClinicAdmin/RegistrationRequests/ReservationRequests';
+import DoctorsList from './Content/DoctorsList/DoctorsList';
 
 // React Notification
 import 'react-notifications/lib/notifications.css';
@@ -130,6 +131,9 @@ function App() {
           </Route>
           <Route path="/authenticate-prescriptions">
             <Prescriptions/>
+          </Route>
+          <Route path="/doctors-list">
+            <DoctorsList/>
           </Route>
         </Switch>
         <NotificationContainer />
