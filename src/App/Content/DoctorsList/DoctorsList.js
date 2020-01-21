@@ -24,6 +24,22 @@ class DoctorsList extends React.Component{
 
     }
 
+    allClinicDoctors = () =>{
+      const id = window.location.pathname.split("/")[2];
+      var token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
+      axios.get("http://localhost:8080/api/doctors-list"+id) .then(response => {
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+          doctors: tmpArray
+        })
+      }) .catch((error) => console.log(error))
+        }
+
     componentDidMount() { 
         const id = window.location.pathname.split("/")[2];
         axios.get("http://localhost:8080/api/doctors-list/"+id)  
@@ -92,7 +108,7 @@ class DoctorsList extends React.Component{
               <div className='doctors rtable'>
               <form onSubmit={this.FilterClinics}>
                   <div className="row">
-                    <div className="col-6">
+                    <div className="col-5">
                       <div className="form-group">
                         <div className="col">
                           <label htmlFor="type">Type:</label>
@@ -112,9 +128,10 @@ class DoctorsList extends React.Component{
                             onChange={this.handleChange} />
                       </div>
                     </div>
-                    <div className="col-2">
+                    <div className="col-3">
                       <br/>
                       <Button type="submit" className="btn doctors-list-button">Filter</Button>
+                      <button className="btn doctors-list-button1 " onClick={() => this.allClinics()}>All</button>
                     </div>
                   </div>  
                 </form>
