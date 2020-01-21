@@ -1,0 +1,18 @@
+.ordinations-title {
+    font-size: large;
+    padding-top: 2em;
+    padding-bottom: 1em;
+    font-weight: bold;
+    padding-left: 0.5em;
+}
+
+.rtable {
+    margin: 40px 40px 40px 40px;
+}
+
+.ordination-list-image {
+    background-image: url("https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80");
+    background-size: cover;
+    border-left: darkcyan 2px solid;
+    min-height: 80vh;
+}

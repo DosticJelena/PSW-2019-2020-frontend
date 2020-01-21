@@ -67,6 +67,15 @@ class Header extends React.Component{
           <Link to="/nurse-calendar" className="nav-link link-header" href="#">Work Calendar</Link>
         )
       }
+
+      //Ordinations link
+      var ordinationsLink;
+      if (this.state.role === "ROLE_CLINIC_ADMIN"){
+        ordinationsLink = (
+          <Link to="/ordinations" className="nav-link link-header" href="#">Ordinations</Link>
+        )
+      }
+
       return (
         <div className="Header">
           <nav className="navbar navbar-dark clinic-center-nav">
@@ -74,6 +83,9 @@ class Header extends React.Component{
               {homePageLink}
             </div>
             <ul className="nav">
+              <li className="nav-item">
+                {ordinationsLink}
+              </li>
               <li className="nav-item">
                 <Link to="/my-profile" className="nav-link link-header" href="#">Profile</Link>
               </li>

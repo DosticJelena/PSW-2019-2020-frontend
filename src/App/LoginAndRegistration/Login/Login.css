@@ -3,53 +3,53 @@
     padding: 0;
 }
 
-.title {
+.Login .title {
     color: white;
 }
 
-.welcome {
+.Login .welcome {
     background-color: darkcyan;
     height: 100vh;
     width: 100%;
     text-align: center;
 }
 
-.logo {
+.Login .logo {
     display: inline-block;
     margin-top: 80px;
 }
 
-.login {
+.Login .login {
     background-image: url("https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80");
     background-size: cover;
 }
 
-img {
+.Login img {
     align-content: center;
 }
 
-.row {
+.Login .row {
     margin: 0;
 }
 
-form {
+.Login form {
     background-color: silver;
     padding: 30px;
     margin: 30px;
 }
 
-form .btn {
+.Login form .btn {
     background-color: darkcyan;
     border-color: darkcyan;
     color: white;
 }
 
-form .btn:hover {
+.Login form .btn:hover {
     background-color: darkcyan;
     border-color: darkcyan;
     color: silver;
 }
 
-form a {
+.Login form a {
     color: darkcyan;
 }

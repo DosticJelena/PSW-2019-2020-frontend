@@ -36,6 +36,7 @@ import CCAdminRegistrationRequests from './Content/CCAdmin/RegistationRequests/C
 import RegisterClinic from './Content/CCAdmin/RegisterClinic/RegisterClinic';
 import DoctorCalendar from './Content/Doctor/Calendar/DoctorCalendar';
 import Prescriptions from './Content/Nurse/AuthenticatePrescriptions/Prescriptions';
+import Ordinations from './Content/Ordinations/Ordinations';
 
 function App() {
   return (
@@ -134,6 +135,9 @@ function App() {
           </Route>
           <Route path="/doctors-list">
             <DoctorsList/>
+		  </Route>
+          <Route path="/ordinations">
+            <Ordinations/>
           </Route>
         </Switch>
         <NotificationContainer />
