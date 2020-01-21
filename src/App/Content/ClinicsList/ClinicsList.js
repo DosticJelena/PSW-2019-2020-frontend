@@ -176,11 +176,12 @@ class ClinicsList extends React.Component{
                             onChange={this.handleChange} />
                       </div>
                     </div>
-                  </div>
-                  <div className="col-2">
+                    <div className="col-2">
                       <br/>
-                      <Button type="submit" className="btn">Filter</Button>
+                      <Button type="submit" className="btn clinics-list-button">Filter</Button>
                     </div>
+                  </div>
+                  
                 </form>
 
                 <ReactTable 
