@@ -12,8 +12,8 @@ import { Link, withRouter } from 'react-router-dom'
 
 class PredefinedExaminations extends React.Component {
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
 
         this.state={
             examinations: [{
@@ -28,19 +28,26 @@ class PredefinedExaminations extends React.Component {
                 discount:''
             }],
             filtered:[],
-            selected: undefined
-        };
+            selected: undefined,
+            idP:''
+        }
     }
 
     
     componentDidMount() {
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/api/predefined-appointments").then(response => {
-          console.log(response.data[0]);
-          this.setState({ examinations: response.data });
-      });
-  }  
+        const id = window.location.pathname.split("/")[2];
+        axios.get("http://localhost:8080/api/predefined-appointments/"+id).then(response => {
+            let tmpArray = []
+            for (var i = 0; i < response.data.length; i++) {
+                tmpArray.push(response.data[i])
+            }
+  
+            this.setState({
+                examinations: tmpArray
+            })
+        })
+      .catch((error) => console.log(error))
+    }
 
   onFilteredChangeCustom = (value, accessor) => {
     let filtered = this.state.filtered;
@@ -62,6 +69,25 @@ class PredefinedExaminations extends React.Component {
   
       this.setState({ filtered: filtered });
  };
+
+ 
+
+schedule = (id) =>{
+        
+    axios.get("http://localhost:8080/auth/getMyUser")  
+    .then(response => {
+        console.log(response.data.id);
+        this.state.idP=response.data.id;
+    }).catch((error) => console.log(error))
+
+    axios.post("http://localhost:8080/api/schedule-predefined-appointment/" + id, this.state.idP ).then(response => {
+    const {examinations} = this.state;
+    examinations.pop(response.data);
+    this.setState({examinations});
+    }).then((resp) => this.onSuccessHandler(resp))
+    console.log('Id: ' + id);
+};
+
 
     render() {
 
@@ -97,7 +123,11 @@ class PredefinedExaminations extends React.Component {
             accessor:'discount'
         },{
             Header:'Schedule',
-            Cell: <Button>Schedule</Button>
+            Cell: row => (
+                <div>
+                    <button onClick={() => this.schedule(row.original.id)}>Schedule</button>
+                </div>
+            )
         }
     ]
 
@@ -110,8 +140,10 @@ class PredefinedExaminations extends React.Component {
 
                 <div className='clinics rtable'>
                     <ReactTable 
-                    data={examinations}
+                    data={this.state.examinations}
+                    //columns={columns}
                     filterable
+                    onFilteredChange = {this.handleOnFilterInputChange}
                     filtered={this.state.filtered}
                     onFilteredChange={(filtered, column, value) => {
                         this.onFilteredChangeCustom(value, column.id || column.accessor);
