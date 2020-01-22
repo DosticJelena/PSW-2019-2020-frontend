@@ -1,0 +1,21 @@
+.MedicalCard .mainWindow {
+    padding: 40px 40px;
+    margin: 0 40px;
+    margin-bottom: 20px;
+    background-color: silver;
+    border-radius: 0 25px 0 25px;
+}
+
+.MedicalCard .mainWindow input{
+    margin-left: 40px;
+}
+
+.MedicalCard h3 {
+    margin: 15px 40px;
+}
+
+.MedicalCard .tabela {
+    padding: 40px 40px;
+    margin: 0 40px;
+    margin-bottom: 20px;
+}
