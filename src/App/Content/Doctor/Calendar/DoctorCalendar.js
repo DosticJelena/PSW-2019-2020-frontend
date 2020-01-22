@@ -1,9 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import Header from '../../Header/Header';
-import {NotificationManager} from 'react-notifications';
 import './DoctorCalendar.css'
 import Footer from '../../Footer/Footer';
+import { withRouter } from 'react-router';
 import {
   Calendar,
   DateLocalizer,
@@ -20,7 +20,6 @@ import moment from 'moment'
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 const CustomEvent = (event) => { 
-  console.log(event)
   return ( 
 
   <span><strong style={{ color: 'orange' }}>{event.event.title}</strong><em><br></br> Ordination: {event.event.ordination}
@@ -37,13 +36,26 @@ class DoctorCalendar extends React.Component {
     }
   }
 
+  renderDates = () =>{
+
+    let appointments = [...this.state.appointments];
+
+    for (var i = 0; i < appointments.length; i++){
+      appointments[i].start = new Date(appointments[i].start);
+      appointments[i].end = new Date(appointments[i].end);
+
+      this.setState({appointments});
+    }
+  }
+
   componentDidMount () {
     axios.get('http://localhost:8080/api/appointment/get-doctor-appointments', {
       responseType: 'json'
     })
           .then(response => {
             this.setState({appointments: response.data});
-            console.log(this.state.appointments)
+            this.renderDates();
+            console.log(this.state);
     })
     .catch((error) => console.log(error))
   }
@@ -55,26 +67,16 @@ class DoctorCalendar extends React.Component {
             <div className="cal" style={{ height: '500pt'}}>
             <Calendar
               showMultiDayTimes={true}
-              header={{
-                left: "prev,next today",
-                center: "title",
-                right: ""
-              }}
-              popup
               selectable
               localizer={localizer}
               events={this.state.appointments}
-              components={{event:CustomEvent}}
-              /*components={{
-                event: Event,
-                agenda: {
-                  event: EventAgenda,
-                },
-              }}*/
-              timeslots={3}
-              step={30}
+              components={{event:CustomEvent}, { agenda: { event: CustomEvent } }}
 
-              defaultView={Views.MONTH}
+              style={{ maxHeight: "100%" }}
+              onSelectEvent={obj => {
+                  this.props.history.push(`/doctor-calendar-event/${obj.id}`)
+                }
+              }
               startAccessor="start"
               endAccessor="end"
             />
@@ -85,4 +87,4 @@ class DoctorCalendar extends React.Component {
   }
 }
 
-export default DoctorCalendar;
+export default withRouter (DoctorCalendar);

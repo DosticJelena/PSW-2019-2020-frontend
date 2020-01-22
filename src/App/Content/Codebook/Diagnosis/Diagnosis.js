@@ -17,10 +17,7 @@ class Diagnosis extends React.Component{
           super(props);
           this.handleChange = this.handleChange.bind(this);
           this.addNewDiagnosis = this.addNewDiagnosis.bind(this);
-
-
-          const token = localStorage.getItem('token')
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          this.fetchData = this.fetchData.bind(this);
 
           this.state = {
               tableData: [
@@ -34,7 +31,8 @@ class Diagnosis extends React.Component{
               name: '',
               description: '',
               modalIsOpen: false,
-              editModalIsOpen: false
+              editModalIsOpen: false,
+              loading: false
           };
           this.openModal = this.openModal.bind(this);
           this.closeModal = this.closeModal.bind(this);
@@ -59,11 +57,12 @@ class Diagnosis extends React.Component{
         this.setState({editModalIsOpen: false});
       }
 
-      componentDidMount () {
-          axios.get('http://localhost:8080/api/cc-admin/all-diagnosis', {
+      fetchData(state, instance) {
+        this.setState({ loading: true });
+        axios.get('http://localhost:8080/api/cc-admin/get-all-diagnosis', {
               responseType: 'json'
           }).then(response => {
-              this.setState({ tableData: response.data });
+              this.setState({ tableData: response.data, loading: false});
           });
       }
 
@@ -74,23 +73,29 @@ class Diagnosis extends React.Component{
         axios.post("http://localhost:8080/api/cc-admin/add-diagnosis/", {
           name: this.state.name,
           description: this.state.description
-      }).then(response => {
-          NotificationManager.success('Diagnosis successfuly added!', '', 3000);
-          const {tableData} = this.state;
-          tableData.push(response.data);
-          this.setState({tableData});
         })
-        .catch((error)=> {NotificationManager.error('Wrong input.', 'Error', 3000);}) 
+        .then(response => {
+          this.fetchData(this.state)
+          NotificationManager.success('Diagnosis successfuly added!', '', 3000);
+        })
+        .catch((error)=> {
+          NotificationManager.error('Wrong input.', 'Error', 3000);
+        }) 
       }
 
+      
       deleteDiagnosis = (id) =>{
         axios.put("http://localhost:8080/api/cc-admin/delete-diagnosis/" + id).then(response => {
-          const {tableData} = this.state;
-          tableData.pop(response.data);
-          this.setState({tableData});
+         
+          this.fetchData(this.state)
+
         }).then(response => {
           NotificationManager.success('Diagnosis successfuly deleted', '', 3000);
           ;})
+          .catch((error) => {
+            NotificationManager.error('This diagnosis is currently assigned to at least one patient. You can not delete it', '', 3000);
+          })
+      
       }
 
       handleChange(e) {
@@ -106,7 +111,12 @@ class Diagnosis extends React.Component{
           name: this.state.name,
           description: this.state.description
       }).then(response => {
+
+          this.fetchData(this.state)
           NotificationManager.success('Diagnosis successfuly updated', '', 3000);
+        })
+        .catch((error) => {
+          NotificationManager.error('Server error. Please try again', '', 3000);
         })
       }
 
@@ -194,6 +204,8 @@ class Diagnosis extends React.Component{
           <div className='nonccadmins rtable'>
           <ReactTable 
           data={tableData}
+          loading={this.state.loading}
+          onFetchData={this.fetchData} // Request new data when things change
           columns={[{
                       Header: 'Name',
                       accessor: 'name',

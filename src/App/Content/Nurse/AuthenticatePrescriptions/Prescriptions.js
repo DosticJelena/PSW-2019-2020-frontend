@@ -6,8 +6,6 @@ import Footer from '../../Footer/Footer';
 import Header from '../../Header/Header';
 import {NotificationManager} from 'react-notifications';
 import { Button} from 'react-bootstrap';
-import BigCalendar from 'react-big-calendar'
-import moment from 'moment'
 
 class Prescriptions extends React.Component{
 

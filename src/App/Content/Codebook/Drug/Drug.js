@@ -16,6 +16,7 @@ class Drug extends React.Component{
           super(props);
           this.handleChange = this.handleChange.bind(this);
           this.addNewDrug = this.addNewDrug.bind(this);
+          this.fetchData = this.fetchData.bind(this);
 
 
           const token = localStorage.getItem('token')
@@ -34,7 +35,8 @@ class Drug extends React.Component{
               description: '',
               ingredient: '',
               modalIsOpen: false,
-              editModalIsOpen: false
+              editModalIsOpen: false,
+              loading: false
           };
           this.openModal = this.openModal.bind(this);
           this.openEditModal = this.openEditModal.bind(this);
@@ -59,11 +61,12 @@ class Drug extends React.Component{
         this.setState({editModalIsOpen: false});
       }
 
-      componentDidMount () {
-          axios.get('http://localhost:8080/api/cc-admin/get-all-drugs', {
+      fetchData(state, instance) {
+        this.setState({ loading: true });
+        axios.get('http://localhost:8080/api/cc-admin/get-all-drugs', {
               responseType: 'json'
           }).then(response => {
-              this.setState({ tableData: response.data });
+              this.setState({ tableData: response.data, loading: false });
           });
       }
 
@@ -77,21 +80,24 @@ class Drug extends React.Component{
           ingredient: this.state.ingredient
       }).then(response => {
           NotificationManager.success('Drug successfuly added!', '', 3000);
-          const {tableData} = this.state;
-          tableData.push(response.data);
-          this.setState({tableData});
+          this.fetchData(this.state)
         })
-        .catch((error)=> {NotificationManager.error('Wrong input.', 'Error', 3000);}) 
+        .catch((error)=> {
+          NotificationManager.error('Wrong input.', 'Error', 3000);
+        }) 
       }
 
       deleteDrug = (id) =>{
         axios.put("http://localhost:8080/api/cc-admin/delete-drug/" + id).then(response => {
-          const {tableData} = this.state;
-          tableData.pop(response.data);
-          this.setState({tableData});
+
+          this.fetchData(this.state);
+
         }).then(response => {
           NotificationManager.success('Drug successfuly deleted', '', 3000);
           ;})
+          .catch( (error) => {
+            NotificationManager.error('This drug is currently useb by at least one patient. You can not delete it', '', 3000);
+          })
       }
 
       handleChange(e) {
@@ -108,9 +114,7 @@ class Drug extends React.Component{
           ingredient: this.state.ingredient
       }).then(response => {
           NotificationManager.success('Drug successfuly updated', '', 3000);
-          const {tableData} = this.state;
-          tableData.push(response.data);
-          this.setState({tableData});
+          this.fetchData(this.state)
         })
       }
 
@@ -217,6 +221,8 @@ class Drug extends React.Component{
           <div className='nonccadmins rtable'>
           <ReactTable 
           data={tableData}
+          loading={this.state.loading}
+          onFetchData={this.fetchData} // Request new data when things change
           columns={[{
                       Header: 'Name',
                       accessor: 'name',

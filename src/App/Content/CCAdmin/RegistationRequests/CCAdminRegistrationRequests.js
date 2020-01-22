@@ -12,8 +12,10 @@ class CCAdminRegistrationRequests extends React.Component{
           this.handleChange = this.handleChange.bind(this);
           this.handleOpenModal = this.handleOpenModal.bind(this);
           this.handleCloseModal = this.handleCloseModal.bind(this);
+          this.fetchData = this.fetchData.bind(this);
 
           this.state = {
+              loading: true,
               tableData: [
                 {
                   email: '',
@@ -44,30 +46,30 @@ class CCAdminRegistrationRequests extends React.Component{
         this.setState({ showModal: false });
       }
 
-      componentDidMount () {
-          axios.get('http://localhost:8080/api/cc-admin/all-registration-requests', {
+      fetchData(state, instance) {
+        this.setState({ loading: true });
+        axios.get('http://localhost:8080/api/cc-admin/all-registration-requests', {
               responseType: 'json'
           }).then(response => {
-              this.setState({ tableData: response.data });
+              this.setState({ tableData: response.data, loading: false});
           });
       }
 
       accept = (id) =>{
         console.log(id)
-        axios.put("http://localhost:8080/api/cc-admin/approve-registration-request/" + id).then(response => {
-          const {tableData} = this.state;
-          tableData.pop(response.data);
-          this.setState({tableData});
+        axios.put("http://localhost:8080/api/cc-admin/send-verification-email/" + id).then(response => {
+
+          this.fetchData(this.state)
+
         }).then((resp) => {NotificationManager.success('Patient registration request has been sucessfully approved. \n Confirmation email has been sent', '', 3000);}) 
       }
 
       reject = (id) =>{
-        this.state.message = "Sorry bro i had to do it"
         if (this.state.message != ""){
           axios.put("http://localhost:8080/api/cc-admin/reject-registration-request/" + id, this.state.message).then(response => {
-            const {tableData} = this.state;
-            tableData.pop(response.data);
-            this.setState({tableData});
+            
+          this.fetchData(this.state)
+
           }).then((resp) => NotificationManager.success('Patient registration request has been sucessfully rejected. Rejection email has been sent to patient', '', 3000))
           }
         else{
@@ -83,6 +85,8 @@ class CCAdminRegistrationRequests extends React.Component{
           <div className='nonccadmins rtable'>
           <ReactTable 
           data={tableData}
+          loading={this.state.loading}
+          onFetchData={this.fetchData} // Request new data when things change
           columns={[{
                       Header: 'Email',
                       accessor: 'email',

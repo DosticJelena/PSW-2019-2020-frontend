@@ -10,7 +10,7 @@ const emailRegex = RegExp(
 );
 
 const phoneRegex = RegExp(
-    /06[0-9]{7,8}/
+    /06[0-9]{7,8}$/
 );
 
 const capitalLetterRegex = RegExp(
@@ -43,14 +43,13 @@ class RegisterNewCCAdmin extends React.Component {
       this.SendRegisterRequest = this.SendRegisterRequest.bind(this);
 
       this.state = {
-            email: null,
-            password: '$2y$12$4zrqOojpixOe/ogFw1xyyuQuIvFqrzbj0IohYtshqqy1P5rS6kdbq',
-            firstName: null,
-            lastName: null,
-            address: null,
-            city: null,
-            country: null,
-            phoneNumber: null,
+            email: "",
+            firstName: "",
+            lastName: "",
+            address: "",
+            city: "",
+            country: "",
+            phoneNumber: "",
             formErrors: {
                 email: "",
                 firstName: "",
@@ -59,7 +58,8 @@ class RegisterNewCCAdmin extends React.Component {
                 city: "",
                 country: "",
                 phoneNumber: "",
-              }
+              },
+            disableSumbit: true
       }
    }
 
@@ -70,7 +70,7 @@ class RegisterNewCCAdmin extends React.Component {
       if (formValid(this.state)) {
           axios.post("http://localhost:8080/api/cc-admin/register-cc-admin", {
             email: this.state.email,
-            password: this.state.password,
+            password: '$2y$12$4zrqOojpixOe/ogFw1xyyuQuIvFqrzbj0IohYtshqqy1P5rS6kdbq',
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             medicalNumber: this.state.medicalNumber,
@@ -79,12 +79,46 @@ class RegisterNewCCAdmin extends React.Component {
             country: this.state.country,
             phoneNumber: this.state.phoneNumber
 
-        }).then((resp) => {NotificationManager.success('Clinic Center Admin registration request has been sucessfull. \n Confirmation email has been sent', '', 3000);}) 
-        .catch((error)=> {NotificationManager.error('System error. Please try again later.', 'Error', 3000);})
+        }).then((resp) => {
+          NotificationManager.success('Clinic Center Admin registration request has been sucessfull. \n Confirmation email has been sent', '', 3000);
+          //this.props.history.push("/ccadmin");
+        }) 
+        .catch((error)=> {
+          NotificationManager.error('System error. Please try again later.', 'Error', 3000);
+        })
       }
       else {
         NotificationManager.error('Wrong form input. Please input the correct strings.', '', 3000);
       } 
+  }
+
+  handleKeyUp = () => {
+    var empty = true;
+
+    Object.keys(this.state.formErrors).forEach(e => 
+      {if(this.state.formErrors[e] != ""){
+        empty = false;
+      }
+    });
+
+    if (!empty){
+        this.setState({disableSumbit: true});
+        console.log('disabled');
+    }
+    else{
+
+        if (this.state.email != "" && this.state.firstName != "" && this.state.lastName != ""
+        && this.state.address != "" && this.state.city != "" && this.state.country != "" && this.state.phoneNumber != ""
+        )
+        {
+          this.setState({disableSumbit: false});
+          console.log('enabled');
+        }
+        else {
+          this.setState({disableSumbit: true});
+          console.log('disabled');
+        }
+    }
   }
 
   handleChange = e => {
@@ -152,6 +186,7 @@ class RegisterNewCCAdmin extends React.Component {
                 <div className="firstName">
               <label htmlFor="firstName">First Name: </label>
               <input
+                onKeyUp={this.handleKeyUp}
                 className={formErrors.firstName.length > 0 ? "error" : null}
                 placeholder="First Name"
                 type="text"
@@ -166,6 +201,7 @@ class RegisterNewCCAdmin extends React.Component {
             <div className="lastName">
               <label htmlFor="lastName">Last Name: </label>
               <input
+                onKeyUp={this.handleKeyUp}
                 className={formErrors.lastName.length > 0 ? "error" : null}
                 placeholder="Last Name"
                 type="text"
@@ -180,6 +216,7 @@ class RegisterNewCCAdmin extends React.Component {
             <div className="email">
               <label htmlFor="email">Email: </label>
               <input
+                onKeyUp={this.handleKeyUp}
                 className={formErrors.email.length > 0 ? "error" : null}
                 placeholder="Email"
                 type="email"
@@ -194,6 +231,7 @@ class RegisterNewCCAdmin extends React.Component {
             <div className="address">
               <label htmlFor="address">Address: </label>
               <input
+                onKeyUp={this.handleKeyUp}
                 className={formErrors.address.length > 0 ? "error" : null}
                 placeholder="Address"
                 type="address"
@@ -208,6 +246,7 @@ class RegisterNewCCAdmin extends React.Component {
             <div className="city">
               <label htmlFor="city">City: </label>
               <input
+                onKeyUp={this.handleKeyUp}
                 className={formErrors.city.length > 0 ? "error" : null}
                 placeholder="City"
                 type="city"
@@ -222,6 +261,7 @@ class RegisterNewCCAdmin extends React.Component {
             <div className="country">
               <label htmlFor="country">Country: </label>
               <input
+                onKeyUp={this.handleKeyUp}
                 className={formErrors.country.length > 0 ? "error" : null}
                 placeholder="Country"
                 type="country"
@@ -236,6 +276,7 @@ class RegisterNewCCAdmin extends React.Component {
             <div className="phoneNumber">
               <label htmlFor="phoneNumber">Phone Number: </label>
               <input
+                onKeyUp={this.handleKeyUp}
                 className={formErrors.phoneNumber.length > 0 ? "error" : null}
                 placeholder="Phone Number"
                 type="phoneNumber"
@@ -248,7 +289,7 @@ class RegisterNewCCAdmin extends React.Component {
               )}
             </div>
                             <hr/>
-                            <Button className="createAccount" type="submit">Create</Button>
+                            <Button disabled={this.state.disableSumbit} className="createAccount" type="submit">Create</Button>
                         </form>
                 </div>
             </div>
