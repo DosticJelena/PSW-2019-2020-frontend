@@ -35,6 +35,11 @@ import CCAdminRegistrationRequests from './Content/CCAdmin/RegistationRequests/C
 import RegisterClinic from './Content/CCAdmin/RegisterClinic/RegisterClinic';
 import DoctorCalendar from './Content/Doctor/Calendar/DoctorCalendar';
 import Prescriptions from './Content/Nurse/AuthenticatePrescriptions/Prescriptions';
+import ExaminationReport from './Content/Doctor/ExaminationReport/ExaminationReport';
+import VerifyEmail from './LoginAndRegistration/VerifyEmail/VerifyEmail';
+import CalendarEventClickWindow from './Content/Doctor/CalendarEventClickWindow/CalendarEventClickWindow';
+import MedicalCard from './Content/Doctor/MedicalCard/MedicalCard';
+import EditExaminationReport from './Content/Doctor/ExaminationReport/EditExaminationReport';
 import Ordinations from './Content/Ordinations/Ordinations';
 
 function App() {
@@ -131,6 +136,21 @@ function App() {
           </Route>
           <Route path="/authenticate-prescriptions">
             <Prescriptions/>
+          </Route>
+          <Route path="/examination-report">
+            <ExaminationReport/>
+          </Route>
+          <Route path="/verify">
+            <VerifyEmail/>
+          </Route>
+          <Route path="/doctor-calendar-event">
+            <CalendarEventClickWindow/>
+          </Route>
+          <Route path="/medical-card">
+            <MedicalCard/>
+          </Route>
+          <Route path="/edit-examination-report">
+            <EditExaminationReport/>
           </Route>
           <Route path="/ordinations">
             <Ordinations/>

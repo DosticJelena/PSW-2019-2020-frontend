@@ -4,3 +4,7 @@
     padding-left: 5%;
     padding-bottom: 1em;
 }
+
+.rbc-time-column:not(.rbc-time-gutter) {
+    flex: 1 0 0 !important;
+}

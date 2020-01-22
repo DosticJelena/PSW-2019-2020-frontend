@@ -4,11 +4,31 @@ import "react-table/react-table.css";
 import {Link} from 'react-router-dom'
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import axios from 'axios';
 
 
 import logo from '../../../images/med128.png'
 
 class CCAdmin extends React.Component {
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            email: ""
+        }
+    }
+
+    componentDidMount() {
+        axios.get("http://localhost:8080/auth/getMyUser")
+                .then((resp) => {
+                    this.setState({
+                        email: resp.data.username
+                    })
+                    console.log(resp.data)      
+                })
+    }
+
   render() {
     
   return (
@@ -29,11 +49,13 @@ class CCAdmin extends React.Component {
                     <p>Look at the list of all patient registration requests.</p>
                     <Link to="/ccadmin-registration-requests" class="btn link-btn-doctor">View List</Link>
                 </div>
-                <div className="col link">
+                {this.state.email == "admin@gmail.com" && (
+                    <div className="col link">
                     <h4>Register new Clinic Center Admin</h4>
                     <p>Fill out a registration form.</p>
                     <a href="/register-ccadmin" class="btn link-btn-doctor">Create</a>
                 </div>
+                )}
                 <div className="col link">
                     <h4>Manage Diagnosis</h4>
                     <p>Create new, edit or delete diagnosis.</p>

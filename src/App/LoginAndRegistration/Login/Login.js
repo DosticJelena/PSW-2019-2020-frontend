@@ -56,7 +56,7 @@ class Login extends React.Component {
                             NotificationManager.success('You have logged in succesfully!', 'Welcome ' + resp.data.firstName + '!', 4000)
                         }
                         if (resp.data.authorities[0].name == "ROLE_PATIENT"){
-                            if (resp.data.patientStatus == "AWAITING_APPROVAL"){
+                            if (resp.data.patientStatus != "APPROVED"){
                                 NotificationManager.info('You must wait for Clinic Center Admin to approve you registration attemp', '', 4000)
                             }
                             else{
@@ -105,7 +105,8 @@ class Login extends React.Component {
                 </div>
                 <div className="col-8 login">
                     <form onSubmit={this.SendLoginRequest}>
-                        <div className="form-group">
+                        <div className="row1">
+                        <div className="email">
                             <label>E-mail address</label>
                             <input 
                                 required
@@ -117,7 +118,7 @@ class Login extends React.Component {
                                 onChange={this.handleChange} 
                                 placeholder="E-mail address"/>
                         </div>
-                        <div className="form-group">
+                        <div className="password">
                             <label>Password</label>
                             <input 
                                 required
@@ -128,9 +129,11 @@ class Login extends React.Component {
                                 onChange={this.handleChange}
                                 placeholder="Password"/>
                             </div>
-                        <small id="newAccount" className="form-text text-muted"><Link to="/register">Doesn't have an account?</Link></small>
-                        <br/>
+                        </div>
+                        <div className="submitbtn">
+                        <small id="newAccount" className="form-text text-muted"><Link to="/register">Don't have an account?</Link></small>
                         <Button type="submit" className="btn">Log In</Button>
+                        </div>
                     </form>
                 </div>
             </div>

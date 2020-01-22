@@ -58,6 +58,11 @@ class ClinicAdmin extends React.Component {
                     <p>Create a quick reservation for predefined medical appointment.</p>
                     <Link to="/quick-reservation" className="btn link-btn-admin">Create Reservation</Link>
                 </div>
+                <div className="col link">
+                    <h4>Assign operation rooms</h4>
+                    <p>Select a room from list of available ones.</p>
+                    <Link to="/assign-room" className="btn link-btn-admin">Assign Rooms</Link>
+                </div>
             </div>
         </div>
         <Footer/>
