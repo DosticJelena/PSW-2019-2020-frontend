@@ -32,49 +32,27 @@ class OrdinationCalendar extends React.Component {
     super(props);
     this.state = {
             appointments: [],
-    }
-  }
-
-  renderDates = () =>{
-
-    let appointments = [...this.state.appointments];
-
-    for (var i = 0; i < appointments.length; i++){
-      appointments[i].start = new Date(appointments[i].start);
-      appointments[i].end = new Date(appointments[i].end);
-
-      this.setState({appointments});
+            rendered: 0
     }
   }
 
   componentDidMount () {
-    axios.get('http://localhost:8080/api/appointment/get-doctor-appointments', {
-      responseType: 'json'
-    })
-          .then(response => {
-            this.setState({appointments: response.data});
-            this.renderDates();
-            console.log(this.state);
-    })
-    .catch((error) => console.log(error))
+    
   }
 
   render() {
+
         return (
           <div className="OrdinationCalendar">
-            <div className="cal" style={{ height: '500pt'}}>
+            <div className="cal" style={{ height: '350pt'}}>
             <Calendar
               showMultiDayTimes={true}
               selectable
               localizer={localizer}
-              events={this.state.appointments}
+              events={this.props.appointments}
               components={{event:CustomEvent}, { agenda: { event: CustomEvent } }}
 
               style={{ maxHeight: "100%" }}
-              onSelectEvent={obj => {
-                  this.props.history.push(`/doctor-calendar-event/${obj.id}`)
-                }
-              }
               startAccessor="start"
               endAccessor="end"
             />
