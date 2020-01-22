@@ -7,6 +7,7 @@ import Modal from '../../UI/Modal/Modal';
 import './Ordinations.css';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom';
+import OrdinationCalendar from '../Ordinations/OrdinationCalendar/OrdinationCalendar';
 
 class Ordinations extends React.Component{
    
@@ -70,7 +71,7 @@ class Ordinations extends React.Component{
       return (
         <div className="Ordinations">
           <Modal show={this.state.modalVisible} modalClosed={this.modalClosedHandler}>
-              <h3>Modal content</h3>
+              <OrdinationCalendar/>
           </Modal>
           <Header/>
           <div className="row">
