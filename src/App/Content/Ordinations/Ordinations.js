@@ -16,16 +16,46 @@ class Ordinations extends React.Component{
     
         this.state = {
             ordinations: [],
-            modalVisible: false
+            modalVisible: false,
+            ordinationId: 0, 
+            appointments: []
         }
       }
 
-      modalHandler = () => {
-        this.setState({modalVisible: true});
+      modalHandler = (ordId) => {
+        this.setState({modalVisible: true, ordinationId: ordId});
+        this.getAppointmentsForOrdination(ordId);
       }
 
       modalClosedHandler = () => {
         this.setState({modalVisible: false});
+      }
+
+      renderDates = () =>{
+
+        let appointments = [...this.state.appointments];
+    
+        for (var i = 0; i < appointments.length; i++){
+          appointments[i].start = new Date(appointments[i].start);
+          appointments[i].end = new Date(appointments[i].end);
+    
+          this.setState({appointments});
+        }
+      }
+
+      getAppointmentsForOrdination = (ordId) => {
+        var token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;  
+        axios.get('http://localhost:8080/api/appointment/get-ordination-appointments/' + ordId, {
+          responseType: 'json'
+        })
+              .then(response => {
+                console.log(response);
+                this.setState({appointments: response.data});
+                this.renderDates();
+                console.log(this.state);
+        })
+        .catch((error) => console.log(error))
       }
     
       componentDidMount() {
@@ -62,7 +92,7 @@ class Ordinations extends React.Component{
             Header: '',
             Cell: row => (
                 <div>
-                   <button className="primary btn" onClick={() => this.modalHandler()}>See calendar</button>
+                   <button className="primary btn" onClick={() => this.modalHandler(row.original.id)}>See calendar</button>
                  </div>
             ),
             width: 200,
@@ -72,7 +102,7 @@ class Ordinations extends React.Component{
       return (
         <div className="Ordinations">
           <Modal show={this.state.modalVisible} modalClosed={this.modalClosedHandler}>
-              <OrdinationCalendar/>
+              <OrdinationCalendar appointments={this.state.appointments}/>
           </Modal>
           <Header/>
           <div className="row">
