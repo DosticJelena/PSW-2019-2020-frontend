@@ -3,9 +3,10 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import Modal from '../../UI/Modal/Modal';
 import './Ordinations.css';
 import axios from 'axios'
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 
 class Ordinations extends React.Component{
    
@@ -13,10 +14,17 @@ class Ordinations extends React.Component{
         super(props);
     
         this.state = {
-            ordinations: []
+            ordinations: [],
+            modalVisible: false
         }
-    
-        this.cancel = '';
+      }
+
+      modalHandler = () => {
+        this.setState({modalVisible: true});
+      }
+
+      modalClosedHandler = () => {
+        this.setState({modalVisible: false});
       }
     
       componentDidMount() {
@@ -53,7 +61,7 @@ class Ordinations extends React.Component{
             Header: '',
             Cell: row => (
                 <div>
-                   <button className="primary btn">See calendar</button>
+                   <button className="primary btn" onClick={() => this.modalHandler()}>See calendar</button>
                  </div>
             ),
             width: 200,
@@ -62,6 +70,9 @@ class Ordinations extends React.Component{
     
       return (
         <div className="Ordinations">
+          <Modal show={this.state.modalVisible} modalClosed={this.modalClosedHandler}>
+              <h3>Modal content</h3>
+          </Modal>
           <Header/>
           <div className="row">
             <div className="col-10">
