@@ -80,6 +80,7 @@ class Ordinations extends React.Component{
         const columns=[
           {
             Header:'Id',
+            filterable: false,
             id: 'id',
             accessor: d => d.id
         },{
@@ -92,10 +93,19 @@ class Ordinations extends React.Component{
             Header: '',
             Cell: row => (
                 <div>
-                   <button className="primary btn" onClick={() => this.modalHandler(row.original.id)}>See calendar</button>
+                   <button className="calendar-ord btn" onClick={() => this.modalHandler(row.original.id)}>See calendar</button>
                  </div>
             ),
-            width: 200,
+            width: 150,
+            filterable: false
+          },{
+            Header: '',
+            width: 100,
+            Cell: row => (
+                <div>
+                   <button className="delete-ord btn" onClick={() => this.modalHandler(row.original.id)}>Delete</button>
+                 </div>
+            ),
             filterable: false
           }]
     
@@ -108,7 +118,8 @@ class Ordinations extends React.Component{
           <div className="row">
             <div className="col-10">
               <br/>
-            <h3>Ordination List</h3>
+              <h3>Ordination List</h3>
+              <button className="new-ordination btn">+ New Ordination</button>
               <div className='patients rtable'>
                 <ReactTable 
                   data={this.state.ordinations}
@@ -118,7 +129,7 @@ class Ordinations extends React.Component{
                   defaultPageSize = {6}
                   pageSizeOptions = {[6, 10, 15]}
                 />
-                </div>
+              </div>
             </div>
             <div className="col-2 ordination-list-image">
     
