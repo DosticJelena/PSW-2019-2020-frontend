@@ -42,6 +42,7 @@ import CalendarEventClickWindow from './Content/Doctor/CalendarEventClickWindow/
 import MedicalCard from './Content/Doctor/MedicalCard/MedicalCard';
 import EditExaminationReport from './Content/Doctor/ExaminationReport/EditExaminationReport';
 import Ordinations from './Content/Ordinations/Ordinations';
+import Doctors from './Content/Doctors/Doctors';
 
 function App() {
   return (
@@ -83,6 +84,9 @@ function App() {
           </Route>
           <Route path="/clinics">
             <ClinicsList />
+          </Route>
+          <Route path="/doctors">
+            <Doctors />
           </Route>
           <Route path="/appointment-history">
             <AppointmentHistory />
