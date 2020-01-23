@@ -21,11 +21,12 @@ import QuickReservation from './Content/ClinicAdmin/QuickReservation/QuickReserv
 import EditPersonalProfile from './Content/PersonalProfile/EditPersonalProfile';
 import NonCCAdmins from './Content/CCAdmin/Tables/NonCCAdmins'
 import ChangePassword from './LoginAndRegistration/ChangePassword/ChangePassword';
-import ClinicPage from './Content/Clinic/ClinicPage'
+import ClinicPage from './Content/Clinic/ClinicPage';
+import BusinessReport from './Content/Clinic/BusinessReport/BusinessReport';
 import PredefinedExaminations from './Content/Clinic/PredefinedExaminations/PredefinedExaminations'
 import Drug from './Content/Codebook/Drug/Drug';
 import Diagnosis from './Content/Codebook/Diagnosis/Diagnosis';
-import ReservationRequests from './Content/ClinicAdmin/RegistrationRequests/ReservationRequests';
+import ReservationRequests from './Content/ClinicAdmin/ReservationRequests/ReservationRequests';
 
 // React Notification
 import 'react-notifications/lib/notifications.css';
@@ -109,6 +110,9 @@ function App() {
           </Route>
           <Route path="/clinic">
             <ClinicPage />
+          </Route>
+          <Route path="/business-report">
+            <BusinessReport />
           </Route>
           <Route path="/predefined-examinations">
             <PredefinedExaminations />
