@@ -12,5 +12,52 @@
 }
 
 .btn-predefined-exam{
-    margin: 30px 30px 30px 30px;
+    margin: 10px 30px 10px 30px;
+}
+
+.Clinic-page em {
+    color: darkcyan;
+}
+
+.Clinic-page p {
+    color: darkcyan;
+}
+
+.clinic-page-image {
+    background-image: url("https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80");
+    background-size: cover;
+    border-left: darkcyan 2px solid;
+    min-height: 80vh;
+}
+
+.cp-header {
+    margin-bottom: 30px;
+    display: block;
+}
+
+.predefined-btn {
+    margin-right: 10px;
+}
+
+.update-clinic {
+    border: 1px solid darkcyan;
+    color: darkcyan;
+    background-color: white;
+    margin-left: 30px;
+}
+
+.update-clinic:hover {
+    border: 1px solid darkcyan;
+    color: white;
+    background-color: darkcyan;
+    margin-left: 30px;
+}
+
+.ord-table, .doc-table {
+    margin-left: 20px;
+    margin-bottom: 30px;
+}
+
+.Clinic-page h4 {
+    margin-left: 30px;
 }
