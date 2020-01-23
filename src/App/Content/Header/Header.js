@@ -75,6 +75,14 @@ class Header extends React.Component{
           <Link to="/ordinations" className="nav-link link-header" href="#">Ordinations</Link>
         )
       }
+      
+      //Clinic link
+      var clinicLink;
+      if (this.state.role === "ROLE_CLINIC_ADMIN"){ 
+        clinicLink = (
+          <Link to="/clinic/1" className="nav-link link-header" href="#">Clinic</Link>
+        )
+      }
 
       return (
         <div className="Header">
@@ -85,6 +93,9 @@ class Header extends React.Component{
             <ul className="nav">
               <li className="nav-item">
                 {ordinationsLink}
+              </li>
+              <li className="nav-item">
+                {clinicLink}
               </li>
               <li className="nav-item">
                 <Link to="/my-profile" className="nav-link link-header" href="#">Profile</Link>
