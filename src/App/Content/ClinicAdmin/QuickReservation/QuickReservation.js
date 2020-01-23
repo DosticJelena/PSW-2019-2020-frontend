@@ -6,6 +6,7 @@ import { Button} from 'react-bootstrap';
 import withReactContent from 'sweetalert2-react-content';
 import axios from 'axios';
 import {NotificationManager} from 'react-notifications';
+import { withRouter } from 'react-router-dom';
 
 import './QuickReservation.css';
 
@@ -20,44 +21,75 @@ class QuickReservation extends React.Component {
     this.SendQuickReservationRequest = this.SendQuickReservationRequest.bind(this);
 
     this.state = {
-        date: '',
-        time: '',
+        startDateTime: '',
+        endDateTime: '',
         type: '0',
-        duration: '',
         ordination: '',
         doctor: '',
         price: 0.0,
+        clinicAdmin: '',
         doctors: [],
         ordinations: []
     }
 
   }
 
+  FormatDateTime() {
+    var start = this.state.startDateTime.substr(0, 10) + ' ' + this.state.startDateTime.substr(11);
+    var end = this.state.endDateTime.substr(0, 10) + ' ' + this.state.endDateTime.substr(11);
+    this.setState({startDateTime: start, endDateTime: end});
+  }
+
   SendQuickReservationRequest = event => {
     event.preventDefault();
-    console.log(this.state);
+    this.FormatDateTime();
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.post("http://localhost:8080/api/clinic-admin/quick-reservation", {
-      date: this.state.date,
-      time: this.state.time,
+      startDateTime: this.state.startDateTime,
+      endDateTime: this.state.endDateTime,
       type: this.state.type,
-      duration: this.state.duration,
       ordination: this.state.ordination,
       doctor: this.state.doctor,
-      price: this.state.price
+      price: this.state.price,
+      clinicAdmin: this.state.clinicAdmin
     })  
     .then((resp) => {
       NotificationManager.success('You have created appointment succesfully!', 'Success!', 4000)
+      this.props.history.push('/predefined-examinations');
     })
-    .catch((error) => NotificationManager.success('Incorect values!', 'Error!', 4000))
+    .catch((error) => NotificationManager.error('Incorect values!', 'Error!', 4000))
+
   }
+  
 
   handleChange(e) {
     this.setState({...this.state, [e.target.name]: String(e.target.value)});
   }
 
+  handleDateChange(e) {
+    var value = String(e.target.value);
+    value = value.substr(0, 10) + ' ' + value.substr(11);
+    var name = e.target.name;
+    console.log(name);
+    this.setState({...this.state, [e.target.name]: value});
+  }
+
+
   componentDidMount() {
+
+    var token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get("http://localhost:8080/auth/getMyUser")  
+        .then(response => {
+            console.log(response.data);
+            this.setState({
+                clinicAdmin: response.data.id
+            })
+        })
+    .catch((error) => console.log(error))
+    
+
     axios.get("http://localhost:8080/api/doctors")  
       .then(response => {
           let tmpArray = []
@@ -71,7 +103,7 @@ class QuickReservation extends React.Component {
       })
     .catch((error) => console.log(error))
 
-    axios.get("http://localhost:8080/api/ordinations")  
+    axios.get("http://localhost:8080/api/ordination/get-all")  
       .then(response => {
           let tmpArray = []
           for (var i = 0; i < response.data.length; i++) {
@@ -90,6 +122,8 @@ class QuickReservation extends React.Component {
   return (
     <div className="QuickReservation">
       <Header/>
+      <div className="row">
+        <div className="col-10">
           <div className="row">
                 <div className="col-sm quick-res-header">
                   <h3>Quick Reservation</h3>
@@ -119,14 +153,14 @@ class QuickReservation extends React.Component {
                         </div>
                     </div>           
                     <div className="form-row">
-                        <div className="form-group col-md-6">
-                            <label htmlFor="date">Date</label>
-                            <input required type="date" className="form-control" name="date" id="date" placeholder="Choose date"
+                        <div className="form-group col-md-3">
+                            <label htmlFor="date">Start</label>
+                            <input required type="datetime-local" className="form-control" name="startDateTime" id="start" placeholder="Start date and time"
                               onChange={this.handleChange}/>
                         </div>
-                        <div className="form-group col-md-6">
-                        <label htmlFor="time">Time</label>
-                        <input required type="time" className="form-control" name="time" id="time" placeholder="Choose time"
+                        <div className="form-group col-md-3">
+                        <label htmlFor="time">End</label>
+                        <input required type="datetime-local" className="form-control" name="endDateTime" id="end" placeholder="End date and time"
                           onChange={this.handleChange}/>
                         </div>
                     </div>
@@ -143,23 +177,6 @@ class QuickReservation extends React.Component {
                     </div>
                     <div className="form-row">
                         <div className="form-group col-md-5">
-                            <label htmlFor="duration">Duration</label>
-                            <select required className="custom-select mr-sm-2" name="duration" id="duration" onChange={this.handleChange} >
-                              <option defaultValue="0" >0</option>
-                              <option defaultValue="10" >10</option>
-                              <option defaultValue="15" >15</option>
-                              <option defaultValue="20" >20</option>
-                              <option defaultValue="30" >30</option>
-                              <option defaultValue="45" >45</option>
-                              <option defaultValue="60" >60</option>
-                            </select>
-                        </div>
-                        <div className="form-group col-md-1">
-                            <label htmlFor="minutes">Min / Hour</label>
-                            <input required disabled type="text" className="form-control" name="minutes" id="minutes" placeholder="minutes"
-                              value="minutes"/>
-                        </div>
-                        <div className="form-group col-md-5">
                             <label htmlFor="price">Price</label>
                             <input required type="number" className="form-control" name="price" id="price" placeholder="00.0"
                               onChange={this.handleChange}/>
@@ -174,6 +191,11 @@ class QuickReservation extends React.Component {
                 </form>
                 </div>
           </div>
+        </div>
+        <div className="col-2 quick-res-image">
+
+        </div>
+      </div>
       <Footer/>
 
     </div>
@@ -181,4 +203,4 @@ class QuickReservation extends React.Component {
   }
 }
 
-export default QuickReservation;
+export default withRouter(QuickReservation);
