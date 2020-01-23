@@ -69,7 +69,8 @@ class Ordinations extends React.Component{
       componentDidMount() {
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/api/ordination/get-all")  
+        const id = window.location.pathname.split("/")[2];
+        axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + id)  
           .then(response => {
               let tmpArray = []
               for (var i = 0; i < response.data.length; i++) {

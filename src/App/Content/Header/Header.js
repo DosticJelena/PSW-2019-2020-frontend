@@ -72,7 +72,7 @@ class Header extends React.Component{
       var ordinationsLink;
       if (this.state.role === "ROLE_CLINIC_ADMIN"){
         ordinationsLink = (
-          <Link to="/ordinations" className="nav-link link-header" href="#">Ordinations</Link>
+          <Link to="/ordinations/1" className="nav-link link-header" href="#">Ordinations</Link>
         )
       }
       
