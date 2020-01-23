@@ -27,8 +27,16 @@ class Ordinations extends React.Component{
         this.getAppointmentsForOrdination(ordId);
       }
 
+      newModalHandler = () => {
+        this.setState({newModalVisible: true});
+      }
+
+      deleteModalHandler = (ordId) => {
+        this.setState({deleteModalVisible: true});
+      }
+
       modalClosedHandler = () => {
-        this.setState({modalVisible: false});
+        this.setState({modalVisible: false, newModalVisible: false, deleteModalVisible: false});
       }
 
       renderDates = () =>{
@@ -103,7 +111,7 @@ class Ordinations extends React.Component{
             width: 100,
             Cell: row => (
                 <div>
-                   <button className="delete-ord btn" onClick={() => this.modalHandler(row.original.id)}>Delete</button>
+                   <button className="delete-ord btn" onClick={() => this.deleteModalHandler(row.original.id)}>Delete</button>
                  </div>
             ),
             filterable: false
@@ -114,12 +122,19 @@ class Ordinations extends React.Component{
           <Modal show={this.state.modalVisible} modalClosed={this.modalClosedHandler}>
               <OrdinationCalendar appointments={this.state.appointments}/>
           </Modal>
+          <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
+              <h2>New Ordination</h2>
+          </Modal>
+          <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
+              <h4>Are you sure you want to delete this ordination?</h4>
+              <button className="btn">Yes</button>
+          </Modal>
           <Header/>
           <div className="row">
             <div className="col-10">
               <br/>
               <h3>Ordination List</h3>
-              <button className="new-ordination btn">+ New Ordination</button>
+              <button className="new-ordination btn" onClick={() => this.newModalHandler()}>+ New Ordination</button>
               <div className='patients rtable'>
                 <ReactTable 
                   data={this.state.ordinations}
