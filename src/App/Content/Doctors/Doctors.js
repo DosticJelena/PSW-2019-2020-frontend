@@ -16,6 +16,8 @@ class Doctors extends React.Component{
         this.state = {
             doctors: [],
             modalVisible: false,
+            newModalVisible: false,
+            deleteModalVisible: false,
             ordinationId: 0, 
             appointments: []
         }
@@ -26,8 +28,16 @@ class Doctors extends React.Component{
         this.getAppointmentsForOrdination(ordId);
       }
 
+      newModalHandler = () => {
+        this.setState({newModalVisible: true});
+      }
+
+      deleteModalHandler = (ordId) => {
+        this.setState({deleteModalVisible: true});
+      }
+
       modalClosedHandler = () => {
-        this.setState({modalVisible: false});
+        this.setState({modalVisible: false, newModalVisible: false, deleteModalVisible: false});
       }
 
       renderDates = () =>{
@@ -118,7 +128,7 @@ class Doctors extends React.Component{
             width: 100,
             Cell: row => (
                 <div>
-                   <button className="delete-doc btn" onClick={() => this.modalHandler(row.original.id)}>Delete</button>
+                   <button className="delete-doc btn" onClick={() => this.deleteModalHandler(row.original.id)}>Delete</button>
                  </div>
             ),
             filterable: false
@@ -126,12 +136,19 @@ class Doctors extends React.Component{
     
       return (
         <div className="Doctors">
+          <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
+              <h2>New Doctor</h2>
+          </Modal>
+          <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
+              <h4>Are you sure you want to delete this doctor?</h4>
+              <button className="btn">Yes</button>
+          </Modal>
           <Header/>
           <div className="row">
             <div className="col-10">
               <br/>
               <h3>Doctor List</h3>
-              <button className="new-doctor btn">+ New Doctor</button>
+              <button className="new-doctor btn" onClick={() => this.newModalHandler()}>+ New Doctor</button>
               <div className='patients rtable'>
                 <ReactTable 
                   data={this.state.doctors}

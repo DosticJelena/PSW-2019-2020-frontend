@@ -17,6 +17,8 @@ class Ordinations extends React.Component{
         this.state = {
             ordinations: [],
             modalVisible: false,
+            newModalVisible: false,
+            deleteModalVisible: false,
             ordinationId: 0, 
             appointments: []
         }
