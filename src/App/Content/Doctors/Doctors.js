@@ -4,18 +4,17 @@ import "react-table/react-table.css";
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import Modal from '../../UI/Modal/Modal';
-import './Ordinations.css';
+import './Doctors.css';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom';
-import OrdinationCalendar from '../Ordinations/OrdinationCalendar/OrdinationCalendar';
 
-class Ordinations extends React.Component{
+class Doctors extends React.Component{
    
     constructor(props){
         super(props);
     
         this.state = {
-            ordinations: [],
+            doctors: [],
             modalVisible: false,
             newModalVisible: false,
             deleteModalVisible: false,
@@ -70,77 +69,89 @@ class Ordinations extends React.Component{
     
       componentDidMount() {
         var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;  
         const id = window.location.pathname.split("/")[2];
-        axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + id)  
-          .then(response => {
-              let tmpArray = []
-              for (var i = 0; i < response.data.length; i++) {
-                  tmpArray.push(response.data[i])
-              }
-    
-              this.setState({
-                  ordinations: tmpArray
-              })
-          })
-        .catch((error) => console.log(error))
+        console.log(id);
+        axios.get("http://localhost:8080/api/clinic/"+id)
+        .then(response => {
+                console.log(response.data);
+                this.setState({
+                    id: response.data.id,
+                    name: response.data.name,
+                    address: response.data.address,
+                    city: response.data.city,
+                    description: response.data.description
+                })
+            }).then(() => {
+                axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.id)  
+                .then(response => {
+                    let tmpArray = []
+                    for (var i = 0; i < response.data.length; i++) {
+                        tmpArray.push(response.data[i])
+                    }
+            
+                    this.setState({
+                        doctors: tmpArray
+                    })
+                })
+                .catch((error) => console.log(error))
+            }).catch((error) => console.log(error))
       }
     
       render() {
     
         const columns=[
-          {
-            Header:'Id',
-            filterable: false,
-            id: 'id',
-            accessor: d => d.id
-        },{
-          Header:'Number',
-          accessor: 'number'
-        },{
-          Header:'Type',
-          accessor: 'type'
-        },{
-            Header: '',
-            Cell: row => (
-                <div>
-                   <button className="calendar-ord btn" onClick={() => this.modalHandler(row.original.id)}>See calendar</button>
-                 </div>
-            ),
-            width: 150,
-            filterable: false
+            {
+              Header:'Id',
+              id: 'id',
+              accessor: d => d.id,
+              width: 50,
+              filterable: false
+          },{
+            Header:'First Name',
+            accessor: 'firstName'
+          },{
+            Header:'Last Name',
+            accessor: 'lastName'
+          },{
+              Header: 'Phone Number',
+              accessor: 'phoneNumber'
+          },{
+              Header: 'Address',
+              accessor: 'address'
+          },{
+              Header: 'Stars',
+              accessor: 'stars',
+              width: 100
           },{
             Header: '',
             width: 100,
             Cell: row => (
                 <div>
-                   <button className="delete-ord btn" onClick={() => this.deleteModalHandler(row.original.id)}>Delete</button>
+                   <button className="delete-doc btn" onClick={() => this.deleteModalHandler(row.original.id)}>Delete</button>
                  </div>
             ),
             filterable: false
           }]
     
       return (
-        <div className="Ordinations">
-          <Modal show={this.state.modalVisible} modalClosed={this.modalClosedHandler}>
-              <OrdinationCalendar appointments={this.state.appointments}/>
-          </Modal>
+        <div className="Doctors">
           <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
-              <h2>New Ordination</h2>
+              <h2>New Doctor</h2>
           </Modal>
           <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
-              <h4>Are you sure you want to delete this ordination?</h4>
+              <h4>Are you sure you want to delete this doctor?</h4>
               <button className="btn">Yes</button>
           </Modal>
           <Header/>
           <div className="row">
             <div className="col-10">
               <br/>
-              <h3>Ordination List</h3>
-              <button className="new-ordination btn" onClick={() => this.newModalHandler()}>+ New Ordination</button>
+              <h3>Doctor List</h3>
+              <button className="new-doctor btn" onClick={() => this.newModalHandler()}>+ New Doctor</button>
               <div className='patients rtable'>
                 <ReactTable 
-                  data={this.state.ordinations}
+                  data={this.state.doctors}
                   columns={columns}
                   filterable
                   onFilteredChange = {this.handleOnFilterInputChange}
@@ -149,7 +160,7 @@ class Ordinations extends React.Component{
                 />
               </div>
             </div>
-            <div className="col-2 ordination-list-image">
+            <div className="col-2 doctors-list-image">
     
             </div>
           </div>
@@ -161,4 +172,4 @@ class Ordinations extends React.Component{
       }
     }
 
-export default withRouter (Ordinations);
+export default withRouter (Doctors);

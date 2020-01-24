@@ -21,11 +21,12 @@ import QuickReservation from './Content/ClinicAdmin/QuickReservation/QuickReserv
 import EditPersonalProfile from './Content/PersonalProfile/EditPersonalProfile';
 import NonCCAdmins from './Content/CCAdmin/Tables/NonCCAdmins'
 import ChangePassword from './LoginAndRegistration/ChangePassword/ChangePassword';
-import ClinicPage from './Content/Clinic/ClinicPage'
+import ClinicPage from './Content/Clinic/ClinicPage';
+import BusinessReport from './Content/Clinic/BusinessReport/BusinessReport';
 import PredefinedExaminations from './Content/Clinic/PredefinedExaminations/PredefinedExaminations'
 import Drug from './Content/Codebook/Drug/Drug';
 import Diagnosis from './Content/Codebook/Diagnosis/Diagnosis';
-import ReservationRequests from './Content/ClinicAdmin/RegistrationRequests/ReservationRequests';
+import ReservationRequests from './Content/ClinicAdmin/ReservationRequests/ReservationRequests';
 
 // React Notification
 import 'react-notifications/lib/notifications.css';
@@ -44,6 +45,7 @@ import Ordinations from './Content/Ordinations/Ordinations';
 import RegisterClinicAdmin from './Content/CCAdmin/RegisterClinicAdmin/RegisterClinicAdmin';
 import RequestLeaveNurse from './Content/Nurse/RequestLeave/RequestLeaveNurse';
 import NurseCalendar from './Content/Nurse/NurseCalendar/NurseCalendar';
+import Doctors from './Content/Doctors/Doctors';
 
 function App() {
   return (
@@ -86,6 +88,9 @@ function App() {
           <Route path="/clinics">
             <ClinicsList />
           </Route>
+          <Route path="/doctors">
+            <Doctors />
+          </Route>
           <Route path="/appointment-history">
             <AppointmentHistory />
           </Route>
@@ -112,6 +117,9 @@ function App() {
           </Route>
           <Route path="/clinic">
             <ClinicPage />
+          </Route>
+          <Route path="/business-report">
+            <BusinessReport />
           </Route>
           <Route path="/predefined-examinations">
             <PredefinedExaminations />

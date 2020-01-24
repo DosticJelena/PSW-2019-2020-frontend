@@ -128,6 +128,15 @@ class EditPersonalProfile extends React.Component {
                         <div className="form-row">
                             <div className="col-6">
                                 <div className="form-group">
+                                    <label htmlFor="email">Email</label>
+                                    <input type="email"
+                                        className="form-control form-control"
+                                        id="email"
+                                        name="email"
+                                        onChange={this.handleChange}
+                                        defaultValue={this.state.email}
+                                        disabled
+                                    />
                                 </div>
                             </div>
                             <div className="col">
