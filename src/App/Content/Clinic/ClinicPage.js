@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,withRouter } from 'react-router-dom'
 import "react-table/react-table.css";
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -89,6 +89,18 @@ class ClinicPage extends React.Component {
             
         }).catch((error) => console.log(error))
         
+    }
+
+    visitPredefExam = () =>{
+        const id=window.location.pathname.split("/")[2];
+        console.log(id);
+        this.props.history.push('/predefined-examinations/'+id);
+    }
+
+    visitDoctors= () =>{
+        const id=window.location.pathname.split("/")[2];
+        console.log(id);
+        this.props.history.push('/doctors-list/'+id);
     }
 
     render() {
@@ -192,4 +204,4 @@ class ClinicPage extends React.Component {
         }
     }
     
-export default ClinicPage;
+export default withRouter (ClinicPage);
