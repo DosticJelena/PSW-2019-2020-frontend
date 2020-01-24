@@ -13,7 +13,7 @@ class ClinicPage extends React.Component {
         super(props); 
     
         this.state = {
-            id: '',
+            clinicId: '',
             name: '',
             avg: '',
             doctors: [],
@@ -23,53 +23,71 @@ class ClinicPage extends React.Component {
             }],
             address: '',
             city: '',
-            description: ''
+            description: '',
+            clinicAdmin: ''
         }
     }
     
     componentDidMount(){
+
         var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;  
-        const id = window.location.pathname.split("/")[2];
-        console.log(id);
-        axios.get("http://localhost:8080/api/clinic/"+id)
-        .then(response => {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.get("http://localhost:8080/auth/getMyUser")  
+            .then(response => {
                 console.log(response.data);
                 this.setState({
-                    id: response.data.id,
-                    name: response.data.name,
-                    address: response.data.address,
-                    city: response.data.city,
-                    description: response.data.description
+                    clinicAdmin: response.data.id
                 })
-            }).then(() => {
-                axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.id)  
+            })
+        .then(() => {
+            axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
+            .then(response => {
+                console.log(response.data);
+                this.setState({
+                    clinicId: response.data
+                })
+            })
+            .then(() => {
+
+                axios.get("http://localhost:8080/api/clinic/"+ this.state.clinicId)
+                .then(response => {
+                        console.log(response.data);
+                        this.setState({
+                            name: response.data.name,
+                            address: response.data.address,
+                            city: response.data.city,
+                            description: response.data.description
+                        })
+                }).catch((error) => console.log(error))
+            
+                axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + this.state.clinicId)  
                 .then(response => {
                     let tmpArray = []
                     for (var i = 0; i < response.data.length; i++) {
                         tmpArray.push(response.data[i])
                     }
-            
+                    this.setState({
+                        ordinations: tmpArray
+                    })
+                })
+                .catch((error) => console.log(error))
+
+                axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.clinicId)  
+                .then(response => {
+                    let tmpArray = []
+                    for (var i = 0; i < response.data.length; i++) {
+                        tmpArray.push(response.data[i])
+                    }
+        
                     this.setState({
                         doctors: tmpArray
                     })
                 })
                 .catch((error) => console.log(error))
-            }).catch((error) => console.log(error))
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/api/ordination/get-all")  
-          .then(response => {
-              let tmpArray = []
-              for (var i = 0; i < response.data.length; i++) {
-                  tmpArray.push(response.data[i])
-              }
-    
-              this.setState({
-                  ordinations: tmpArray
-              })
-          })
-        .catch((error) => console.log(error))
+            }).catch((error) => console.log(error))
+            
+        }).catch((error) => console.log(error))
         
     }
 
