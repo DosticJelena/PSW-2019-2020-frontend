@@ -21,8 +21,8 @@ class ReservationRequests extends React.Component {
     this.state = {
       appointmentRequests: [{
         id: '',
-        date: '',
-        time: '',
+        startDateTime: '',
+        endDateTime: '',
         type: ''
       }],
       role: ''
@@ -83,17 +83,19 @@ class ReservationRequests extends React.Component {
         style: {
           textAlign: "center",
           fontSize: 20
-        }
+        },
+        width: 50,
+        filterable: false
     },{
-      Header:'Date',
-      accessor: 'date',
+      Header:'Start',
+      accessor: 'startDateTime',
       style: {
         textAlign: "center",
         fontSize: 20
       }
     },{
-        Header:'Time',
-        accessor: 'time',
+        Header:'End',
+        accessor: 'endDateTime',
         style: {
           textAlign: "center",
           fontSize: 20
@@ -126,17 +128,19 @@ class ReservationRequests extends React.Component {
         style: {
           textAlign: "center",
           fontSize: 20
-        }
+        },
+        filterable: false,
+        width: 50
     },{
-      Header:'Date',
-      accessor: 'date',
+      Header:'Start',
+      accessor: 'startDateTime',
       style: {
         textAlign: "center",
         fontSize: 20
       }
     },{
-        Header:'Time',
-        accessor: 'time',
+        Header:'End',
+        accessor: 'endDateTime',
         style: {
           textAlign: "center",
           fontSize: 20
