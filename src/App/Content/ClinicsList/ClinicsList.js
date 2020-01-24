@@ -8,11 +8,15 @@ import Select from "react-select";
 import axios from 'axios'
 import { NotificationManager } from 'react-notifications';
 import { Link, withRouter } from 'react-router-dom'
+import { Button } from 'react-bootstrap';
 
 class ClinicsList extends React.Component{
-   
+
     constructor(props){
         super(props);
+
+        this.handleChange = this.handleChange.bind(this);
+        this.FilterClinics = this.FilterClinics.bind(this);
 
         this.state={
 
@@ -23,23 +27,72 @@ class ClinicsList extends React.Component{
               address:'',
               city:'',
               stars:'',
-              num_votes:''
+              num_votes:'',
+              price:''
             }],
             data:[],
             filtered:[],
-            selected: undefined
-        };
+            selected: undefined,
+            date:'',
+            type:'',
+            types:[]
+        }
+    }
+
+    FilterClinics = event => {
+      event.preventDefault();
+      var token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log(this.state.date);
+      console.log(this.state.type);
+      axios.get("http://localhost:8080/api/filter-clinics/"+this.state.date+'/'+this.state.type).then(response => {
+        console.log(response.data);
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+          clinics: tmpArray
+        })
+      }).catch((error) => console.log(error))
+    }
+
+    handleChange(e) {
+      this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
     }
 
     componentDidMount() {
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.get("http://localhost:8080/api/clinics", {
-        responseType: 'json'
-    }).then(response => {
-        this.setState({ clinics: response.data });
-    });
-}  
+      axios.get("http://localhost:8080/api/clinics").then(response => {
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+            tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+            clinics: tmpArray
+        })
+    })
+    .catch((error) => console.log(error))
+
+    var token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get("http://localhost:8080/api/types")
+      .then(response => {
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+          types: tmpArray
+        })
+      })
+      .catch((error) => console.log(error))
+
+} 
        
 
     onFilteredChangeCustom = (value, accessor) => {
@@ -63,10 +116,25 @@ class ClinicsList extends React.Component{
           this.setState({ filtered: filtered });
      };
 
-     visit = (id) =>{
+    visit = (id) =>{
         console.log(id);
         this.props.history.push('/clinic/'+id);
-  }
+    }
+
+    allClinics = () =>{
+      var token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
+      axios.get("http://localhost:8080/api/clinics").then(response => {
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+          clinics: tmpArray
+        })
+      }) .catch((error) => console.log(error))
+        }
       
 
     render(){
@@ -87,6 +155,9 @@ class ClinicsList extends React.Component{
             Header:'Stars',
             accessor: 'stars'
         },{
+            Header:'Price',
+            accessor: 'price'
+        },{
           Header: '',
           Cell: row => (
               <div>
@@ -105,6 +176,39 @@ class ClinicsList extends React.Component{
                 <br/>
                 <br/>
                 <div className='clinics rtable'>
+                <form onSubmit={this.FilterClinics}>
+                  <div className="row">
+                    <div className="col-5">
+                      <div className="form-group">
+                        <div className="col">
+                          <label htmlFor="type" >Type:</label>
+                          <select required className="custom-select mr-sm-2" name="type" id="type" onChange={this.handleChange} >
+                            <option defaultValue="0"></option>
+                            {this.state.types.map((type, index) => (
+                              <option key={type.id} value={type.id}>{type.name}</option>
+                            ))}  
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-group">
+                          <label htmlFor="date">Date:</label>
+                          <input required type="date" className="form-control" name="date" id="date" placeholder="Choose date"
+                            onChange={this.handleChange} />
+                      </div>
+                    </div>
+                    <div className="col-2">
+                      <br/>
+                      <Button type="submit" className="btn clinics-list-button">Filter</Button>
+                      <button className="btn clinics-list-all " onClick={() => this.allClinics()}>All</button>
+                    </div>
+                   
+                     </div>
+                  
+                </form>
+               
+
                 <ReactTable 
                   data={clinics}
                   filterable

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,withRouter } from 'react-router-dom'
 import "react-table/react-table.css";
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -28,12 +28,8 @@ class ClinicPage extends React.Component {
     }
     
     componentDidMount(){
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;  
         const id = window.location.pathname.split("/")[2];
-        console.log(id);
-        axios.get("http://localhost:8080/api/clinic/"+id)
-        .then(response => {
+        axios.get("http://localhost:8080/api/clinic/"+ id).then(response => {
                 console.log(response.data);
                 this.setState({
                     id: response.data.id,
@@ -71,6 +67,18 @@ class ClinicPage extends React.Component {
           })
         .catch((error) => console.log(error))
         
+    }
+
+    visitPredefExam = () =>{
+        const id=window.location.pathname.split("/")[2];
+        console.log(id);
+        this.props.history.push('/predefined-examinations/'+id);
+    }
+
+    visitDoctors= () =>{
+        const id=window.location.pathname.split("/")[2];
+        console.log(id);
+        this.props.history.push('/doctors-list/'+id);
     }
 
     render() {
@@ -120,6 +128,18 @@ class ClinicPage extends React.Component {
             
             <div className="Clinic-page">
                 <Header/>
+
+                <div className="clinic-page-title">Clinic page</div>
+                <h3>{this.state.name}</h3>
+
+                <div className="btn-predefined-exam">
+                 <button className="btn link-btn-patient predefined-btn" onClick={() => this.visitPredefExam()}>Predefined examinations</button>
+               </div>
+
+                <div className="btn-predefined-exam">
+                 <button className="btn link-btn-patient predefined-btn" onClick={() => this.visitDoctors()}>Doctors of the clinic</button>
+               </div>
+
                 <div className="row">
                     <div className="col-10">
                         <div className="row cp-header">
@@ -174,4 +194,4 @@ class ClinicPage extends React.Component {
         }
     }
     
-export default ClinicPage;
+export default withRouter (ClinicPage);

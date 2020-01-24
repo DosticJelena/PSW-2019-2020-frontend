@@ -12,8 +12,8 @@ import { Link, withRouter } from 'react-router-dom'
 
 class PredefinedExaminations extends React.Component {
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
 
         this.state={
             examinations: [{
@@ -27,12 +27,27 @@ class PredefinedExaminations extends React.Component {
                 discount:''
             }],
             filtered:[],
-            selected: undefined
-        };
+            selected: undefined,
+            idP:''
+        }
     }
 
     
     componentDidMount() {
+
+        const id = window.location.pathname.split("/")[2];
+        axios.get("http://localhost:8080/api/predefined-appointments/"+id).then(response => {
+            let tmpArray = []
+            for (var i = 0; i < response.data.length; i++) {
+                tmpArray.push(response.data[i])
+            }
+  
+            this.setState({
+                examinations: tmpArray
+            })
+        })
+      .catch((error) => console.log(error))
+
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         axios.get("http://localhost:8080/api/appointment/get-predefined-available-appointments", 
@@ -62,6 +77,25 @@ class PredefinedExaminations extends React.Component {
   
       this.setState({ filtered: filtered });
  };
+
+ 
+
+schedule = (id) =>{
+        
+    axios.get("http://localhost:8080/auth/getMyUser")  
+    .then(response => {
+        console.log(response.data.id);
+        this.state.idP=response.data.id;
+    }).catch((error) => console.log(error))
+
+    axios.post("http://localhost:8080/api/schedule-predefined-appointment/" + id, this.state.idP ).then(response => {
+    const {examinations} = this.state;
+    examinations.pop(response.data);
+    this.setState({examinations});
+    }).then((resp) => this.onSuccessHandler(resp))
+    console.log('Id: ' + id);
+};
+
 
     render() {
 
@@ -96,8 +130,12 @@ class PredefinedExaminations extends React.Component {
             accessor:'discount'
         },{
             Header:'Schedule',
-            Cell: <Button className="schButton">Schedule</Button>,
-            filterable: false
+            Cell: row => (
+                <div>
+                    <button onClick={() => this.schedule(row.original.id)}>Schedule</button>
+                </div>
+            )
+
         }
     ]
 
@@ -105,39 +143,35 @@ class PredefinedExaminations extends React.Component {
             
             <div className="Predefined-Examinations">
                 <Header/>
-                <div className="row">
-                    <div className="col-10">
-                        <br/>
-                        <h3>Predefined appointments</h3>
-                        <div className='predef-exam'>
-                            <ReactTable 
-                            data={examinations}
-                            filterable
-                            filtered={this.state.filtered}
-                            onFilteredChange={(filtered, column, value) => {
-                                this.onFilteredChangeCustom(value, column.id || column.accessor);
-                            }}
-                            defaultFilterMethod={(filter, row, column) => {
-                                const id = filter.pivotId || filter.id;
-                                if (typeof filter.value === "object") {
-                                return row[id] !== undefined
-                                    ? filter.value.indexOf(row[id]) > -1
-                                    : true;
-                                } else {
-                                return row[id] !== undefined
-                                    ? String(row[id]).indexOf(filter.value) > -1
-                                    : true;
-                                }
-                            }}
-                            columns={columns}
-                            defaultPageSize = {6}
-                            pageSizeOptions = {[6, 10, 15]}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-2 clinic-page-image">
-            
-                    </div>
+
+                <div className="Predefined-Examinations-title">Predefined appointments</div>
+
+                <div className='clinics rtable'>
+                    <ReactTable 
+                    data={this.state.examinations}
+                    //columns={columns}
+                    filterable
+                    onFilteredChange = {this.handleOnFilterInputChange}
+                    filtered={this.state.filtered}
+                    onFilteredChange={(filtered, column, value) => {
+                        this.onFilteredChangeCustom(value, column.id || column.accessor);
+                    }}
+                    defaultFilterMethod={(filter, row, column) => {
+                        const id = filter.pivotId || filter.id;
+                        if (typeof filter.value === "object") {
+                        return row[id] !== undefined
+                            ? filter.value.indexOf(row[id]) > -1
+                            : true;
+                        } else {
+                        return row[id] !== undefined
+                            ? String(row[id]).indexOf(filter.value) > -1
+                            : true;
+                        }
+                    }}
+                    columns={columns}
+                    defaultPageSize = {10}
+                    pageSizeOptions = {[5, 10, 15]}
+                    />
                 </div>
                 <Footer/>
             </div>

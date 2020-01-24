@@ -23,3 +23,16 @@
     margin:20px 800px 30px 100px;
 }
 
+form{
+    background-color: white;
+}
+.clinics-list-button{
+    margin-top: 6px;
+}
+
+.clinics-list-all{
+    margin-top: 6px;
+    margin-left: 20px;
+    color: #ffffff;
+}
+
