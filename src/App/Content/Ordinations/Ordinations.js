@@ -8,6 +8,7 @@ import './Ordinations.css';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom';
 import OrdinationCalendar from '../Ordinations/OrdinationCalendar/OrdinationCalendar';
+import NewOrdination from './NewOrdination/NewOrdination';
 
 class Ordinations extends React.Component{
    
@@ -20,7 +21,8 @@ class Ordinations extends React.Component{
             newModalVisible: false,
             deleteModalVisible: false,
             ordinationId: 0, 
-            appointments: []
+            appointments: [],
+            clinicAdmin: ''
         }
       }
 
@@ -69,25 +71,48 @@ class Ordinations extends React.Component{
       }
     
       componentDidMount() {
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const id = window.location.pathname.split("/")[2];
-        axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + id)  
-          .then(response => {
-              let tmpArray = []
-              for (var i = 0; i < response.data.length; i++) {
-                  tmpArray.push(response.data[i])
-              }
-    
-              this.setState({
-                  ordinations: tmpArray
+
+        this.modalClosedHandler();
+
+          var token = localStorage.getItem('token');
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          axios.get("http://localhost:8080/auth/getMyUser")  
+              .then(response => {
+                  console.log(response.data);
+                  this.setState({
+                      clinicAdmin: response.data.id
+                  })
               })
-          })
-        .catch((error) => console.log(error))
+          .then(() => {
+              axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
+              .then(response => {
+                  console.log(response.data);
+                  this.setState({
+                      id: response.data
+                  })
+              })
+              .then(() => {
+                
+                    axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + this.state.id)  
+                    .then(response => {
+                        let tmpArray = []
+                        for (var i = 0; i < response.data.length; i++) {
+                            tmpArray.push(response.data[i])
+                        }
+                        this.setState({
+                            ordinations: tmpArray
+                        })
+                    })
+                  .catch((error) => console.log(error))
+
+              }).catch((error) => console.log(error))
+              
+          }).catch((error) => console.log(error))
+
       }
     
       render() {
-    
+
         const columns=[
           {
             Header:'Id',
@@ -126,7 +151,7 @@ class Ordinations extends React.Component{
               <OrdinationCalendar appointments={this.state.appointments}/>
           </Modal>
           <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
-              <h2>New Ordination</h2>
+              <NewOrdination/>
           </Modal>
           <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
               <h4>Are you sure you want to delete this ordination?</h4>
