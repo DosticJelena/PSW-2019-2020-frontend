@@ -1,0 +1,167 @@
+.RequestLeaveNurse .container {
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+}
+
+.RequestLeaveNurse .title {
+    color: white;
+}
+
+.RequestLeaveNurse .welcome {
+    background-color: darkcyan;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+}
+
+.RequestLeaveNurse .logo {
+    display: inline-block;
+    margin-top: 80px;
+}
+
+.RequestLeaveNurse {
+    background-image: url("https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.RequestLeaveNurse img {
+    align-content: center;
+}
+
+.RequestLeaveNurse .row {
+    margin: 0
+}
+
+.RequestLeaveNurse .register-form {
+    width: 100%;
+    margin-left : 25%
+}
+
+.RequestLeaveNurse .wrapper {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #258ea6;
+  }
+  
+  .RequestLeaveNurse .form-wrapper {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 40px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 50px #555;
+    background-color: #ffffff;
+  }
+  
+  .RequestLeaveNurse form {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .RequestLeaveNurse h1 {
+    text-align: center;
+    width: 100%;
+    color: #111;
+    font-weight: lighter;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  }
+  
+  .RequestLeaveNurse label {
+    font-size: 1em;
+    margin-bottom: 0.15em;
+    color: #222;
+    font-weight: lighter;
+  }
+  
+  .RequestLeaveNurse input {
+    padding: 10px 10px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #cfcfcf;
+  }
+
+  .RequestLeaveNurse textarea {
+    padding: 10px 10px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #cfcfcf;
+  }
+  
+  .RequestLeaveNurse input::placeholder {
+    font-size: 1.2em;
+    font-weight: lighter;
+    color: #999;
+  }
+
+  .RequestLeaveNurse textarea::placeholder {
+    font-size: 1.2em;
+    font-weight: lighter;
+    color: #999;
+  }
+  
+  .RequestLeaveNurse input.error {
+    border: 1px solid red;
+  }
+  
+  .RequestLeaveNurse .errorMessage {
+    color: red;
+    font-size: 0.75em;
+    display: relative;
+  }
+  
+  .RequestLeaveNurse .firstName {
+    margin-right: 1%;
+  }
+  
+  .RequestLeaveNurse .lastName {
+    margin-left: 1%;
+  }
+  
+  .name, .address, .city, .country, .description, .type, .datePicker {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .name, .address, .city, .country, .description, .type, .datePicker{
+    width: 100%;
+  }
+  
+  .RequestLeaveNurse .createAccount {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .RequestLeaveNurse .createAccount button {
+    background-color: #519e8a;
+    color: #fff;
+    border: 2px solid #fff;
+    width: 100%;
+    margin-top: 1em;
+    padding: 8px 0px;
+    font-size: 1em;
+    font-weight: lighter;
+    letter-spacing: 1px;
+    margin-bottom: 0.25em;
+  }
+  
+  .RequestLeaveNurse .createAccount button:hover {
+    color: #519e8a;
+    background-color: #fff;
+    border: 2px solid #519e8a;
+  }
+  
+  .RequestLeaveNurse .createAccount small {
+    color: #999;
+    font-weight: lighter;
+  }

@@ -28,7 +28,11 @@ class ChangePassword extends React.Component {
             confirmPassword: '',
             role: '',
             firstName: '',
-            email: ''
+            email: '',
+            dto: {
+                newPassword: "",
+                oldPassword: ""
+            }
         }
         NotificationManager.info('Welcome to the Clinic Center System. Upon first login you have to change your password', '', 4000);
         
@@ -37,7 +41,16 @@ class ChangePassword extends React.Component {
     SendLoginRequest = event => {
         event.preventDefault();
         console.log(this.state);
-        axios.post("http://localhost:8080/auth/change-password", this.state)
+        this.setState({
+            dto: {
+                newPassword: this.state.newPassword,
+                oldPassword: this.state.oldPassword
+            }
+        })
+        this.setState({...this.state.dto, newPassword: this.state.newPassword});
+        console.log(this.state);
+
+        axios.post("http://localhost:8080/auth/change-password", this.state.dto)
         .then((resp) => {
             NotificationManager.success('Welcome to the Clinic Center System. Your password has been changed', '', 4000);
             axios.post("http://localhost:8080/auth/login", {
@@ -46,8 +59,8 @@ class ChangePassword extends React.Component {
             })
             .then((resp) => {
                 localStorage.setItem('token', resp.data.accessToken);  
-                if (this.state.role == "ROLE_CCADMIN"){
-                    this.props.history.push('/ccadmin');
+                if (this.state.role == "ROLE_CC_ADMIN"){
+                    this.props.history.push('/cc-admin');
                 } else if (this.state.role == "ROLE_CLINIC_ADMIN"){
                     this.props.history.push('/clinic-admin');
                 } else if (this.state.role == "ROLE_DOCTOR"){

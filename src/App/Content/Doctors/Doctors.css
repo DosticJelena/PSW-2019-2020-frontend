@@ -1,0 +1,39 @@
+.rtable {
+    margin: 40px 40px 40px 40px;
+}
+
+.doctors-list-image {
+    background-image: url("https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80");
+    background-size: cover;
+    border-left: darkcyan 2px solid;
+    min-height: 80vh;
+}
+
+.new-doctor {
+    display: inline;
+    background-color: darkcyan;
+    border-color: darkcyan;
+    color: white;
+    float: right;
+    margin-right: 40px;
+}
+
+.new-doctor:hover {
+    display: inline;
+    background-color: darkcyan;
+    border-color: darkcyan;
+    color: silver;
+}
+
+.Doctors h3 {
+    display: inline;
+}
+
+.delete-doc {
+    color: red;
+}
+
+.delete-doc:hover {
+    background-color: red;
+    color: white;
+}

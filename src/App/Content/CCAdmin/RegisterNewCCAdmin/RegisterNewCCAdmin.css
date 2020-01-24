@@ -1,55 +1,55 @@
 .RegisterNewCCAdmin .container {
-    margin: 0;
-    padding: 0;
-    background-size: cover;
+  margin: 0;
+  padding: 0;
+  background-size: cover;
 }
 
 .RegisterNewCCAdmin .title {
-    color: white;
+  color: white;
 }
 
 .RegisterNewCCAdmin .welcome {
-    background-color: darkcyan;
-    height: 100vh;
-    width: 100%;
-    text-align: center;
+  background-color: darkcyan;
+  height: 100vh;
+  width: 100%;
+  text-align: center;
 }
 
 .RegisterNewCCAdmin .logo {
-    display: inline-block;
-    margin-top: 80px;
+  display: inline-block;
+  margin-top: 80px;
 }
 
 .RegisterNewCCAdmin {
-    background-image: url("https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80");
-    background-size: cover;
-    background-repeat: no-repeat;
+  background-image: url("https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .RegisterNewCCAdmin img {
-    align-content: center;
+  align-content: center;
 }
 
 .RegisterNewCCAdmin .row {
-    margin: 0
+  margin: 0
 }
 
 .RegisterNewCCAdmin .register-form {
-    width: 100%;
-    margin-left : 25%
+  width: 100%;
+  margin-left : 25%
 }
 
-.RegisterNewCCAdmin .wrapper {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #258ea6;
-  }
-  
-.RegisterNewCCAdmin .form-wrapper {
+.wrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #258ea6;
+}
+
+.form-wrapper {
   width: 400px;
   display: flex;
   flex-direction: column;
@@ -63,6 +63,9 @@
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  background-color: silver;
+  padding: 30px;
+  margin: 30px;
 }
 
 .RegisterNewCCAdmin h1 {
@@ -88,75 +91,75 @@
   border: 1px solid #cfcfcf;
 }
 
-.RegisterNewCCAdmin input::placeholder {
+.input::placeholder {
   font-size: 1.2em;
   font-weight: lighter;
   color: #999;
 }
 
-  .RegisterNewCCAdmin input.error {
-    border: 1px solid red;
-  }
-  
-  .RegisterNewCCAdmin .errorMessage {
-    color: red;
-    font-size: 0.75em;
-    display: relative;
-  }
-  
-  .RegisterNewCCAdmin .firstName {
-    margin-right: 1%;
-  }
-  
-  .RegisterNewCCAdmin .lastName {
-    margin-left: 1%;
-  }
-  
-  .firstName,
-  .lastName,
-  .email,
-  .address, .city, .country, .phoneNumber {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-  }
-  
-  .firstName,
-  .lastName {
-    width: 49%;
-  }
-  
-  .email, .address, .city, .country, .phoneNumber{
-    width: 100%;
-  }
-  
-  .RegisterNewCCAdmin .createAccount {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .RegisterNewCCAdmin .createAccount button {
-    background-color: #519e8a;
-    color: #fff;
-    border: 2px solid #fff;
-    width: 100%;
-    margin-top: 1em;
-    padding: 8px 0px;
-    font-size: 1em;
-    font-weight: lighter;
-    letter-spacing: 1px;
-    margin-bottom: 0.25em;
-  }
-  
-  .RegisterNewCCAdmin .createAccount button:hover {
-    color: #519e8a;
-    background-color: #fff;
-    border: 2px solid #519e8a;
-  }
-  
-  .RegisterNewCCAdmin .createAccount small {
-    color: #999;
-    font-weight: lighter;
-  }
+.input.error {
+  border: 1px solid red;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.75em;
+  display: relative;
+}
+
+.firstName {
+  margin-right: 1%;
+}
+
+.lastName {
+  margin-left: 1%;
+}
+
+.firstName,
+.lastName,
+.email,
+.address, .city, .country, .phoneNumber {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.firstName,
+.lastName {
+  width: 49%;
+}
+
+.email, .address, .city, .country, .phoneNumber{
+  width: 100%;
+}
+
+.createAccount {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.createAccount .button {
+  background-color: #519e8a;
+  color: #fff;
+  border: 2px solid #fff;
+  width: 100%;
+  margin-top: 1em;
+  padding: 8px 0px;
+  font-size: 1em;
+  font-weight: lighter;
+  letter-spacing: 1px;
+  margin-bottom: 0.25em;
+}
+
+.createAccount button:hover {
+  color: #519e8a;
+  background-color: #fff;
+  border: 2px solid #519e8a;
+}
+
+.createAccount small {
+  color: #999;
+  font-weight: lighter;
+}

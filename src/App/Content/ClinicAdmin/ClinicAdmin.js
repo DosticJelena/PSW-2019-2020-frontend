@@ -50,13 +50,18 @@ class ClinicAdmin extends React.Component {
             <div className="row links">
                 <div className="col link">
                     <h4>All Reservation Requests</h4>
-                    <p>Look at the list of all patient registration requests.</p>
+                    <p>Look at the list of all patient reservation requests.</p>
                     <Link to="/reservation-requests" className="btn link-btn-admin">View List</Link>
                 </div>
                 <div className="col link">
                     <h4>Create a Quick Reservation</h4>
                     <p>Create a quick reservation for predefined medical appointment.</p>
                     <Link to="/quick-reservation" className="btn link-btn-admin">Create Reservation</Link>
+                </div>
+                <div className="col link">
+                    <h4>Assign operation rooms</h4>
+                    <p>Select a room from list of available ones.</p>
+                    <Link to="/assign-room" className="btn link-btn-admin">Assign Rooms</Link>
                 </div>
             </div>
         </div>

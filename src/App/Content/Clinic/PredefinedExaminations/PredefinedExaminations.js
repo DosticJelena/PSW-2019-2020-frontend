@@ -18,11 +18,10 @@ class PredefinedExaminations extends React.Component {
         this.state={
             examinations: [{
                 id:'',
-                type:'',
-                date:'',
-                time:'',
+                clinic:'',
+                startDateTime:'',
+                endDateTime:'',
                 price:'',
-                duration:'',
                 ordination:'',
                 doctor:'',
                 discount:''
@@ -35,6 +34,7 @@ class PredefinedExaminations extends React.Component {
 
     
     componentDidMount() {
+
         const id = window.location.pathname.split("/")[2];
         axios.get("http://localhost:8080/api/predefined-appointments/"+id).then(response => {
             let tmpArray = []
@@ -47,7 +47,15 @@ class PredefinedExaminations extends React.Component {
             })
         })
       .catch((error) => console.log(error))
-    }
+
+        var token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.get("http://localhost:8080/api/appointment/get-predefined-available-appointments", 
+        {responseType: 'json'})
+        .then(response => {
+          this.setState({ examinations: response.data });
+      });
+  }  
 
   onFilteredChangeCustom = (value, accessor) => {
     let filtered = this.state.filtered;
@@ -96,22 +104,21 @@ schedule = (id) =>{
         const columns=[{
             Header: 'Id',
             id: 'id',
-            accessor: d=>d.id
+            accessor: d=>d.id,
+            filterable: false,
+            width: 50
         },{
-            Header:'Type',
-            accessor:'type'
+            Header:'Clinic',
+            accessor:'clinic'
         },{
-            Header:'Date',
-            accessor:'date'
+            Header:'Start',
+            accessor:'startDateTime'
         },{
-            Header:'Time',
-            accessor:'time'
+            Header:'End',
+            accessor:'endDateTime'
         },{
             Header:'Price',
             accessor:'price'
-        },{
-            Header:'Duration',
-            accessor:'duration'
         },{
             Header:'Doctor',
             accessor:'doctor'
@@ -128,6 +135,7 @@ schedule = (id) =>{
                     <button onClick={() => this.schedule(row.original.id)}>Schedule</button>
                 </div>
             )
+
         }
     ]
 
@@ -165,7 +173,6 @@ schedule = (id) =>{
                     pageSizeOptions = {[5, 10, 15]}
                     />
                 </div>
-
                 <Footer/>
             </div>
 

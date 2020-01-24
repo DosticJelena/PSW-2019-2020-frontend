@@ -51,14 +51,19 @@ class Nurse extends React.Component {
             <div className="row links">
                 <div className="col link">
                     <h4>All Patients</h4>
-                    <p>Look at the list of all patients in your clinic.</p>
+                    <p>Look at the list of all patients in clinic.</p>
                     <Link to="/patients" class="btn link-btn-doctor">View List</Link>
                 </div>
                 <div className="col link">
-                    <h4>Prescriptions to Authenticate</h4>
+                    <h4>Authenticate Prescriptions</h4>
                     <p>Look at the list of all prescriptions.</p>
                     <Link to="/authenticate-prescriptions" class="btn link-btn-doctor">View List</Link>
-                    </div>
+                </div>
+                <div className="col link">
+                    <h4>Request Leave</h4>
+                    <p>Fill out a form.</p>
+                    <Link to="/request-leave-nurse" class="btn link-btn-doctor">Request</Link>
+                </div>
             </div>
                 </div>
                 <Footer />

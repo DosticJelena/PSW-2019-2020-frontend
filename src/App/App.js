@@ -21,12 +21,14 @@ import QuickReservation from './Content/ClinicAdmin/QuickReservation/QuickReserv
 import EditPersonalProfile from './Content/PersonalProfile/EditPersonalProfile';
 import NonCCAdmins from './Content/CCAdmin/Tables/NonCCAdmins'
 import ChangePassword from './LoginAndRegistration/ChangePassword/ChangePassword';
-import ClinicPage from './Content/Clinic/ClinicPage'
+import ClinicPage from './Content/Clinic/ClinicPage';
+import BusinessReport from './Content/Clinic/BusinessReport/BusinessReport';
 import PredefinedExaminations from './Content/Clinic/PredefinedExaminations/PredefinedExaminations'
 import Drug from './Content/Codebook/Drug/Drug';
 import Diagnosis from './Content/Codebook/Diagnosis/Diagnosis';
-import ReservationRequests from './Content/ClinicAdmin/RegistrationRequests/ReservationRequests';
 import DoctorsList from './Content/DoctorsList/DoctorsList';
+import ReservationRequests from './Content/ClinicAdmin/ReservationRequests/ReservationRequests';
+
 
 // React Notification
 import 'react-notifications/lib/notifications.css';
@@ -36,7 +38,16 @@ import CCAdminRegistrationRequests from './Content/CCAdmin/RegistationRequests/C
 import RegisterClinic from './Content/CCAdmin/RegisterClinic/RegisterClinic';
 import DoctorCalendar from './Content/Doctor/Calendar/DoctorCalendar';
 import Prescriptions from './Content/Nurse/AuthenticatePrescriptions/Prescriptions';
+import ExaminationReport from './Content/Doctor/ExaminationReport/ExaminationReport';
+import VerifyEmail from './LoginAndRegistration/VerifyEmail/VerifyEmail';
+import CalendarEventClickWindow from './Content/Doctor/CalendarEventClickWindow/CalendarEventClickWindow';
+import MedicalCard from './Content/Doctor/MedicalCard/MedicalCard';
+import EditExaminationReport from './Content/Doctor/ExaminationReport/EditExaminationReport';
 import Ordinations from './Content/Ordinations/Ordinations';
+import RegisterClinicAdmin from './Content/CCAdmin/RegisterClinicAdmin/RegisterClinicAdmin';
+import RequestLeaveNurse from './Content/Nurse/RequestLeave/RequestLeaveNurse';
+import NurseCalendar from './Content/Nurse/NurseCalendar/NurseCalendar';
+import Doctors from './Content/Doctors/Doctors';
 
 function App() {
   return (
@@ -79,6 +90,9 @@ function App() {
           <Route path="/clinics">
             <ClinicsList />
           </Route>
+          <Route path="/doctors">
+            <Doctors />
+          </Route>
           <Route path="/appointment-history">
             <AppointmentHistory />
           </Route>
@@ -105,6 +119,9 @@ function App() {
           </Route>
           <Route path="/clinic">
             <ClinicPage />
+          </Route>
+          <Route path="/business-report">
+            <BusinessReport />
           </Route>
           <Route path="/predefined-examinations">
             <PredefinedExaminations />
@@ -136,8 +153,32 @@ function App() {
           <Route path="/doctors-list">
             <DoctorsList/>
 		  </Route>
+          <Route path="/examination-report">
+            <ExaminationReport/>
+          </Route>
+          <Route path="/verify">
+            <VerifyEmail/>
+          </Route>
+          <Route path="/doctor-calendar-event">
+            <CalendarEventClickWindow/>
+          </Route>
+          <Route path="/medical-card">
+            <MedicalCard/>
+          </Route>
+          <Route path="/edit-examination-report">
+            <EditExaminationReport/>
+          </Route>
           <Route path="/ordinations">
             <Ordinations/>
+          </Route>
+          <Route path="/register-clinic-admin">
+            <RegisterClinicAdmin/>
+          </Route>
+          <Route path="/request-leave-nurse">
+            <RequestLeaveNurse/>
+          </Route>
+          <Route path="/nurse-calendar">
+            <NurseCalendar/>
           </Route>
         </Switch>
         <NotificationContainer />

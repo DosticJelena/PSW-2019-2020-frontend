@@ -8,7 +8,19 @@ import {NotificationManager} from 'react-notifications';
 import { Button} from 'react-bootstrap';
 import './Diagnosis.css'
 import Modal from 'react-modal';
-Modal.setAppElement('#root')
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    background            : 'silver',
+    width                 : '40em'
+  }
+};
 
 
 class Diagnosis extends React.Component{
@@ -16,11 +28,9 @@ class Diagnosis extends React.Component{
       constructor (props) {
           super(props);
           this.handleChange = this.handleChange.bind(this);
+          this.handleEditChange = this.handleEditChange.bind(this);
           this.addNewDiagnosis = this.addNewDiagnosis.bind(this);
-
-
-          const token = localStorage.getItem('token')
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          this.fetchData = this.fetchData.bind(this);
 
           this.state = {
               tableData: [
@@ -30,15 +40,24 @@ class Diagnosis extends React.Component{
                   description: ''
                 }
               ],
-              id: '',
-              name: '',
-              description: '',
+              modal: {
+                id: '',
+                name: '',
+                description: ''
+              },
+              editModal: {
+                id: '',
+                name: '',
+                description: ''
+              },
               modalIsOpen: false,
-              editModalIsOpen: false
+              editModalIsOpen: false,
+              loading: false
           };
           this.openModal = this.openModal.bind(this);
+          this.openEditModal = this.openEditModal.bind(this);
           this.closeModal = this.closeModal.bind(this);
-          this.closeEditModal = this.closeModal.bind(this);
+          this.closeEditModal = this.closeEditModal.bind(this);
 
       }
 
@@ -47,23 +66,46 @@ class Diagnosis extends React.Component{
       }
 
       openEditModal(p_id, p_name, p_description) {
-        this.setState({id: p_id, name: p_name, description: p_description})
+        const editModal = {...this.state.editModal}
+        editModal.id = p_id;
+        editModal.name = p_name;
+        editModal.description = p_description;
+        this.setState({editModal})
         this.setState({editModalIsOpen: true});
       }
      
       closeModal() {
+        const modal = {...this.state.modal}
+        modal.id = "";
+        modal.name = "";
+        modal.description = "";
+        this.setState({modal})
+        this.setState({
+          name: "",
+          description: ""
+        })
         this.setState({modalIsOpen: false});
       }
 
       closeEditModal() {
+        const editModal = {...this.state.editModal}
+        editModal.id = "";
+        editModal.name = "";
+        editModal.description = "";
+        this.setState({editModal})
+        this.setState({
+          name: "",
+          description: ""
+        })
         this.setState({editModalIsOpen: false});
       }
 
-      componentDidMount () {
-          axios.get('http://localhost:8080/api/cc-admin/all-diagnosis', {
+      fetchData(state, instance) {
+        this.setState({ loading: true });
+        axios.get('http://localhost:8080/api/cc-admin/get-all-diagnosis', {
               responseType: 'json'
           }).then(response => {
-              this.setState({ tableData: response.data });
+              this.setState({ tableData: response.data, loading: false});
           });
       }
 
@@ -74,28 +116,41 @@ class Diagnosis extends React.Component{
         axios.post("http://localhost:8080/api/cc-admin/add-diagnosis/", {
           name: this.state.name,
           description: this.state.description
-      }).then(response => {
-          NotificationManager.success('Diagnosis successfuly added!', '', 3000);
-          const {tableData} = this.state;
-          tableData.push(response.data);
-          this.setState({tableData});
         })
-        .catch((error)=> {NotificationManager.error('Wrong input.', 'Error', 3000);}) 
+        .then(response => {
+          this.fetchData(this.state)
+          NotificationManager.success('Diagnosis successfuly added!', '', 3000);
+        })
+        .catch((error)=> {
+          NotificationManager.error('Wrong input.', 'Error', 3000);
+        }) 
       }
 
+      
       deleteDiagnosis = (id) =>{
         axios.put("http://localhost:8080/api/cc-admin/delete-diagnosis/" + id).then(response => {
-          const {tableData} = this.state;
-          tableData.pop(response.data);
-          this.setState({tableData});
+         
+          this.fetchData(this.state)
+
         }).then(response => {
           NotificationManager.success('Diagnosis successfuly deleted', '', 3000);
           ;})
+          .catch((error) => {
+            NotificationManager.error('This diagnosis is currently assigned to at least one patient. You can not delete it', '', 3000);
+          })
+      
       }
 
       handleChange(e) {
-        console.log(e.target.value)
-        console.log([e.target.name])
+        e.preventDefault();
+
+        this.setState({...this.state, [e.target.name]: e.target.value});
+        console.log(this.state)
+      }
+
+      handleEditChange(e) {
+        e.preventDefault();
+
         this.setState({...this.state, [e.target.name]: e.target.value});
         console.log(this.state)
       }
@@ -106,7 +161,12 @@ class Diagnosis extends React.Component{
           name: this.state.name,
           description: this.state.description
       }).then(response => {
+
+          this.fetchData(this.state)
           NotificationManager.success('Diagnosis successfuly updated', '', 3000);
+        })
+        .catch((error) => {
+          NotificationManager.error('Server error. Please try again', '', 3000);
         })
       }
 
@@ -117,6 +177,7 @@ class Diagnosis extends React.Component{
           <Header/>
           <div>
         <Modal
+          style={customStyles}
           isOpen={this.state.editModalIsOpen}
           onRequestClose={this.closeEditModal}
           contentLabel="Example Modal"
@@ -131,8 +192,8 @@ class Diagnosis extends React.Component{
                              className="form-control form-control-sm"
                              id="name"
                              name="name"
-                             defaultValue={this.state.name}
-                             onChange={this.handleChange}
+                             defaultValue={this.state.editModal.name}
+                             onChange={this.handleEditChange}
                              placeholder="Enter Name"
                              required/>
                     </div>
@@ -142,8 +203,8 @@ class Diagnosis extends React.Component{
                              className="form-control form-control-sm"
                              id="description"
                              name="description"
-                             defaultValue={this.state.name}
-                             onChange={this.handleChange}
+                             defaultValue={this.state.editModal.description}
+                             onChange={this.handleEditChange}
                              placeholder="Enter Description"
                              required/>
                     </div>
@@ -155,6 +216,7 @@ class Diagnosis extends React.Component{
 
         <button className="btn primary jej" onClick={this.openModal}>Add new Diagnosis</button>
         <Modal
+          style={customStyles}
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
           contentLabel="Example Modal"
@@ -194,6 +256,8 @@ class Diagnosis extends React.Component{
           <div className='nonccadmins rtable'>
           <ReactTable 
           data={tableData}
+          loading={this.state.loading}
+          onFetchData={this.fetchData} // Request new data when things change
           columns={[{
                       Header: 'Name',
                       accessor: 'name',

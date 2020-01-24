@@ -6,8 +6,6 @@ import Footer from '../../Footer/Footer';
 import Header from '../../Header/Header';
 import {NotificationManager} from 'react-notifications';
 import { Button} from 'react-bootstrap';
-import BigCalendar from 'react-big-calendar'
-import moment from 'moment'
 
 class Prescriptions extends React.Component{
 
@@ -17,9 +15,12 @@ class Prescriptions extends React.Component{
 
         this.state = {
             tableData: [{
+                examinationReportId: "",
                 patient: '',
+                diagnosis: '',
                 drug: '',
-                doctor: ''
+                doctor: '',
+                issued: []
             }],
             loading: true
         };
@@ -27,31 +28,18 @@ class Prescriptions extends React.Component{
 
     }
 
-    /*componentDidMount () {
-        this.setState({ loading: true });
-        axios.get('http://localhost:8080/api/nurse/get-awaiting-prescriptions', {
-            responseType: 'json'
-        }).then(response => {
-            console.log(response.data)
-            this.setState({ 
-                tableData: response.data,
-                loading: false
-             });
-
-        });
-    }*/
-
     fetchData(state, instance) {
       this.setState({ loading: true });
         axios.get('http://localhost:8080/api/nurse/get-awaiting-prescriptions', {
             responseType: 'json'
         }).then(response => {
-            console.log(response.data)
             this.setState({ 
                 tableData: response.data,
                 loading: false
              });
+             var tableData = {...this.state.tableData}
 
+             console.log(this.state)
         });
     }
 
@@ -74,11 +62,22 @@ class Prescriptions extends React.Component{
         loading={this.state.loading}
         onFetchData={this.fetchData} // Request new data when things change
         columns={[{
-                    Header: 'Patient',
-                    accessor: 'patient',
-                  },{
+                    Header: 'Issued',
+                    accessor: 'issued',
+                    Cell: e =><a href={"/edit-examination-report/" + e.original.examinationReportId}> {e.value} </a>
+                  },
+                  {
+                    Header: 'Diagnosis',
+                    accessor: 'diagnosis',
+                    width: 350
+                  },
+                  {
                     Header: 'Drug',
                     accessor: 'drug',
+                  },
+                  {
+                    Header: 'Patient',
+                    accessor: 'patient',
                   },
                   {
                     Header: 'Doctor',
