@@ -72,7 +72,7 @@ class Header extends React.Component{
       var ordinationsLink;
       if (this.state.role === "ROLE_CLINIC_ADMIN"){
         ordinationsLink = (
-          <Link to="/ordinations/1" className="nav-link link-header" href="#">Ordinations</Link>
+          <Link to="/ordinations" className="nav-link link-header" href="#">Ordinations</Link>
         )
       }
       
@@ -80,7 +80,7 @@ class Header extends React.Component{
       var clinicLink;
       if (this.state.role === "ROLE_CLINIC_ADMIN"){ 
         clinicLink = (
-          <Link to="/clinic/1" className="nav-link link-header" href="#">Clinic</Link>
+          <Link to="/clinic" className="nav-link link-header" href="#">My Clinic</Link>
         )
       }
 
@@ -88,7 +88,15 @@ class Header extends React.Component{
       var doctorsLink;
       if (this.state.role === "ROLE_CLINIC_ADMIN"){ 
         doctorsLink = (
-          <Link to="/doctors/1" className="nav-link link-header" href="#">Doctors</Link>
+          <Link to="/doctors" className="nav-link link-header" href="#">Doctors</Link>
+        )
+      }
+
+      //Appointment Types link
+      var appTypesLink;
+      if (this.state.role === "ROLE_CLINIC_ADMIN"){ 
+        appTypesLink = (
+          <Link to="/appointment-types" className="nav-link link-header" href="#">Appointment Types</Link>
         )
       }
 
@@ -106,10 +114,13 @@ class Header extends React.Component{
                 {ordinationsLink}
               </li>
               <li className="nav-item">
+                {appTypesLink}
+              </li>
+              <li className="nav-item">
                 {clinicLink}
               </li>
               <li className="nav-item">
-                <Link to="/my-profile" className="nav-link link-header" href="#">Profile</Link>
+                <Link to="/my-profile" className="nav-link link-header" href="#">My Profile</Link>
               </li>
               <li className="nav-item">
                 {workCalendarLink}
