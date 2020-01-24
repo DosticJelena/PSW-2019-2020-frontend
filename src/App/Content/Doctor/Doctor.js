@@ -53,11 +53,8 @@ class Doctor extends React.Component {
                             <Link to="/patients" className="btn link-btn-doctor">View List</Link>
                         </div>
                         <div className="col link">
-                            <h4>Create New Appointment Request</h4>
-                            <p>Choose date, ordination and type of the appointment.</p>
-                            <Link to="/new-appointment-doctor" className="btn link-btn-doctor">Create</Link>
-                            <br/>
-                            <br/>
+                            <h4>List of Appointment Requests</h4>
+                            <p>View list of all your appointment requests.</p>
                             <Link to="/reservation-requests" className="btn link-btn-doctor">List of created requests</Link>
                         </div>
                         <div className="col link">
