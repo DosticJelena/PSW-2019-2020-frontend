@@ -15,8 +15,17 @@ class DoctorsList extends React.Component{
     constructor(props){
         super(props);
 
+        this.handleChange = this.handleChange.bind(this);
+        this.FilterDoctors = this.FilterDoctors.bind(this);
+
         this.state={
-            doctors:[],
+            doctors:[{
+              firstName:'',
+              lastName:'',
+              rating:'',
+              freeTerms:[],
+              free:[]
+            }],
             type:'',
             date:'',
             types:[]
@@ -24,11 +33,33 @@ class DoctorsList extends React.Component{
 
     }
 
+    FilterDoctors = event => {
+      event.preventDefault();
+      var token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log(this.state.date);
+      console.log(this.state.type);
+      const clinicId=window.location.pathname.split("/")[2];
+      axios.get("http://localhost:8080/api/filter-doctors/"+this.state.date+'/'+this.state.type+'/'+clinicId).then(response => {
+        console.log(response.data);
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+
+        }
+        console.log(tmpArray);
+        this.setState({
+          doctors: tmpArray
+        })
+      }).catch((error) => console.log(error))
+    }
+
+
     allClinicDoctors = () =>{
       const id = window.location.pathname.split("/")[2];
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
-      axios.get("http://localhost:8080/api/doctors-list"+id) .then(response => {
+      axios.get("http://localhost:8080/api/doctors-list/"+id) .then(response => {
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {
           tmpArray.push(response.data[i])
@@ -38,7 +69,11 @@ class DoctorsList extends React.Component{
           doctors: tmpArray
         })
       }) .catch((error) => console.log(error))
-        }
+    }
+
+    handleChange(e) {
+      this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
+    }
 
     componentDidMount() { 
         const id = window.location.pathname.split("/")[2];
@@ -85,17 +120,20 @@ class DoctorsList extends React.Component{
           Header:'Last Name',
           accessor: 'lastName'
         },{
-            Header:'Email Address',
-            accessor: 'username'
+            Header:'Rating',
+            accessor: 'rating'
         },{
-          Header:'Address',
-          accessor: 'address'
-      },{
-            Header:'City',
-            accessor: 'city'
-        },{
-          Header:'Country',
-          accessor: 'country'
+          Header:'Avaiable appoint.',
+          //accessor:'free'
+          Cell: row => (
+            <div>
+                <select required className="custom-select mr-sm-2" name="freeTerms" id="freeTerms" onChange={this.handleChange} >
+                  {row.original.free.map((fr, index) => (
+                      <option key={fr} value={fr}>{fr}</option>
+                    ))}   
+                </select>
+             </div>
+        )
       }]
     
       return (
@@ -106,7 +144,7 @@ class DoctorsList extends React.Component{
               <br/>
             <h3>Doctors List</h3>
               <div className='doctors rtable'>
-              <form onSubmit={this.FilterClinics}>
+              <form onSubmit={this.FilterDoctors}>
                   <div className="row">
                     <div className="col-5">
                       <div className="form-group">
@@ -131,7 +169,7 @@ class DoctorsList extends React.Component{
                     <div className="col-3">
                       <br/>
                       <Button type="submit" className="btn doctors-list-button">Filter</Button>
-                      <button className="btn doctors-list-button1 " onClick={() => this.allClinics()}>All</button>
+                      <button className="btn doctors-list-button1 " onClick={() => this.allClinicDoctors()}>All</button>
                     </div>
                   </div>  
                 </form>
