@@ -17,7 +17,6 @@ class QuickReservation extends React.Component {
   constructor(props){
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
     this.SendQuickReservationRequest = this.SendQuickReservationRequest.bind(this);
 
     this.state = {
@@ -26,28 +25,24 @@ class QuickReservation extends React.Component {
         type: '0',
         ordination: '',
         doctor: '',
-        price: 0.0,
+        price: null,
         clinicAdmin: '',
+        clinicId: '',
         doctors: [],
-        ordinations: []
+        ordinations: [],
+        formErrors: [],
+        disabled: true
     }
 
   }
 
-  FormatDateTime() {
-    var start = this.state.startDateTime.substr(0, 10) + ' ' + this.state.startDateTime.substr(11);
-    var end = this.state.endDateTime.substr(0, 10) + ' ' + this.state.endDateTime.substr(11);
-    this.setState({startDateTime: start, endDateTime: end});
-  }
-
   SendQuickReservationRequest = event => {
     event.preventDefault();
-    this.FormatDateTime();
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.post("http://localhost:8080/api/clinic-admin/quick-reservation", {
-      startDateTime: this.state.startDateTime,
-      endDateTime: this.state.endDateTime,
+      startDateTime: this.state.startDateTime.substr(0, 10) + ' ' + this.state.startDateTime.substr(11),
+      endDateTime: this.state.endDateTime.substr(0, 10) + ' ' + this.state.endDateTime.substr(11),
       type: this.state.type,
       ordination: this.state.ordination,
       doctor: this.state.doctor,
@@ -61,10 +56,58 @@ class QuickReservation extends React.Component {
     .catch((error) => NotificationManager.error('Incorect values!', 'Error!', 4000))
 
   }
-  
 
-  handleChange(e) {
+  handleKeyUp = () => {
+    var empty = true;
+
+    Object.keys(this.state.formErrors).forEach(e => {
+      if (this.state.formErrors[e] != "") {
+        empty = false;
+      }
+    });
+
+    if (!empty) {
+      this.setState({ disabled: true });
+      console.log('disabled');
+    }
+
+    else {
+      if (this.state.price != (null && "") && this.state.doctor != (null && "" && "0") && this.state.ordination != (null && "" && "0") && !this.isEmpty(this.state.startDateTime) && !this.isEmpty(this.state.endDateTime)) {
+        this.setState({ disabled: false });
+        console.log('enabled');
+      }
+      else {
+        this.setState({ disabled: true });
+        console.log('disabled');
+      }
+    }
+  }
+  
+  isEmpty = (obj) => {
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key))
+        return false;
+    }
+    return true;
+  }
+
+  handleChange  = e => {
+
+    if (e.target.name == "ordination"){
+      for(var i=0; i<this.state.ordinations.length; i++){
+          if (this.state.ordinations[i].id == e.target.value){
+            console.log(this.state.ordinations[i].type)
+            if (this.state.ordinations[i].type == "OPERATION"){
+              this.setState({type: '1'});
+            } else if (this.state.ordinations[i].type == "EXAMINATION"){
+              this.setState({type: '0'});
+            }
+          }
+      }
+    }
     this.setState({...this.state, [e.target.name]: String(e.target.value)});
+
+    this.handleKeyUp();
   }
 
   handleDateChange(e) {
@@ -87,34 +130,45 @@ class QuickReservation extends React.Component {
                 clinicAdmin: response.data.id
             })
         })
-    .catch((error) => console.log(error))
-    
+    .then(() => {
+        axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
+        .then(response => {
+            console.log(response.data);
+            this.setState({
+                clinicId: response.data
+            })
+        })
+        .then(() => {
+          
+              axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + this.state.clinicId)  
+              .then(response => {
+                  let tmpArray = []
+                  for (var i = 0; i < response.data.length; i++) {
+                      tmpArray.push(response.data[i])
+                  }
+                  this.setState({
+                      ordinations: tmpArray
+                  })
+              })
+            .catch((error) => console.log(error))
 
-    axios.get("http://localhost:8080/api/doctors")  
-      .then(response => {
-          let tmpArray = []
-          for (var i = 0; i < response.data.length; i++) {
-              tmpArray.push(response.data[i])
-          }
+            axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.clinicId)  
+            .then(response => {
+                let tmpArray = []
+                for (var i = 0; i < response.data.length; i++) {
+                    tmpArray.push(response.data[i])
+                }
+      
+                this.setState({
+                    doctors: tmpArray
+                })
+            })
+            .catch((error) => console.log(error))
 
-          this.setState({
-              doctors: tmpArray
-          })
-      })
-    .catch((error) => console.log(error))
+        }).catch((error) => console.log(error))
 
-    axios.get("http://localhost:8080/api/ordination/get-all")  
-      .then(response => {
-          let tmpArray = []
-          for (var i = 0; i < response.data.length; i++) {
-              tmpArray.push(response.data[i])
-          }
+    }).catch((error) => console.log(error))
 
-          this.setState({
-              ordinations: tmpArray
-          })
-      })
-    .catch((error) => console.log(error))
   }
 
   render() {
@@ -167,12 +221,12 @@ class QuickReservation extends React.Component {
                     <div className="form-group">
                         <label htmlFor="type">Type</label>
                         <div className="form-check form-check">
-                            <input defaultChecked onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0"/>
-                            <label className="form-check-label" htmlFor="examination">Medical Examination</label>
+                            <input disabled defaultChecked onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0"/>
+                            <label className="form-check-label" htmlFor="examination">Examination</label>
                         </div>
                         <div className="form-check form-check">
-                            <input onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1"/>
-                            <label className="form-check-label" htmlFor="operation">Surgery</label>
+                            <input disabled onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1"/>
+                            <label className="form-check-label" htmlFor="operation">Operation</label>
                         </div>
                     </div>
                     <div className="form-row">
@@ -187,7 +241,7 @@ class QuickReservation extends React.Component {
                               value="€"/>
                         </div>
                     </div>
-                    <Button type="submit" className="btn quick-res-btn">Create</Button>
+                    <Button disabled={this.state.disabled} type="submit" className="btn quick-res-btn">Create</Button>
                 </form>
                 </div>
           </div>
