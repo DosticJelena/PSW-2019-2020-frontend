@@ -27,13 +27,14 @@ class ClinicsList extends React.Component{
               address:'',
               city:'',
               stars:'',
-              num_votes:''
+              num_votes:'',
+              price:''
             }],
             data:[],
             filtered:[],
             selected: undefined,
             date:'',
-            type:'0',
+            type:'',
             types:[]
         }
     }
@@ -44,13 +45,16 @@ class ClinicsList extends React.Component{
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       console.log(this.state.date);
       console.log(this.state.type);
-      axios.post("http://localhost:8080/api/filter-clinics", {
-        date: this.state.date,
-        type: this.state.type
-      }).then(response => {
+      axios.get("http://localhost:8080/api/filter-clinics/"+this.state.date+'/'+this.state.type).then(response => {
         console.log(response.data);
-        const {clinics} = response.data;
-        this.setState({clinics});
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+          clinics: tmpArray
+        })
       }).catch((error) => console.log(error))
     }
 
@@ -120,7 +124,7 @@ class ClinicsList extends React.Component{
     allClinics = () =>{
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
-      axios.get("http://localhost:8080/api/clinics") .then(response => {
+      axios.get("http://localhost:8080/api/clinics").then(response => {
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {
           tmpArray.push(response.data[i])
@@ -150,6 +154,9 @@ class ClinicsList extends React.Component{
         },{
             Header:'Stars',
             accessor: 'stars'
+        },{
+            Header:'Price',
+            accessor: 'price'
         },{
           Header: '',
           Cell: row => (
@@ -194,11 +201,13 @@ class ClinicsList extends React.Component{
                     <div className="col-2">
                       <br/>
                       <Button type="submit" className="btn clinics-list-button">Filter</Button>
-                      <button className="btn clinics-list-button1 " onClick={() => this.allClinics()}>All</button>
+                      <button className="btn clinics-list-all " onClick={() => this.allClinics()}>All</button>
                     </div>
-                  </div>
+                   
+                     </div>
                   
                 </form>
+               
 
                 <ReactTable 
                   data={clinics}
