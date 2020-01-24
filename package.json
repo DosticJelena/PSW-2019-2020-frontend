@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.8.3",
+    "@material-ui/lab": "^4.0.0-alpha.39",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "dependencies": "0.0.1",
+    "material-ui": "^0.20.2",
     "moment": "^2.24.0",
     "react": "^16.11.0",
     "react-big-calendar": "^0.23.0",

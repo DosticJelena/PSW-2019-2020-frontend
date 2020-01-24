@@ -40,17 +40,13 @@ class MedicalRecord extends React.Component{
           })
         .catch((error) => console.log(error))
      }
-     
-
-
+  
     render(){
         return(
 
             <div className="MedicalRecord">
                 <Header/>
-                <div>
-
-                
+                <div>               
                 <div className="row">
                   <div className="col-6">
                       <h3>Medical record</h3>
@@ -67,11 +63,6 @@ class MedicalRecord extends React.Component{
                       <div className="form-group">
                         <label><strong>Allergies:</strong> {this.state.allergies} </label>
                       </div>
-
-
-                     
-
-                    
                   </div>
                 </div>
 

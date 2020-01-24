@@ -6,3 +6,19 @@
     padding-left: 1em;
     text-align: left;
 }
+
+.schButton {
+    background-color: darkcyan;
+    border-color: darkcyan;
+    color: white;
+}
+
+.schButton:hover {
+    background-color: darkcyan;
+    border-color: darkcyan;
+    color: silver;
+}
+
+.predef-exam {
+    margin: 20px 30px;
+}

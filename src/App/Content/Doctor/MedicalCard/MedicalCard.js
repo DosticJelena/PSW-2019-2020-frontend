@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import "react-table/react-table.css";
 import ReactTable from "react-table";
 import {NotificationManager} from 'react-notifications';
+import './MedicalCard.css';
 
 const heightRegex = RegExp(
     /^(\d*\.?\d+)\s*(cm)$/
@@ -222,12 +223,12 @@ class MedicalCard extends React.Component {
         const { formErrors } = this.state;
 
         return(
-            <div className="CalendarEventClickWindow">
+            <div className="MedicalCard">
             <Header/>
 
             <div className="patientInfo">
-                <h1>{this.state.medicalCard.patient.firstName} {this.state.medicalCard.patient.lastName}</h1>
-                </div>
+                <h3>{this.state.medicalCard.patient.firstName} {this.state.medicalCard.patient.lastName}</h3>
+            </div>
             <div className="mainWindow">
                 <div className="height">
                 <label htmlFor="height">Height: </label>
@@ -329,6 +330,7 @@ class MedicalCard extends React.Component {
                         },
                         {
                             Header: 'Edit',
+                            width: 150,
                             Cell: row => (                        
                             <div>
                                 <button className="btn primary" onClick={() => this.editExaminationReport(row.original.id)}>Edit</button>
@@ -336,7 +338,7 @@ class MedicalCard extends React.Component {
                             ),
                         }
                 ]}
-                defaultPageSize = {10}
+                defaultPageSize = {5}
             />
             </div>
             <Footer/>
