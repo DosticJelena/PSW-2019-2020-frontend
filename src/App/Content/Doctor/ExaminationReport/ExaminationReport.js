@@ -263,8 +263,10 @@ class ExaminationReport extends React.Component {
                 <span className="errorMessage">{formErrors.drugIds}</span>
                 )}
             </div>
-                <hr/>
-                <Button disabled={this.state.disabled} className="publishExaminationReport" type="submit">Create</Button>
+                <div className="buttons">
+                  <Button className="scheduleNew" href="/#">Schedule new appointment</Button>
+                  <Button disabled={this.state.disabled} className="publishExaminationReport" type="submit">Publish Examination Report</Button>
+                  </div>
                 </form>
                 </div>
             </div>

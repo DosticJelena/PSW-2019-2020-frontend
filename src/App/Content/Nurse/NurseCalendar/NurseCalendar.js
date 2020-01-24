@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Header from '../../Header/Header';
-import './DoctorCalendar.css'
+import './NurseCalendar.css'
 import Footer from '../../Footer/Footer';
 import { withRouter } from 'react-router';
 import {
@@ -35,7 +35,7 @@ const CustomEventWithPatient = (event) => {
   ) 
 }
 
-class DoctorCalendar extends React.Component {
+class NurseCalendar extends React.Component {
 
   constructor(props){
     super(props);
@@ -57,7 +57,7 @@ class DoctorCalendar extends React.Component {
   }
 
   componentDidMount () {
-    axios.get('http://localhost:8080/api/appointment/get-doctor-appointments', {
+    axios.get('http://localhost:8080/api/appointment/get-nurse-appointments', {
       responseType: 'json'
     })
           .then(response => {
@@ -80,12 +80,7 @@ class DoctorCalendar extends React.Component {
               events={this.state.appointments}
               components={{week:{event:CustomEvent}, day:{event:CustomEvent}, agenda:{event: CustomEventWithPatient}}
             }
-
               style={{ maxHeight: "100%" }}
-              onSelectEvent={obj => {
-                  this.props.history.push(`/doctor-calendar-event/${obj.id}`)
-                }
-              }
               startAccessor="start"
               endAccessor="end"
             />
@@ -96,4 +91,4 @@ class DoctorCalendar extends React.Component {
   }
 }
 
-export default withRouter (DoctorCalendar);
+export default withRouter (NurseCalendar);

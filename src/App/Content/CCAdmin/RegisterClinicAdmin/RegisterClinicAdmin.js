@@ -2,8 +2,11 @@ import React from 'react';
 import { Button} from 'react-bootstrap';
 import axios from 'axios';
 import Header from '../../Header/Header';
-import './RegisterNewCCAdmin.css'
+import './RegisterClinicAdmin.css'
 import {NotificationManager} from 'react-notifications';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
 
 const emailRegex = RegExp(
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -34,15 +37,19 @@ const formValid = ({ formErrors, ...rest }) => {
   };
 
 
-class RegisterNewCCAdmin extends React.Component {
+class RegisterClinicAdmin extends React.Component {
 
   constructor(props){
       super(props);
 
       this.handleChange = this.handleChange.bind(this);
       this.SendRegisterRequest = this.SendRegisterRequest.bind(this);
+      this.handleClinic = this.handleClinic.bind(this);
+      this.isEmpty = this.isEmpty.bind(this);
 
       this.state = {
+            clinics: [],
+            clinicId: {},
             email: "",
             firstName: "",
             lastName: "",
@@ -51,6 +58,7 @@ class RegisterNewCCAdmin extends React.Component {
             country: "",
             phoneNumber: "",
             formErrors: {
+                clinicId: "",
                 email: "",
                 firstName: "",
                 lastName: "",
@@ -63,12 +71,22 @@ class RegisterNewCCAdmin extends React.Component {
       }
    }
 
+   componentDidMount() {
+    axios.get("http://localhost:8080/api/cc-admin/get-all-clinics")
+            .then((resp) => {
+                this.setState({
+                    clinics: resp.data
+                })
+                console.log(this.state)      
+            })
+    }
+
   SendRegisterRequest = event => {
 
       event.preventDefault();
       console.log(this.state);
       if (formValid(this.state)) {
-          axios.post("http://localhost:8080/api/cc-admin/register-cc-admin", {
+          axios.post("http://localhost:8080/api/cc-admin/register-clinic-admin", {
             email: this.state.email,
             firstName: this.state.firstName,
             lastName: this.state.lastName,
@@ -76,14 +94,14 @@ class RegisterNewCCAdmin extends React.Component {
             address: this.state.address,
             city: this.state.city,
             country: this.state.country,
-            phoneNumber: this.state.phoneNumber
+            phoneNumber: this.state.phoneNumber,
+            clinicId: this.state.clinicId.id
 
         }).then((resp) => {
-          NotificationManager.success('Clinic Center Admin registration request has been sucessfull. \n Confirmation email has been sent', '', 3000);
-          //this.props.history.push("/ccadmin");
+          NotificationManager.success('Clinic Admin registration request has been sucessfull. \n Confirmation email has been sent', '', 3000);
         }) 
         .catch((error)=> {
-          NotificationManager.error(error.response.data, 'Error', 3000)
+          NotificationManager.error(error.response.data, 'Error', 3000);
         })
       }
       else {
@@ -106,7 +124,7 @@ class RegisterNewCCAdmin extends React.Component {
     }
     else{
 
-        if (this.state.email != "" && this.state.firstName != "" && this.state.lastName != ""
+        if (!this.isEmpty(this.state.clinicId) && this.state.email != "" && this.state.firstName != "" && this.state.lastName != ""
         && this.state.address != "" && this.state.city != "" && this.state.country != "" && this.state.phoneNumber != ""
         )
         {
@@ -120,6 +138,13 @@ class RegisterNewCCAdmin extends React.Component {
     }
   }
 
+    isEmpty = (obj)  =>{
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
   handleChange = e => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -172,6 +197,21 @@ class RegisterNewCCAdmin extends React.Component {
         break;
     }
     this.setState({ formErrors, [name]: value}, () => console.log(this.state));
+
+    this.handleKeyUp();
+  }
+
+  handleClinic = (e, values) => {
+    e.preventDefault();
+
+    let formErrors = { ...this.state.formErrors};
+
+    formErrors.clinicId = this.isEmpty(values) ? "You must select a clinic" : ""
+
+    this.setState({ formErrors, clinicId: values}, () => console.log(this.state));
+
+    this.handleKeyUp();
+
   }
 
   render() {
@@ -179,10 +219,33 @@ class RegisterNewCCAdmin extends React.Component {
       return (
         <div className="RegisterNewCCAdmin">
         <Header/>
-            <div className="row register-form">
-                <div className="col-md-6">
-                <form onSubmit={this.SendRegisterRequest} noValidate>
-                <div className="firstName">
+        <div className="row register-form">
+            <div className="col-md-6">
+            <form onSubmit={this.SendRegisterRequest} noValidate>
+            <div className="clinics">
+              <label htmlFor="clinicId">Clinic: </label>
+              <Autocomplete
+                id="combo-box-demo"
+                value={this.state.clinicId}
+                options={this.state.clinics}
+                getOptionLabel={option => option.name}
+                style={{ width: 400 }}
+                onChange={this.handleClinic}
+                renderInput={params => (
+                    <TextField {...params} label="Choose clinic" variant="outlined" fullWidth
+                    name="clinicId"
+                    className={formErrors.clinicId.length > 0 ? "error" : null}
+                    onKeyUp={this.handleKeyUp}
+                    />
+                )}
+                />
+                {formErrors.clinicId.length > 0 && (
+                <span className="errorMessage">{formErrors.clinicId}</span>
+                )}
+
+            </div>
+
+            <div className="firstName">
               <label htmlFor="firstName">First Name: </label>
               <input
                 onKeyUp={this.handleKeyUp}
@@ -288,7 +351,7 @@ class RegisterNewCCAdmin extends React.Component {
               )}
             </div>
                             <hr/>
-                            <Button disabled={this.state.disableSumbit} className="createAccount" type="submit">Create</Button>
+                            <Button disabled={this.state.disableSumbit} className="createAccount" type="submit">Register</Button>
                         </form>
                 </div>
             </div>
@@ -297,4 +360,4 @@ class RegisterNewCCAdmin extends React.Component {
 }
 }
 
-export default RegisterNewCCAdmin;
+export default RegisterClinicAdmin;

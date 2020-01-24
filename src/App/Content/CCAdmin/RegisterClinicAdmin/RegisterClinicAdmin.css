@@ -1,45 +1,45 @@
-.RegisterNewCCAdmin .container {
+.RegisterClinicAdmin .container {
     margin: 0;
     padding: 0;
     background-size: cover;
-}
-
-.RegisterNewCCAdmin .title {
+  }
+  
+  .RegisterClinicAdmin .title {
     color: white;
-}
-
-.RegisterNewCCAdmin .welcome {
+  }
+  
+  .RegisterClinicAdmin .welcome {
     background-color: darkcyan;
     height: 100vh;
     width: 100%;
     text-align: center;
-}
-
-.RegisterNewCCAdmin .logo {
+  }
+  
+  .RegisterClinicAdmin .logo {
     display: inline-block;
     margin-top: 80px;
-}
-
-.RegisterNewCCAdmin {
+  }
+  
+  .RegisterClinicAdmin {
     background-image: url("https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80");
     background-size: cover;
     background-repeat: no-repeat;
-}
-
-.RegisterNewCCAdmin img {
+  }
+  
+  .RegisterClinicAdmin img {
     align-content: center;
-}
-
-.RegisterNewCCAdmin .row {
+  }
+  
+  .RegisterClinicAdmin .row {
     margin: 0
-}
-
-.RegisterNewCCAdmin .register-form {
+  }
+  
+  .RegisterClinicAdmin .register-form {
     width: 100%;
     margin-left : 25%
-}
-
-.RegisterNewCCAdmin .wrapper {
+  }
+  
+  .wrapper {
     height: 100vh;
     width: 100%;
     display: flex;
@@ -49,7 +49,7 @@
     background-color: #258ea6;
   }
   
-  .RegisterNewCCAdmin .form-wrapper {
+  .form-wrapper {
     width: 400px;
     display: flex;
     flex-direction: column;
@@ -59,13 +59,16 @@
     background-color: #ffffff;
   }
   
-  .RegisterNewCCAdmin form {
+  .RegisterClinicAdmin form {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    background-color: silver;
+    padding: 30px;
+    margin: 30px;
   }
   
-  .RegisterNewCCAdmin h1 {
+  .RegisterClinicAdmin h1 {
     text-align: center;
     width: 100%;
     color: #111;
@@ -74,75 +77,70 @@
       Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   }
   
-  .RegisterNewCCAdmin label {
+  .RegisterClinicAdmin label {
     font-size: 1em;
     margin-bottom: 0.15em;
     color: #222;
     font-weight: lighter;
   }
   
-  .RegisterNewCCAdmin input {
-    padding: 10px 10px;
-    border-radius: 5px;
-    outline: none;
-    border: 1px solid #cfcfcf;
-  }
-
-  .RegisterNewCCAdmin textarea {
+  .RegisterClinicAdmin input {
     padding: 10px 10px;
     border-radius: 5px;
     outline: none;
     border: 1px solid #cfcfcf;
   }
   
-  .RegisterNewCCAdmin input::placeholder {
-    font-size: 1.2em;
-    font-weight: lighter;
-    color: #999;
-  }
-
-  .RegisterNewCCAdmin textarea::placeholder {
+  .input::placeholder {
     font-size: 1.2em;
     font-weight: lighter;
     color: #999;
   }
   
-  .RegisterNewCCAdmin input.error {
+  .input.error {
     border: 1px solid red;
   }
   
-  .RegisterNewCCAdmin .errorMessage {
+  .errorMessage {
     color: red;
     font-size: 0.75em;
     display: relative;
   }
   
-  .RegisterNewCCAdmin .firstName {
+  .firstName {
     margin-right: 1%;
   }
   
-  .RegisterNewCCAdmin .lastName {
+  .lastName {
     margin-left: 1%;
   }
   
-  .name, .address, .city, .country, .description {
+  .firstName,
+  .lastName,
+  .email,
+  .address, .city, .country, .phoneNumber {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
   }
   
-  .name, .address, .city, .country, .description{
+  .firstName,
+  .lastName {
+    width: 49%;
+  }
+  
+  .email, .address, .city, .country, .phoneNumber{
     width: 100%;
   }
   
-  .RegisterNewCCAdmin .createAccount {
+  .createAccount {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
   
-  .RegisterNewCCAdmin .createAccount button {
+  .createAccount .button {
     background-color: #519e8a;
     color: #fff;
     border: 2px solid #fff;
@@ -155,13 +153,14 @@
     margin-bottom: 0.25em;
   }
   
-  .RegisterNewCCAdmin .createAccount button:hover {
+  .createAccount button:hover {
     color: #519e8a;
     background-color: #fff;
     border: 2px solid #519e8a;
   }
   
-  .RegisterNewCCAdmin .createAccount small {
+  .createAccount small {
     color: #999;
     font-weight: lighter;
   }
+  

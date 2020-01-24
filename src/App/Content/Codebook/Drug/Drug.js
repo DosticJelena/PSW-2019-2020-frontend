@@ -8,7 +8,19 @@ import {NotificationManager} from 'react-notifications';
 import { Button} from 'react-bootstrap';
 import './Drug.css'
 import Modal from 'react-modal';
-Modal.setAppElement('#root')
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    background            : 'silver',
+    width                 : '30em'
+  }
+};
 
 class Drug extends React.Component{
 
@@ -17,10 +29,6 @@ class Drug extends React.Component{
           this.handleChange = this.handleChange.bind(this);
           this.addNewDrug = this.addNewDrug.bind(this);
           this.fetchData = this.fetchData.bind(this);
-
-
-          const token = localStorage.getItem('token')
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
           this.state = {
               tableData: [
@@ -31,6 +39,18 @@ class Drug extends React.Component{
                   ingredient: ''
                 }
               ],
+              modal: {
+                id: '',
+                name: '',
+                description: '',
+                ingredient: ''
+              },
+              editModal: {
+                id: '',
+                name: '',
+                description: '',
+                ingredient: ''
+              },
               name: '',
               description: '',
               ingredient: '',
@@ -41,23 +61,50 @@ class Drug extends React.Component{
           this.openModal = this.openModal.bind(this);
           this.openEditModal = this.openEditModal.bind(this);
           this.closeModal = this.closeModal.bind(this);
-          this.closeEditModal = this.closeModal.bind(this);
+          this.closeEditModal = this.closeEditModal.bind(this);
       }
 
       openModal() {
         this.setState({modalIsOpen: true});
       }
 
-      openEditModal(p_id, p_name, p_ing, p_description) {
-        this.setState({id: p_id, name: p_name, ingredient: p_ing, description: p_description})
+      openEditModal(p_id, p_name, p_description, p_ingredient) {
+        const editModal = {...this.state.editModal}
+        editModal.id = p_id;
+        editModal.name = p_name;
+        editModal.description = p_description;
+        editModal.ingredient = p_ingredient;
+        this.setState({editModal})
         this.setState({editModalIsOpen: true});
       }
      
       closeModal() {
+        const modal = {...this.state.modal}
+        modal.id = "";
+        modal.name = "";
+        modal.description = "";
+        modal.ingredient = "";
+        this.setState({modal})
+        this.setState({
+          name: "",
+          description: "",
+          ingredient: ""
+        })
         this.setState({modalIsOpen: false});
       }
 
       closeEditModal() {
+        const editModal = {...this.state.editModal}
+        editModal.id = "";
+        editModal.name = "";
+        editModal.description = "";
+        editModal.ingredient = "";
+        this.setState({editModal})
+        this.setState({
+          name: "",
+          description: "",
+          ingredient: ""
+        })
         this.setState({editModalIsOpen: false});
       }
 
@@ -101,8 +148,6 @@ class Drug extends React.Component{
       }
 
       handleChange(e) {
-        console.log(e.target.value)
-        console.log([e.target.name])
         this.setState({...this.state, [e.target.name]: e.target.value});
         console.log(this.state)
       }
@@ -125,6 +170,7 @@ class Drug extends React.Component{
           <Header/>
           <div className='newDrug'>
           <Modal
+          style={customStyles}
           isOpen={this.state.editModalIsOpen}
           onRequestClose={this.closeEditModal}
           contentLabel="Example Modal"
@@ -139,7 +185,7 @@ class Drug extends React.Component{
                              className="form-control form-control-sm"
                              id="name"
                              name="name"
-                             defaultValue={this.state.name}
+                             defaultValue={this.state.editModal.name}
                              onChange={this.handleChange}
                              placeholder="Enter Name"
                              required/>
@@ -150,30 +196,33 @@ class Drug extends React.Component{
                              className="form-control form-control-sm"
                              id="ingredient"
                              name="ingredient"
-                             defaultValue={this.state.ingredient}
+                             defaultValue={this.state.editModal.ingredient}
                              onChange={this.handleChange}
                              placeholder="Enter Name"
                              required/>
                     </div>
                     <div class="form-group">
                       <label htmlFor="description" class="col-form-label">Description:</label>
-                      <input type="text" 
+                      <textarea 
+                             rows="7"
+                             type="text" 
                              className="form-control form-control-sm"
                              id="description"
                              name="description"
-                             defaultValue={this.state.name}
+                             defaultValue={this.state.editModal.description}
                              onChange={this.handleChange}
                              placeholder="Enter Description"
                              required/>
                     </div>
                     <div class="modal-footer">
-                      <Button onClick={() => this.editDrug(this.state.id)}>Save</Button>
+                      <Button onClick={() => this.editDrug(this.state.editModal.id)}>Save</Button>
             </div>
           </form>
         </Modal>
 
         <button className="btn primary jej" onClick={this.openModal}>Add new Drug</button>
         <Modal
+          style={customStyles}
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
           contentLabel="Example Modal"
@@ -204,7 +253,9 @@ class Drug extends React.Component{
                     </div>
                     <div class="form-group">
                       <label htmlFor="description" class="col-form-label">Description:</label>
-                      <input type="text" 
+                      <textarea 
+                             rows="7"
+                             type="text" 
                              className="form-control form-control-sm"
                              id="description"
                              name="description"
@@ -214,7 +265,7 @@ class Drug extends React.Component{
                     </div>
                     <div class="modal-footer">
                       <Button type="submit">Save</Button>
-            </div>
+                  </div>
           </form>
         </Modal>
           </div>
@@ -229,8 +280,8 @@ class Drug extends React.Component{
                       width: 150
                     },{
                       Header: 'Description',
-                      accessor: 'description',
-                      width: 450
+                      //accessor: 'description',
+                      Cell: e =><a onClick={this.handleClick}> {e.original.description} </a>
                     },
                     {
                       Header: 'Ingredient',

@@ -5,6 +5,21 @@ import axios from 'axios';
 import Footer from '../../Footer/Footer';
 import Header from '../../Header/Header';
 import {NotificationManager} from 'react-notifications';
+import Modal from 'react-modal';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    background            : 'silver'
+  }
+};
 
 class CCAdminRegistrationRequests extends React.Component{
       constructor () {
@@ -13,9 +28,11 @@ class CCAdminRegistrationRequests extends React.Component{
           this.handleOpenModal = this.handleOpenModal.bind(this);
           this.handleCloseModal = this.handleCloseModal.bind(this);
           this.fetchData = this.fetchData.bind(this);
+          this.handleKeyUp = this.handleKeyUp.bind(this);
 
           this.state = {
               loading: true,
+              disabled: true,
               tableData: [
                 {
                   email: '',
@@ -28,22 +45,49 @@ class CCAdminRegistrationRequests extends React.Component{
                 }
                 ],
                 showModal: false,
-                message: ""
+                message: "",
+                formErrors: {
+                  message: ""
+                },
+                id: ""
           };
 
       }
 
-      handleChange(e) {
-        this.setState({...this.state, [e.target.name]: e.target.value});
-        console.log(this.state)
+      handleKeyUp = e => {
+          if (this.state.message != "" && this.state.formErrors.message == ""){
+            this.setState({
+              disabled: false
+            })
+          }
       }
 
-      handleOpenModal () {
+      handleChange = e => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        let formErrors = { ...this.state.formErrors };
+    
+        switch (name) {
+          case "message":
+            formErrors.message =
+                  value.length < 15 ? "minimum 15 characters required" : "";
+                break;
+          default:
+            break;
+        }
+        this.setState({ formErrors, [name]: value}, () => console.log(this.state));
+      }
+
+      handleOpenModal = (id) =>{
         this.setState({ showModal: true });
+        this.setState({ id: id});
       }
       
-      handleCloseModal () {
+      handleCloseModal = () =>{
         this.setState({ showModal: false });
+        this.setState({ id: ""});
+        this.setState({ message: ""});
+
       }
 
       fetchData(state, instance) {
@@ -56,7 +100,6 @@ class CCAdminRegistrationRequests extends React.Component{
       }
 
       accept = (id) =>{
-        console.log(id)
         axios.put("http://localhost:8080/api/cc-admin/send-verification-email/" + id).then(response => {
 
           this.fetchData(this.state)
@@ -64,13 +107,16 @@ class CCAdminRegistrationRequests extends React.Component{
         }).then((resp) => {NotificationManager.success('Patient registration request has been sucessfully approved. \n Confirmation email has been sent', '', 3000);}) 
       }
 
-      reject = (id) =>{
+      reject = () =>{
         if (this.state.message != ""){
-          axios.put("http://localhost:8080/api/cc-admin/reject-registration-request/" + id, this.state.message).then(response => {
+          axios.put("http://localhost:8080/api/cc-admin/reject-registration-request/" + this.state.id, this.state.message).then(response => {
             
           this.fetchData(this.state)
 
-          }).then((resp) => NotificationManager.success('Patient registration request has been sucessfully rejected. Rejection email has been sent to patient', '', 3000))
+          }).then((resp) =>{ 
+          NotificationManager.success('Patient registration request has been sucessfully rejected. Rejection email has been sent to patient', '', 3000);
+          this.handleCloseModal();
+          })
           }
         else{
             NotificationManager.error('Wrong input.', '', 3000)
@@ -82,6 +128,36 @@ class CCAdminRegistrationRequests extends React.Component{
         return (
           <div className="AssignCCAdmin">
           <Header/>
+          <Modal 
+            style={customStyles}
+            isOpen={this.state.showModal} 
+            onRequestClose={this.handleCloseModal}
+          >
+              <div className="message"><br></br>
+                <h4 htmlFor="message">Comment: </h4>
+              <TextField
+                        value={this.state.message}
+                        style={{ width: 550 }}
+                        id="outlined-multiline-flexible"
+                        name="message"
+                        label="Add comment"
+                        multiline
+                        rows="10"
+                        variant="outlined"
+                        onChange={this.handleChange}
+                        onKeyUp={this.handleKeyUp}
+
+              />
+              
+              <div className="rejectButton">
+                {this.state.formErrors.message.length > 0 && (
+                  <span className="errorMessage">{this.state.formErrors.message}</span>
+                )}
+                <br></br>
+                <Button disabled={this.state.disabled} variant="contained" className="submit" onClick={() => this.reject()}>Reject</Button>
+              </div>
+            </div>
+          </Modal>
           <div className='nonccadmins rtable'>
           <ReactTable 
           data={tableData}
@@ -90,7 +166,7 @@ class CCAdminRegistrationRequests extends React.Component{
           columns={[{
                       Header: 'Email',
                       accessor: 'email',
-                      width: 200
+                      width: 200,
                     },{
                       Header: 'First Name',
                       accessor: 'firstName'
@@ -120,26 +196,11 @@ class CCAdminRegistrationRequests extends React.Component{
                         Header: '',
                         Cell: row => (
                             <div id="row">
-                                <button className="primary btn" onClick={() => this.reject(row.original.id)}>Reject</button>
+                                <button className="primary btn" onClick={() => this.handleOpenModal(row.original.id)}>Reject</button>
                             </div>
                         ),
                         width: 100
 
-                      },
-                      {
-                        Header: 'Reason',
-                        Cell: row => (
-                            <div>
-                                <input type="text" 
-                                className="form-control form-control-sm"
-                                id="message"
-                                name="message"
-                                //onChange={this.handleChange}
-                                placeholder="Reason"/>
-                            </div>
-                        ),
-                        width: 250
-  
                       }
           ]}
           defaultPageSize = {10}

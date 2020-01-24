@@ -92,11 +92,6 @@ class EditExaminationReport extends React.Component {
           .then(response => {
             this.setState({examinationReport: response.data});
             var examinationReport = {...this.state.examinationReport}
-            examinationReport.timeCreated = examinationReport.timeCreated[0] + "-" + examinationReport.timeCreated[1] + "-" + examinationReport.timeCreated[2] + " " + examinationReport.timeCreated[3] + ":" + examinationReport.timeCreated[4];
-            
-            if (examinationReport.lastEdited != null){
-              examinationReport.lastEdited = examinationReport.lastEdited[0] + "-" + examinationReport.lastEdited[1] + "-" + examinationReport.lastEdited[2] + " " + examinationReport.lastEdited[3] + ":" + examinationReport.lastEdited[4];
-            }
             this.setState({examinationReport});
 
             this.setState({

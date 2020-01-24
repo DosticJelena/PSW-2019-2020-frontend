@@ -31,6 +31,7 @@ class MedicalCard extends React.Component {
             weight: "",
             bloodType: "",
             allergies: "",
+            version: "",
             medicalCard: {
                 id: "",
                 patient: {},
@@ -53,7 +54,7 @@ class MedicalCard extends React.Component {
         this.handleSaveClick = this.handleSaveClick.bind(this);
         this.editExaminationReport = this.editExaminationReport.bind(this);
         this.handleKeyUp = this.handleKeyUp.bind(this);
-
+        this.checkVersionChanged = this.checkVersionChanged.bind(this);
     }
 
     editExaminationReport = (id) => {
@@ -71,7 +72,7 @@ class MedicalCard extends React.Component {
 
     handleCancelClick = () => {
         const patientId = window.location.pathname.split("/")[2];
-        axios.get('http://localhost:8080/api/medicalRecords/' + patientId, {
+        axios.get('http://localhost:8080/api/medicalRecords/get/' + patientId, {
           responseType: 'json'
         })
               .then(response => {
@@ -100,26 +101,51 @@ class MedicalCard extends React.Component {
         .catch((error) => console.log(error))
     }
 
-    handleSaveClick = () => {
-        axios.post("http://localhost:8080/api/medicalRecords/save", {
-            patientId: this.state.medicalCard.patient.id,
-            height: this.state.height,
-            weight: this.state.weight,
-            bloodType: this.state.bloodType,
-            allergies: this.state.allergies
-        }).then((resp) => {
-          NotificationManager.success('Medical Record Information has been changed successfully', '', 3000);
-        }) 
-        .catch((error)=> {
-          NotificationManager.error('System error. Please try again later.', 'Error', 3000);
-        })
 
-        this.setState({
-            disabled: true,
-            buttonEditHidden: false,
-            buttonSaveHidden: true,
-            buttonCancelHidden: true,
-        });
+    checkVersionChanged() {
+        axios.get("http://localhost:8080/api/medicalRecords/check-version", {
+
+            id: this.state.medicalCard.id,
+            version: this.state.medicalCard.version
+
+        }).then((resp) => {
+            return resp.data;      
+        })
+    }
+
+    handleSaveClick = () => {
+
+        axios.get("http://localhost:8080/api/medicalRecords/check-version", {
+
+            params: {
+                id: this.state.medicalCard.id,
+                version: this.state.medicalCard.version
+            }
+
+        }).then((resp) => {
+    
+            axios.put("http://localhost:8080/api/medicalRecords/edit", {
+                patientId: this.state.medicalCard.patient.id,
+                height: this.state.height,
+                weight: this.state.weight,
+                bloodType: this.state.bloodType,
+                allergies: this.state.allergies
+            }).then((resp) => {
+            NotificationManager.success('Medical Record Information has been changed successfully', '', 3000);
+            }) 
+            .catch((error)=> {
+            NotificationManager.error('System error. Please try again later.', 'Error', 3000);
+            })
+
+            this.setState({
+                disabled: true,
+                buttonEditHidden: false,
+                buttonSaveHidden: true,
+                buttonCancelHidden: true,
+            });
+        }).catch((error) => {
+            NotificationManager.error(error.response.data, 'Error', 10000);
+        })
     }
 
     handleChange = e => {
@@ -175,7 +201,7 @@ class MedicalCard extends React.Component {
 
     componentDidMount () {    
         const patientId = window.location.pathname.split("/")[2];
-        axios.get('http://localhost:8080/api/medicalRecords/' + patientId, {
+        axios.get('http://localhost:8080/api/medicalRecords/get/' + patientId, {
           responseType: 'json'
         })
               .then(response => {
@@ -184,6 +210,7 @@ class MedicalCard extends React.Component {
                 this.setState({weight: response.data.weight});
                 this.setState({bloodType: response.data.bloodType});
                 this.setState({allergies: response.data.allergies});
+                this.setState({version: response.data.version});
                 console.log(this.state);
         })
         .catch((error) => console.log(error))

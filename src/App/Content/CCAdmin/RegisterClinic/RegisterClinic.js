@@ -5,10 +5,6 @@ import Header from '../../Header/Header';
 import './RegisterClinic.css'
 import {NotificationManager} from 'react-notifications';
 
-const capitalLetterRegex = RegExp(
-    /^([A-Z][a-z]+)+$/
-);
-
 const formValid = ({ formErrors, ...rest }) => {
     let valid = true;
   
@@ -33,12 +29,28 @@ class RegisterClinic extends React.Component {
 
       this.handleChange = this.handleChange.bind(this);
       this.SendRegisterRequest = this.SendRegisterRequest.bind(this);
+      this.handleKeyUp = this.handleKeyUp.bind(this);
+
+      this.initialState = {
+        name: "",
+        description: "",
+        address: "",
+        city: "",
+        disabled: true,
+        formErrors: {
+            name: "",
+            description: "",
+            address: "",
+            city: "",
+          }
+      }
 
       this.state = {
-            name: null,
-            description: null,
-            address: null,
-            city: null,
+            name: "",
+            description: "",
+            address: "",
+            city: "",
+            disabled: true,
             formErrors: {
                 name: "",
                 description: "",
@@ -59,12 +71,43 @@ class RegisterClinic extends React.Component {
             address: this.state.address,
             city: this.state.city
 
-        }).then((resp) => {NotificationManager.success('Clinic has been successfully added.', '', 3000);}) 
-        .catch((error)=> {NotificationManager.error('System error. Please try again later.', 'Error', 3000);})
+        }).then((resp) => {
+          NotificationManager.success('Clinic has been successfully added.', '', 3000);
+          console.log(resp);
+        }) 
+        .catch((error)=> {
+          NotificationManager.error(error.response.data, 'Error', 3000)
+        })
       }
       else {
         NotificationManager.error('Wrong form input. Please input the correct strings.', '', 3000);
       } 
+  }
+
+  handleKeyUp = e => {
+    var empty = true;
+
+    Object.keys(this.state.formErrors).forEach(e => 
+      {if(this.state.formErrors[e] != ""){
+        empty = false;
+      }
+    });
+
+    if (!empty){
+        this.setState({disabled: true});
+        console.log('disabled');
+    }
+
+    else{
+        if (this.state.name != "" && this.state.description != "" && this.state.address !="" && this.state.city != ""){
+          this.setState({disabled: false});
+          console.log('enabled');
+        }
+        else {
+          this.setState({disabled: true});
+          console.log('disabled');
+        }
+    }
   }
 
   handleChange = e => {
@@ -74,38 +117,20 @@ class RegisterClinic extends React.Component {
 
     switch (name) {
       case "name":
-        formErrors.name = capitalLetterRegex.test(value)
-          ? ""
-          : "name must start with a capital letter";
-
-        if (formErrors.name === ""){  
             formErrors.name =
             value.length < 3 ? "minimum 3 characaters required" : "";
-        }
         break;
       case "description":
             formErrors.description =
-            value.length < 3 ? "minimum 6 characaters required" : "";
+            value.length < 10 ? "minimum 10 characaters required" : "";
         break;
       case "address":
-        formErrors.address = capitalLetterRegex.test(value)
-          ? ""
-          : "Address must start with a capital letter";
-
-        if (formErrors.address === ""){  
             formErrors.address =
             value.length < 3 ? "minimum 3 characaters required" : "";
-        }
         break;
-      case "city":
-        formErrors.city = capitalLetterRegex.test(value)
-        ? ""
-        : "City must start with a capital letter";
-
-      if (formErrors.city === ""){  
+      case "city": 
           formErrors.city =
           value.length < 3 ? "minimum 3 characaters required" : "";
-      }
         break;
       default:
         break;
@@ -130,6 +155,7 @@ class RegisterClinic extends React.Component {
                 name="name"
                 noValidate
                 onChange={this.handleChange}
+                onKeyUp={this.handleKeyUp}
               />
               {formErrors.name.length > 0 && (
                 <span className="errorMessage">{formErrors.name}</span>
@@ -137,13 +163,16 @@ class RegisterClinic extends React.Component {
             </div>
             <div className="description">
               <label htmlFor="description">Description: </label>
-              <input
+              <textarea 
                 className={formErrors.description.length > 0 ? "error" : null}
+                rows="7"
                 placeholder="Description"
                 type="text"
                 name="description"
                 noValidate
                 onChange={this.handleChange}
+                onKeyUp={this.handleKeyUp}
+
               />
               {formErrors.description.length > 0 && (
                 <span className="errorMessage">{formErrors.description}</span>
@@ -158,6 +187,8 @@ class RegisterClinic extends React.Component {
                 name="address"
                 noValidate
                 onChange={this.handleChange}
+                onKeyUp={this.handleKeyUp}
+
               />
               {formErrors.address.length > 0 && (
                 <span className="errorMessage">{formErrors.address}</span>
@@ -172,13 +203,15 @@ class RegisterClinic extends React.Component {
                 name="city"
                 noValidate
                 onChange={this.handleChange}
+                onKeyUp={this.handleKeyUp}
+
               />
               {formErrors.city.length > 0 && (
                 <span className="errorMessage">{formErrors.city}</span>
               )}
             </div>
                             <hr/>
-                            <Button className="createAccount" type="submit">Create</Button>
+                            <Button disabled={this.state.disabled} className="createAccount" type="submit">Create</Button>
                         </form>
                 </div>
             </div>
