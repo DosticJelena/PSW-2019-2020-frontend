@@ -20,6 +20,7 @@ class Ordinations extends React.Component{
             modalVisible: false,
             newModalVisible: false,
             deleteModalVisible: false,
+            updateModalHandler: false,
             ordinationId: 0, 
             appointments: [],
             clinicAdmin: ''
@@ -36,11 +37,15 @@ class Ordinations extends React.Component{
       }
 
       deleteModalHandler = (ordId) => {
-        this.setState({deleteModalVisible: true});
+        this.setState({deleteModalVisible: true, ordinationId: ordId});
+      }
+
+      updateModalHandler = (ordId) => {
+        this.setState({updateModalHandler: true, ordinationId: ordId});
       }
 
       modalClosedHandler = () => {
-        this.setState({modalVisible: false, newModalVisible: false, deleteModalVisible: false});
+        this.setState({modalVisible: false, newModalVisible: false, deleteModalVisible: false, updateModalHandler: false});
       }
 
       renderDates = () =>{
@@ -136,6 +141,15 @@ class Ordinations extends React.Component{
             filterable: false
           },{
             Header: '',
+            Cell: row => (
+                <div>
+                   <button className="calendar-ord btn" onClick={() => this.updateModalHandler(row.original.id)}>Update</button>
+                 </div>
+            ),
+            width: 100,
+            filterable: false
+          },{
+            Header: '',
             width: 100,
             Cell: row => (
                 <div>
@@ -149,6 +163,9 @@ class Ordinations extends React.Component{
         <div className="Ordinations">
           <Modal show={this.state.modalVisible} modalClosed={this.modalClosedHandler}>
               <OrdinationCalendar appointments={this.state.appointments}/>
+          </Modal>
+          <Modal show={this.state.updateModalHandler} modalClosed={this.modalClosedHandler}>
+              <h4>Update ordination</h4>
           </Modal>
           <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
               <NewOrdination/>
