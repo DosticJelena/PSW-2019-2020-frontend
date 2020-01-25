@@ -19,7 +19,8 @@ class Doctors extends React.Component{
             modalVisible: false,
             newModalVisible: false,
             deleteModalVisible: false,
-            ordinationId: 0, 
+            deleteModalVisible: false,
+            doctorId: 0, 
             appointments: [],
             clinicAdmin: ''
         }
@@ -34,12 +35,16 @@ class Doctors extends React.Component{
         this.setState({newModalVisible: true});
       }
 
-      deleteModalHandler = (ordId) => {
-        this.setState({deleteModalVisible: true});
+      deleteModalHandler = (docId) => {
+        this.setState({deleteModalVisible: true, doctorId: docId});
+      }
+
+      updateModalHandler = (docId) => {
+        this.setState({updateModalHandler: true, doctorId: docId});
       }
 
       modalClosedHandler = () => {
-        this.setState({modalVisible: false, newModalVisible: false, deleteModalVisible: false});
+        this.setState({modalVisible: false, newModalVisible: false, deleteModalVisible: false, updateModalHandler: false});
       }
 
       renderDates = () =>{
@@ -136,6 +141,15 @@ class Doctors extends React.Component{
               width: 100
           },{
             Header: '',
+            Cell: row => (
+                <div>
+                   <button className="calendar-ord btn" onClick={() => this.updateModalHandler(row.original.id)}>Update</button>
+                 </div>
+            ),
+            width: 100,
+            filterable: false
+          },{
+            Header: '',
             width: 100,
             Cell: row => (
                 <div>
@@ -149,6 +163,9 @@ class Doctors extends React.Component{
         <div className="Doctors">
           <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
               <NewDoctor/>
+          </Modal>
+          <Modal show={this.state.updateModalHandler} modalClosed={this.modalClosedHandler}>
+              <h4>Update ordination</h4>
           </Modal>
           <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
               <h4>Are you sure you want to delete this doctor?</h4>
