@@ -9,9 +9,9 @@ import ReactTable from "react-table";
 
 class BusinessReport extends React.Component {
 
-    constructor(props){
-        super(props); 
-    
+    constructor(props) {
+        super(props);
+
         this.state = {
             id: '',
             name: '',
@@ -24,83 +24,93 @@ class BusinessReport extends React.Component {
             }]
         }
     }
-    
-    componentDidMount(){
+
+    componentDidMount() {
         var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;  
-        const id = window.location.pathname.split("/")[2];
-        console.log(id);
-        axios.get("http://localhost:8080/api/clinic/"+id).then(response => {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.get("http://localhost:8080/auth/getMyUser")
+            .then(response => {
                 console.log(response.data);
                 this.setState({
-                    id: response.data.id,
-                    name: response.data.name,
-                    address: response.data.address,
-                    city: response.data.city
+                    clinicAdmin: response.data.id
                 })
-            }).then(() => {
-                axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.id)  
-                .then(response => {
-                    let tmpArray = []
-                    for (var i = 0; i < response.data.length; i++) {
-                        tmpArray.push(response.data[i])
-                    }
-            
-                    this.setState({
-                        doctors: tmpArray
+            })
+            .then(() => {
+                axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)
+                    .then(response => {
+                        console.log(response.data);
+                        this.setState({
+                            id: response.data
+                        })
                     })
-                })
-                .catch((error) => console.log(error))
+                    .then(() => {
+
+                        axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.id)
+                            .then(response => {
+                                let tmpArray = []
+                                for (var i = 0; i < response.data.length; i++) {
+                                    tmpArray.push(response.data[i])
+                                }
+
+                                this.setState({
+                                    doctors: tmpArray
+                                })
+                            })
+                            .catch((error) => console.log(error))
+
+                    }).catch((error) => console.log(error))
+
             }).catch((error) => console.log(error))
-        }
+
+    }
 
     render() {
 
-        const columns=[
+        const columns = [
             {
-              Header:'Id',
-              id: 'id',
-              accessor: d => d.id,
-              width: 50,
-              filterable: false
-          },{
-            Header:'First Name',
-            accessor: 'firstName'
-          },{
-            Header:'Last Name',
-            accessor: 'lastName'
-          },{
-            Header:'Email Address',
-            accessor: 'username'
-          },{
-              Header: 'Stars',
-              accessor: 'stars',
-              width: 70
-          }]
+                Header: 'Id',
+                id: 'id',
+                accessor: d => d.id,
+                width: 50,
+                filterable: false
+            }, {
+                Header: 'First Name',
+                accessor: 'firstName'
+            }, {
+                Header: 'Last Name',
+                accessor: 'lastName'
+            }, {
+                Header: 'Email Address',
+                accessor: 'username'
+            }, {
+                Header: 'Stars',
+                accessor: 'stars',
+                width: 70
+            }]
 
-        return(
-            
+        return (
+
             <div className="BusinessReport">
-                <Header/>
+                <Header />
                 <div className="row">
                     <div className="col-10">
-                        <br/>
+                        <br />
                         <h3>Business Report </h3>
                         <h3><em>{this.state.name}</em></h3>
-                        <hr/>
+                        <hr />
                         <h5>Average grade: {this.state.avg}</h5>
                         <h5>Monthly Income: {this.state.avg}</h5>
                         <h5>Graph: {this.state.avg}</h5>
-                        <br/>
+                        <br />
                         <h4>Doctors</h4>
                         <div className='doc-table'>
-                        <ReactTable 
-                            data={this.state.doctors}
-                            columns={columns}
-                            filterable
-                            onFilteredChange = {this.handleOnFilterInputChange}
-                            defaultPageSize = {5}
-                            pageSizeOptions = {[5, 10, 15]}
+                            <ReactTable
+                                data={this.state.doctors}
+                                columns={columns}
+                                filterable
+                                onFilteredChange={this.handleOnFilterInputChange}
+                                defaultPageSize={5}
+                                pageSizeOptions={[5, 10, 15]}
                             />
                         </div>
                     </div>
@@ -108,12 +118,12 @@ class BusinessReport extends React.Component {
 
                     </div>
                 </div>
-                
-                <Footer/>
+
+                <Footer />
             </div>
 
-            );
-        }
+        );
     }
-    
+}
+
 export default BusinessReport;
