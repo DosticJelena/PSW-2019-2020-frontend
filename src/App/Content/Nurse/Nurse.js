@@ -60,9 +60,9 @@ class Nurse extends React.Component {
                     <Link to="/authenticate-prescriptions" class="btn link-btn-doctor">View List</Link>
                 </div>
                 <div className="col link">
-                    <h4>Request Leave</h4>
-                    <p>Fill out a form.</p>
-                    <Link to="/request-leave-nurse" class="btn link-btn-doctor">Request</Link>
+                    <h4>Create Absence/Vacation Request</h4>
+                    <p>Choose start and end date.</p>
+                    <Link to="/absence-request" className="btn link-btn-doctor">Create</Link>
                 </div>
             </div>
                 </div>

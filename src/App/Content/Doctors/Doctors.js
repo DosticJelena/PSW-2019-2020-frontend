@@ -7,6 +7,7 @@ import Modal from '../../UI/Modal/Modal';
 import './Doctors.css';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom';
+import NewDoctor from './NewDoctor/NewDoctor';
 
 class Doctors extends React.Component{
    
@@ -19,7 +20,8 @@ class Doctors extends React.Component{
             newModalVisible: false,
             deleteModalVisible: false,
             ordinationId: 0, 
-            appointments: []
+            appointments: [],
+            clinicAdmin: ''
         }
       }
 
@@ -68,34 +70,43 @@ class Doctors extends React.Component{
       }
     
       componentDidMount() {
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;  
-        const id = window.location.pathname.split("/")[2];
-        console.log(id);
-        axios.get("http://localhost:8080/api/clinic/"+id)
-        .then(response => {
-                console.log(response.data);
-                this.setState({
-                    id: response.data.id,
-                    name: response.data.name,
-                    address: response.data.address,
-                    city: response.data.city,
-                    description: response.data.description
-                })
-            }).then(() => {
-                axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.id)  
-                .then(response => {
-                    let tmpArray = []
-                    for (var i = 0; i < response.data.length; i++) {
-                        tmpArray.push(response.data[i])
-                    }
+
+          var token = localStorage.getItem('token');
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          axios.get("http://localhost:8080/auth/getMyUser")  
+              .then(response => {
+                  console.log(response.data);
+                  this.setState({
+                      clinicAdmin: response.data.id
+                  })
+              })
+          .then(() => {
+              axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
+              .then(response => {
+                  console.log(response.data);
+                  this.setState({
+                    id: response.data
+                  })
+              })
+              .then(() => {
+
+                  axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.id)  
+                  .then(response => {
+                      let tmpArray = []
+                      for (var i = 0; i < response.data.length; i++) {
+                          tmpArray.push(response.data[i])
+                      }
             
-                    this.setState({
-                        doctors: tmpArray
-                    })
-                })
-                .catch((error) => console.log(error))
-            }).catch((error) => console.log(error))
+                      this.setState({
+                          doctors: tmpArray
+                      })
+                  })
+                  .catch((error) => console.log(error))
+
+              }).catch((error) => console.log(error))
+              
+          }).catch((error) => console.log(error))
+
       }
     
       render() {
@@ -137,7 +148,7 @@ class Doctors extends React.Component{
       return (
         <div className="Doctors">
           <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
-              <h2>New Doctor</h2>
+              <NewDoctor/>
           </Modal>
           <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
               <h4>Are you sure you want to delete this doctor?</h4>

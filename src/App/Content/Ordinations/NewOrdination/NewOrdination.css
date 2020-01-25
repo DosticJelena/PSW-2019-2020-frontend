@@ -1,0 +1,15 @@
+.add-ord {
+    color: white;
+    background-color: darkcyan;
+    border-color: darkcyan;
+}
+
+.add-ord:hover {
+    color: silver;
+    background-color: darkcyan;
+    border-color: darkcyan;
+}
+
+.type-check {
+    margin-left: 20px;
+}

@@ -1,0 +1,15 @@
+.add-doc {
+    color: white;
+    background-color: darkcyan;
+    border-color: darkcyan;
+}
+
+.add-doc:hover {
+    color: silver;
+    background-color: darkcyan;
+    border-color: darkcyan;
+}
+
+.type-check {
+    margin-left: 20px;
+}

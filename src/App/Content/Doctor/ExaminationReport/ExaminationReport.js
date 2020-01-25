@@ -183,6 +183,8 @@ class ExaminationReport extends React.Component {
   render() {
       const { appointment, formErrors } = this.state;
       
+      var path = "/new-appointment-doctor/" + appointment.patientId;
+
       return (
         <div className="RegisterNewCCAdmin">
         <Header/> 
@@ -264,7 +266,7 @@ class ExaminationReport extends React.Component {
                 )}
             </div>
                 <div className="buttons">
-                  <Button className="scheduleNew" href="/#">Schedule new appointment</Button>
+                  <Button className="scheduleNew" href={path}>Schedule new appointment</Button>
                   <Button disabled={this.state.disabled} className="publishExaminationReport" type="submit">Publish Examination Report</Button>
                   </div>
                 </form>

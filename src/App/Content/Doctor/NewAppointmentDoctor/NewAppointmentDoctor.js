@@ -22,9 +22,10 @@ class NewAppointmentDoctor extends React.Component {
 
     this.state = {
       patients: [],
+      patName: '',
       patient: '',
-      date: '',
-      time: '',
+      startDateTime: '',
+      endDateTime: '',
       doctorId: '',
       type: '0'
     }
@@ -36,8 +37,8 @@ class NewAppointmentDoctor extends React.Component {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.post("http://localhost:8080/api/doctor/schedule-appointment", {
       patient: this.state.patient,
-      date: this.state.date,
-      time: this.state.time,
+      startDateTime: this.state.startDateTime.substr(0, 10) + ' ' + this.state.startDateTime.substr(11),
+      endDateTime: this.state.endDateTime.substr(0, 10) + ' ' + this.state.endDateTime.substr(11),
       doctor: this.state.doctorId,
       type: this.state.type
     })
@@ -46,7 +47,7 @@ class NewAppointmentDoctor extends React.Component {
         NotificationManager.success('You have scheduled appointment succesfully!', 'Success!', 4000);
         this.props.history.push('/reservation-requests');
       })
-      .catch((error) => this.onFailureHandler(error))
+      .catch(() => NotificationManager.error('Incorect values!', 'Error!', 4000))
   }
 
   onSuccessHandler(resp) {
@@ -68,16 +69,13 @@ class NewAppointmentDoctor extends React.Component {
   }
 
   componentDidMount() {
+    const patientId = window.location.pathname.split("/")[2];
     var token = localStorage.getItem('token');
-    axios.get("http://localhost:8080/api/patients")
+    axios.get("http://localhost:8080/api/patients/" + patientId)
       .then(response => {
-        let tmpArray = []
-        for (var i = 0; i < response.data.length; i++) {
-          tmpArray.push(response.data[i])
-        }
-
         this.setState({
-          patients: tmpArray
+          patName: response.data.firstName + " " + response.data.lastName,
+          patient: patientId
         })
       })
       .catch((error) => console.log(error))
@@ -104,57 +102,45 @@ class NewAppointmentDoctor extends React.Component {
               </div>
             </div>
             <div className="row new-appointment-form">
-              <div className="col-sm">
+              <div className="col">
                 <form onSubmit={this.SendAppointmentRequest}>
                   <div className="row">
-                    <div className="col-6">
+                    <div className="col-8">
                       <div className="form-group">
-                        <div className="col">
-                          <label htmlFor="patient">Patient:</label>
-                          <select required className="custom-select mr-sm-2" name="patient" id="patient" onChange={this.handleChange} >
-                            <option defaultValue="0" >Choose...</option>
-                            {this.state.patients.map((patient, index) => (
-                              <option key={patient.id} value={patient.id}>{patient.firstName} {patient.lastName}</option>
-                            ))}
-                          </select>
+                        <div className="col-6">
+                          <label htmlFor="patName">Patient:</label>
+                          <input disabled type="text" className="form-control" name="patName" id="patName" value={this.state.patName}/>
                         </div>
-                      </div>
-                    </div>
-                    <div className="col-3">
-                      <div className="form-group">
-                          <label htmlFor="date">Date:</label>
-                          <input required type="date" className="form-control" name="date" id="date" placeholder="Choose date"
-                            onChange={this.handleChange} />
                       </div>
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-6">
+                    <div className="col-8">
                       <div className="form-group">
                         <div className="row">
                           <div className="col-6">
-                            <label htmlFor="time">Start Time:</label>
-                            <input required type="time" className="form-control" name="time" id="time" placeholder="Choose start time"
+                            <label htmlFor="time">Start:</label>
+                            <input required type="datetime-local" className="form-control" name="startDateTime" id="time" placeholder="Choose start time"
                               onChange={this.handleChange} />
                           </div>
                           <div className="col-6">
-                            <label htmlFor="time">End Time:</label>
-                            <input required type="time" className="form-control" name="time" id="time" placeholder="Choose end time"
+                            <label htmlFor="time">End:</label>
+                            <input required type="datetime-local" className="form-control" name="endDateTime" id="time" placeholder="Choose end time"
                               onChange={this.handleChange} />
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="col-6">
+                    <div className="col-4">
                       <div className="form-group">
                         <label htmlFor="type">Type:</label>
                         <div className="form-check form-check">
                           <input defaultChecked onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0" />
-                          <label className="form-check-label" htmlFor="examination">Medical Examination</label>
+                          <label className="form-check-label" htmlFor="examination">Examination</label>
                         </div>
                         <div className="form-check form-check">
                           <input onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1" />
-                          <label className="form-check-label" htmlFor="operation">Surgery</label>
+                          <label className="form-check-label" htmlFor="operation">Operation</label>
                         </div>
                       </div>
                     </div>
