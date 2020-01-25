@@ -164,16 +164,15 @@ class ClinicPage extends React.Component {
                 width: 70
             }]
 
-        var path = "/business-report/" + this.state.id;
 
         var busRepBtn;
         if (this.state.role === "ROLE_CLINIC_ADMIN") {
-            busRepBtn = (<Link to={path} className="btn link-btn-patient predefined-btn">Business Report</Link>)
+            busRepBtn = (<Link to="/business-report" className="btn link-btn-patient predefined-btn">Business Report</Link>)
         }
 
         var updateBtn;
         if (this.state.role === "ROLE_CLINIC_ADMIN") {
-            updateBtn = (<Link to={path} className="btn update-clinic predefined-btn">Update Clinic info</Link>)
+            updateBtn = (<Link to={{pathname: "/edit-clinic", state: {clinicId: this.state.clinicId}}} className="btn update-clinic predefined-btn">Update Clinic info</Link>)
         }
 
         var doctorsPatient;
