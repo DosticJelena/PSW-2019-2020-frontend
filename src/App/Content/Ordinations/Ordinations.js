@@ -9,6 +9,7 @@ import axios from 'axios'
 import { withRouter } from 'react-router-dom';
 import OrdinationCalendar from '../Ordinations/OrdinationCalendar/OrdinationCalendar';
 import NewOrdination from './NewOrdination/NewOrdination';
+import UpdateOrdination from './UpdateOrdination/UpdateOrdination';
 
 class Ordinations extends React.Component{
    
@@ -38,14 +39,17 @@ class Ordinations extends React.Component{
 
       deleteModalHandler = (ordId) => {
         this.setState({deleteModalVisible: true, ordinationId: ordId});
+        this.props.history.push("/ordinations/"+ordId);
       }
 
       updateModalHandler = (ordId) => {
-        this.setState({updateModalHandler: true, ordinationId: ordId});
+        this.setState({ordinationId: ordId, updateModalHandler: true});
+        this.props.history.push("/ordinations/"+ordId);
       }
 
       modalClosedHandler = () => {
         this.setState({modalVisible: false, newModalVisible: false, deleteModalVisible: false, updateModalHandler: false});
+        this.props.history.push("/ordinations");
       }
 
       renderDates = () =>{
@@ -57,6 +61,18 @@ class Ordinations extends React.Component{
           appointments[i].end = new Date(appointments[i].end);
     
           this.setState({appointments});
+        }
+      }
+
+      isDisabled(ordId){
+        for (var i=0;i<this.state.ordinations.length;i++){
+          if (this.state.ordinations[i].id == ordId){
+            if (this.state.ordinations[i].appointments.length == 0){
+              return false;
+            } else {
+              return true;
+            }
+          }
         }
       }
 
@@ -83,7 +99,6 @@ class Ordinations extends React.Component{
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           axios.get("http://localhost:8080/auth/getMyUser")  
               .then(response => {
-                  console.log(response.data);
                   this.setState({
                       clinicAdmin: response.data.id
                   })
@@ -91,7 +106,6 @@ class Ordinations extends React.Component{
           .then(() => {
               axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
               .then(response => {
-                  console.log(response.data);
                   this.setState({
                       id: response.data
                   })
@@ -104,6 +118,7 @@ class Ordinations extends React.Component{
                         for (var i = 0; i < response.data.length; i++) {
                             tmpArray.push(response.data[i])
                         }
+                        console.log(tmpArray)
                         this.setState({
                             ordinations: tmpArray
                         })
@@ -165,14 +180,15 @@ class Ordinations extends React.Component{
               <OrdinationCalendar appointments={this.state.appointments}/>
           </Modal>
           <Modal show={this.state.updateModalHandler} modalClosed={this.modalClosedHandler}>
-              <h4>Update ordination</h4>
+              <UpdateOrdination ordinations={this.state.ordinations} ordinationId={this.state.ordinationId} reload={this.state.updateModalHandler}/>
           </Modal>
           <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
               <NewOrdination/>
           </Modal>
           <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
               <h4>Are you sure you want to delete this ordination?</h4>
-              <button className="btn">Yes</button>
+              <hr/>
+              <button className="calendar-ord btn">Yes</button>
           </Modal>
           <Header/>
           <div className="row">
