@@ -3,6 +3,7 @@ import Header from '../../Header/Header';
 import Footer from '../../Footer/Footer';
 import './EditClinicPage.css';
 import axios from 'axios';
+import {NotificationManager} from 'react-notifications';
 
 class EditClinicPage extends React.Component {
 
@@ -39,21 +40,18 @@ class EditClinicPage extends React.Component {
 
     UpdateInfoRequest = event => {
         event.preventDefault();
-        const { password, passwordConfirm } = this.state;
-        if (password !== passwordConfirm) {
-            alert("Passwords don't match");
-        } else {
-            var token = localStorage.getItem('token');
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.put("http://localhost:8080/api/update-personal-info/" + this.state.accountId, {
-                name: this.state.name,
-                address: this.state.address,
-                city: this.state.city,
-                description: this.state.description
-            }).then(
-                (resp) => this.onSuccessHandler(resp)
-            )
-        }
+        var token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.put("http://localhost:8080/api/clinic/" + this.state.clinicId, {
+            name: this.state.name,
+            address: this.state.address,
+            city: this.state.city,
+            description: this.state.description
+        }).then(() => {
+            NotificationManager.success('Successfully updated', 'Success!', 4000);
+            this.props.history.push('/clinic')}
+        ).catch((error) => NotificationManager.error('Something went wrong', 'Error!', 4000))
+        
     }
 
     handleChange(e) {
