@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-import './NewOrdination.css'
+import './NewOrdination.css';
 import { Button } from 'react-bootstrap';
 import {NotificationManager} from 'react-notifications';
 import { withRouter } from 'react-router-dom';
