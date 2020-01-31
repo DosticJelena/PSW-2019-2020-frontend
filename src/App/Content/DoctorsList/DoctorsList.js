@@ -24,11 +24,14 @@ class DoctorsList extends React.Component{
               lastName:'',
               rating:'',
               freeTerms:[],
-              free:[]
+              free:[],
+              selectedTime:''
             }],
             type:'',
             date:'',
-            types:[]
+            types:[],
+            filtered:[],
+            selected:null
         }
 
     }
@@ -49,9 +52,14 @@ class DoctorsList extends React.Component{
         }
         console.log(tmpArray);
         this.setState({
-          doctors: tmpArray
+          doctors: tmpArray,
+          filtered:1
         })
       }).catch((error) => console.log(error))
+    }
+
+    schedule= (row)=>{
+      console.log(row);
     }
 
 
@@ -66,7 +74,8 @@ class DoctorsList extends React.Component{
         }
 
         this.setState({
-          doctors: tmpArray
+          doctors: tmpArray,
+          filtered:0
         })
       }) .catch((error) => console.log(error))
     }
@@ -75,8 +84,49 @@ class DoctorsList extends React.Component{
       this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
     }
 
+    onRowClick(e, t, rowInfo) {
+      this.setState((oldState) => {
+          let data = oldState.data.slice();
+          let copy = Object.assign({},  data[rowInfo.index]);
+  
+          copy.selected = true;
+          copy.FirstName = "selected";
+          data[rowInfo.index] = copy;
+  
+          return {
+              data: data,
+          }
+      })
+  }
+
     componentDidMount() { 
         const id = window.location.pathname.split("/")[2];
+        const type = window.location.pathname.split("/")[3];
+        const date = window.location.pathname.split("/")[4];
+        console.log(id);
+        console.log( type);
+        console.log( date);
+
+        if(type!=null){
+
+            var token = localStorage.getItem('token');
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            axios.get("http://localhost:8080/api/filter-doctors/"+date+'/'+type+'/'+id).then(response => {
+              console.log(response.data);
+              let tmpArray = []
+              for (var i = 0; i < response.data.length; i++) {
+                tmpArray.push(response.data[i])
+      
+              }
+              console.log(tmpArray);
+              this.setState({
+                doctors: tmpArray,
+                //filtered:1
+              })
+            }).catch((error) => console.log(error))
+        }
+
+        if(type==null){
         axios.get("http://localhost:8080/api/doctors-list/"+id)  
           .then(response => {
               let tmpArray = []
@@ -104,11 +154,14 @@ class DoctorsList extends React.Component{
             })
           })
           .catch((error) => console.log(error))
+        }
+
+       
       }
 
       render() {
 
-        const columns=[
+        const columnsSpecialized=[
           {
             Header:'Id',
             id: 'id',
@@ -135,15 +188,67 @@ class DoctorsList extends React.Component{
              </div>
         )
       }]
-    
-      return (
-        <div className="DoctorsList">
-          <Header/>
-          <div className="row">
-            <div className="col-10">
-              <br/>
-            <h3>Doctors List</h3>
-              <div className='doctors rtable'>
+
+      const columnsAll=[
+        {
+          Header:'Id',
+          id: 'id',
+          accessor: d => d.id
+      },{
+        Header:'First Name',
+        accessor: 'firstName'
+      },{
+        Header:'Last Name',
+        accessor: 'lastName'
+      },{
+          Header:'Rating',
+          accessor: 'rating'
+      }]
+
+      const columnsAllFiltered=[
+        {
+          Header:'Id',
+          id: 'id',
+          accessor: d => d.id
+      },{
+        Header:'First Name',
+        accessor: 'firstName'
+      },{
+        Header:'Last Name',
+        accessor: 'lastName'
+      },{
+          Header:'Rating',
+          accessor: 'rating'
+      },{
+        Header:'Avaiable appoint.',
+       // accessor:'free',
+        Cell: row => (
+             <div className="row">
+              <div className="col">
+                <label htmlFor="free"></label>
+                <select required className="custom-select mr-sm-1" name="freeTerms" id="freeTerms" onChange={this.handleChange} >
+                <option defaultValue="0"></option>
+                  {row.original.free.map((fr, index) => (
+                      <option key={fr} value={fr}>{fr}</option>
+                    ))}   
+                </select>
+              </div>
+            </div>
+      )
+    },{
+      Header:'',
+      Cell: row=> (
+        <div className="col">
+          <Button className="btn doctors-list-button" onClick={() => this.schedule(row.original)}>Schedule</Button>
+        </div>
+      )
+  }]
+
+      var clinicDoctors;
+      var table;
+      var title;
+      if(window.location.pathname.split("/")[3]==null){
+        clinicDoctors=(
               <form onSubmit={this.FilterDoctors}>
                   <div className="row">
                     <div className="col-5">
@@ -169,27 +274,83 @@ class DoctorsList extends React.Component{
                     <div className="col-3">
                       <br/>
                       <Button type="submit" className="btn doctors-list-button">Filter</Button>
-                      <button className="btn doctors-list-button1 " onClick={() => this.allClinicDoctors()}>All</button>
+                      <Button className="btn doctors-list-button1 " onClick={() => this.allClinicDoctors()}>All</Button>
                     </div>
                   </div>  
                 </form>
-                <ReactTable 
-                  data={this.state.doctors}
-                  columns={columns}
-                  filterable
-                  onFilteredChange = {this.handleOnFilterInputChange}
-                  defaultPageSize = {6}
-                  pageSizeOptions = {[6, 10, 15]}
-                />
-                </div>
-            </div>
-            <div className="col-2 doctor-list-image">
+      )
+        if(this.state.filtered==1){
+
+          table=( <ReactTable 
+          data={this.state.doctors}
+          columns={columnsAllFiltered}
+          filterable
+          onFilteredChange = {this.handleOnFilterInputChange}
+          defaultPageSize = {6}
+          pageSizeOptions = {[6, 10, 15]}
+          /*getTrProps={(state, rowInfo) => {
+            if (rowInfo && rowInfo.row) {
+              return {
+                onClick: (e) => {
+                  this.setState({
+                    selected: rowInfo.index
+                  })
+                },
+                style: {
+                  background: rowInfo.index === this.state.selected ? '#00afec' : 'white',
+                  color: rowInfo.index === this.state.selected ? 'white' : 'black'
+                }
+              }
+            }else{
+              return {}
+            }
+          }}*/
+          />)
+        }else{
+
+          table=( <ReactTable 
+          data={this.state.doctors}
+          columns={columnsAll}
+          filterable
+          onFilteredChange = {this.handleOnFilterInputChange}
+          defaultPageSize = {6}
+          pageSizeOptions = {[6, 10, 15]}
+        />)
+      }
+        title=(  <div className="clinics-title">Clinic doctors</div>)
+      
+      }else{
+
+        title=( <div className="clinics-title">Available doctors</div>)
+
+        table=(<ReactTable 
+          data={this.state.doctors}
+          columns={columnsSpecialized}
+          filterable
+          onFilteredChange = {this.handleOnFilterInputChange}
+          defaultPageSize = {6}
+          pageSizeOptions = {[6, 10, 15]}
+        />)
+      }
     
+      return (
+        <div className="DoctorsList">
+          <Header/>
+          <div className="row">
+            <div className="col-12">
+              <br/>
+              {title}
+              <br/>
+              <br/>
+              <div className='doctors rtable'>
+                {clinicDoctors}   
+                <br/>   
+                {table}
+              </div>
             </div>
-          </div>
+        </div>
            
-          <Footer/>
-    
+        <Footer/>
         </div>
       );
       }
