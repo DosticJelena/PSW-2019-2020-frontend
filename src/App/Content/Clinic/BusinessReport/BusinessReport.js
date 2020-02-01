@@ -26,6 +26,10 @@ class BusinessReport extends React.Component {
     }
 
     componentDidMount() {
+        const { clinicId } = this.props.location.state;
+        const avg = this.props.location.state.stars;
+        this.setState({ id: clinicId, avg: avg });
+        console.log(this.props.location);
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         axios.get("http://localhost:8080/auth/getMyUser")
