@@ -106,20 +106,20 @@ class NewOrdination extends React.Component {
                 <hr/>
                 <form onSubmit={this.AddNewOrdination}>
                     <div className="form-group row">
-                        <label for="number" className="col-sm-2 col-form-label">Number</label>
+                        <label htmlFor="number" className="col-sm-2 col-form-label">Number</label>
                         <div className="col-sm-10">
-                        <input onChange={this.handleChange} required type="text" className="form-control" id="number" name="number" placeholder="100"/>
+                        <input onChange={this.handleChange} required type="text" className="form-control" id="number" name="number" placeholder="Enter number"/>
                         </div>
                     </div>
-                    <div class="form-group row type-check">
-                        <label for="inputPassword" className="col-sm-2 col-form-label">Type</label>
+                    <div className="form-group row type-check">
+                        <label htmlFor="inputPassword" className="col-sm-2 col-form-label">Type</label>
                         <div className="form-check form-check-inline">
                         <input onChange={this.handleChange} defaultChecked className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0"/>
-                        <label className="form-check-label" for="inlineRadio1">Examination</label>
+                        <label className="form-check-label" htmlFor="inlineRadio1">Examination</label>
                         </div>
                         <div className="form-check form-check-inline">
                         <input onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1"/>
-                        <label className="form-check-label" for="inlineRadio2">Operation</label>
+                        <label className="form-check-label" htmlFor="inlineRadio2">Operation</label>
                         </div>
                     </div>
                     <hr/>
