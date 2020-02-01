@@ -13,6 +13,9 @@
     background-color: darkcyan;
     border-color: darkcyan;
     color: white;
+    height: 40px;
+    margin-top: 30px;
+    float: right;
 }
 
 .quick-res-btn:hover {
@@ -26,4 +29,142 @@
     background-size: cover;
     border-left: darkcyan 2px solid;
     min-height: 80vh;
+}
+
+.stepp {
+    margin-left: 40px;
+    margin-right: 40px;
+    align-content: center;
+}
+
+.step-progress {
+    display: block;
+}
+
+.step-progress .progtrckr-todo {
+    display: block;
+}
+
+.progtrckr {
+    text-align: center;
+}
+
+ol.progtrckr {
+    list-style-type: none;
+    padding: 0;
+}
+
+ol.progtrckr li.progtrckr-done {
+    color: black;
+    border-bottom: 4px solid darkcyan;
+    display: inline-block;
+}
+
+ol.progtrckr li.progtrckr-done:before {
+    content: "\2713";
+    color: white;
+    background-color: darkcyan;
+    width: 1.2em;
+    line-height: 1.2em;
+    border-radius: 1.2em;
+}
+
+ol.progtrckr li.progtrckr-doing {
+    color: black;
+    border-bottom: 4px solid white;
+    display: inline-block;
+}
+
+ol.progtrckr li.progtrckr-todo {
+    color: #CCCCCC;
+    border-bottom: 4px solid #CCCCCC;
+    display: inline-block;
+}
+
+ol.progtrckr li {
+    display: inline-block;
+    text-align: center;
+    line-height: 4.5rem;
+    cursor: pointer;
+}
+
+ol.progtrckr li:before {
+    position: relative;
+    bottom: -3.7rem;
+    float: left;
+    left: 50%;
+}
+
+ol.progtrckr li:after {
+    content: "\A0\A0";
+}
+
+.progtrckr li {
+    margin-bottom: 10px;
+}
+
+.progtrckr em {
+    display: none;
+    font-weight: 700;
+    padding-left: 1rem;
+}
+
+.step-progress .multi-step {
+    background-color: silver;
+    display: block;
+    border-radius: 0 25px 0 25px;
+    padding: 15px;
+    margin: 60px 60px;
+}
+
+ol.progtrckr li span {
+    padding: 0 1.5rem;
+}
+
+.footer-buttons {
+    margin-top: 20px;
+    display: block;
+}
+
+.pull-left {
+    float: left!important;
+    background-color: white;
+    border-color: darkcyan;
+    font-size: medium;
+    color:darkcyan;
+}
+
+.pull-left:hover {
+    float: left!important;
+    background-color: darkcyan;
+    border-color: darkcyan;
+    font-size: medium;
+}
+
+.pull-right {
+    float: right!important;
+    background-color: white;
+    border-color: darkcyan;
+    font-size: medium;
+    color:darkcyan;
+}
+
+.pull-right:hover {
+    float: right!important;
+    background-color: darkcyan;
+    border-color: darkcyan;
+    font-size: medium;
+}
+
+.QuickReservation ol {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+.QuickReservation h5 {
+    margin-left: 0;
 }
