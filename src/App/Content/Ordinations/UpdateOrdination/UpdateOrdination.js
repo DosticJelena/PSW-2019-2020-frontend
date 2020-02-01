@@ -57,7 +57,7 @@ class UpdateOrdination extends React.Component {
 
     render() {
 
-        if (window.location.pathname.split("/")[2] !== (this.state.ordinationId || undefined)) {
+        if (this.props.reload == true && (window.location.pathname.split("/")[2] != (this.state.ordinationId || undefined || ""))) {
             const ordId = window.location.pathname.split("/")[2];
             axios.get("http://localhost:8080/api/ordination/" + ordId)
                 .then(response => {
@@ -91,20 +91,20 @@ class UpdateOrdination extends React.Component {
                 <hr/>
                 <form onSubmit={this.UpdateInfoRequest}>
                     <div className="form-group row">
-                        <label for="number" className="col-sm-2 col-form-label">Number</label>
+                        <label htmlFor="number" className="col-sm-2 col-form-label">Number</label>
                         <div className="col-sm-10">
                         <input defaultValue={this.state.number} onChange={this.handleChange} required type="text" className="form-control" id="number" name="number" placeholder="100"/>
                         </div>
                     </div>
-                    <div class="form-group row type-check">
-                        <label for="inputPassword" className="col-sm-2 col-form-label">Type</label>
+                    <div className="form-group row type-check">
+                        <label htmlFor="inputPassword" className="col-sm-2 col-form-label">Type</label>
                         <div className="form-check form-check-inline">
                         <input onChange={this.handleChange} defaultChecked={this.state.examination} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0"/>
-                        <label className="form-check-label" for="inlineRadio1">Examination</label>
+                        <label className="form-check-label" htmlFor="inlineRadio1">Examination</label>
                         </div>
                         <div className="form-check form-check-inline">
                         <input onChange={this.handleChange} defaultChecked={this.state.operation} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1"/>
-                        <label className="form-check-label" for="inlineRadio2">Operation</label>
+                        <label className="form-check-label" htmlFor="inlineRadio2">Operation</label>
                         </div>
                     </div>
                     <hr/>
