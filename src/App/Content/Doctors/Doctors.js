@@ -141,15 +141,6 @@ class Doctors extends React.Component{
               width: 100
           },{
             Header: '',
-            Cell: row => (
-                <div>
-                   <button className="calendar-ord btn" onClick={() => this.updateModalHandler(row.original.id)}>Update</button>
-                 </div>
-            ),
-            width: 100,
-            filterable: false
-          },{
-            Header: '',
             width: 100,
             Cell: row => (
                 <div>
