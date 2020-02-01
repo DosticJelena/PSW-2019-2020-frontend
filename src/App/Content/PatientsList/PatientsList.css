@@ -16,3 +16,7 @@
     border-left: darkcyan 2px solid;
     min-height: 80vh;
 }
+
+.PatientsList .rtable {
+    font-size: medium;
+}
