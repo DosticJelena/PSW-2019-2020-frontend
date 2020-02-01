@@ -50,6 +50,8 @@ import RequestLeaveNurse from './Content/Nurse/RequestLeave/RequestLeaveNurse';
 import NurseCalendar from './Content/Nurse/NurseCalendar/NurseCalendar';
 import Doctors from './Content/Doctors/Doctors';
 import AppointmentTypes from './Content/AppointmentTypes/AppointmentTypes';
+import PatientProfile from './Content/PatientsList/PatientProfile/PatientProfile';
+import AbsenceRequests from './Content/ClinicAdmin/AbsenceRequests/AbsenceRequests';
 
 function App() {
   return (
@@ -108,6 +110,9 @@ function App() {
           <Route path="/clinic-admin">
             <ClinicAdmin />
           </Route>
+          <Route path="/absence-requests">
+            <AbsenceRequests />
+          </Route>
           <Route path="/quick-reservation">
             <QuickReservation />
           </Route>
@@ -124,9 +129,7 @@ function App() {
             <ClinicPage />
           </Route>
           <Route path='/edit-clinic' component={EditClinicPage} />
-          <Route path="/business-report">
-            <BusinessReport />
-          </Route>
+          <Route path="/business-report"component={BusinessReport}/>
           <Route path="/predefined-examinations">
             <PredefinedExaminations />
           </Route>
@@ -168,6 +171,9 @@ function App() {
           </Route>
           <Route path="/medical-card">
             <MedicalCard/>
+          </Route>
+          <Route path="/patient-profile">
+            <PatientProfile/>
           </Route>
           <Route path="/edit-examination-report">
             <EditExaminationReport/>
