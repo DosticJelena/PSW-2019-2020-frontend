@@ -6,6 +6,8 @@ import Footer from '../Footer/Footer';
 import Modal from '../../UI/Modal/Modal';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom';
+import NewAppointmentType from './NewAppointmentType/NewAppointmentType';
+import UpdateAppointmentType from './UpdateAppointmentType/UpdateAppointmentType';
 
 class AppointmentTypes extends React.Component{
    
@@ -18,7 +20,7 @@ class AppointmentTypes extends React.Component{
             newModalVisible: false,
             deleteModalVisible: false,
             deleteModalVisible: false,
-            doctorId: 0, 
+            appTypeId: 0, 
             appointments: [],
             clinicAdmin: ''
         }
@@ -33,16 +35,19 @@ class AppointmentTypes extends React.Component{
         this.setState({newModalVisible: true});
       }
 
-      deleteModalHandler = (docId) => {
-        this.setState({deleteModalVisible: true, doctorId: docId});
+      deleteModalHandler = (appTypeId) => {
+        this.setState({deleteModalVisible: true, appTypeId: appTypeId});
+        this.props.history.push("/appointment-types/"+appTypeId);
       }
 
-      updateModalHandler = (docId) => {
-        this.setState({updateModalHandler: true, doctorId: docId});
+      updateModalHandler = (appTypeId) => {
+        this.setState({updateModalHandler: true, appTypeId: appTypeId});
+        this.props.history.push("/appointment-types/"+appTypeId);
       }
 
       modalClosedHandler = () => {
         this.setState({modalVisible: false, newModalVisible: false, deleteModalVisible: false, updateModalHandler: false});
+        this.props.history.push("/appointment-types");
       }
     
       componentDidMount() {
@@ -115,10 +120,10 @@ class AppointmentTypes extends React.Component{
       return (
         <div className="AppointmentTypes">
           <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
-              <h4>New apoointment type</h4>
+              <NewAppointmentType/>
           </Modal>
           <Modal show={this.state.updateModalHandler} modalClosed={this.modalClosedHandler}>
-              <h4>Update appointment type</h4>
+              <UpdateAppointmentType types={this.state.types} ordinationId={this.state.ordinationId} reload={this.state.updateModalHandler}/>
           </Modal>
           <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
               <h4>Are you sure you want to delete this appointment type?</h4>
