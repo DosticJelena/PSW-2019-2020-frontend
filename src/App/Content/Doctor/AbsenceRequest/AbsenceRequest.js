@@ -65,6 +65,7 @@ class AbsenceRequest extends React.Component {
 
   onFocusChange(focusedInput) {
     this.setState({ focusedInput });
+    console.log(this.state);
   }
 
   SendRegisterRequest = event => {
