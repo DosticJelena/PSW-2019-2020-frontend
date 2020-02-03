@@ -80,7 +80,9 @@ class Ordinations extends React.Component {
   deleteOrdination = (ordId) => {
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.put('http://localhost:8080/api/ordination/delete/'+ ordId)
+    axios.put('http://localhost:8080/api/ordination/delete/' + ordId, {
+      responseType: 'json'
+    })
       .then(response => {
         window.location.reload();
       })
@@ -206,7 +208,7 @@ class Ordinations extends React.Component {
           <NewOrdination />
         </Modal>
         <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
-            {deleteContent}
+          {deleteContent}
         </Modal>
         <Header />
         <div className="row">
