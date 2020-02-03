@@ -25,13 +25,18 @@ class DoctorsList extends React.Component{
               rating:'',
               freeTerms:[],
               free:[],
-              selectedTime:''
+              dto:[{
+                timeId:'',
+                time:''
+              }]
             }],
             type:'',
             date:'',
+            time:'',
             types:[],
             filtered:[],
-            selected:null
+            selected:null,
+            appointmentType:''
         }
 
     }
@@ -40,17 +45,14 @@ class DoctorsList extends React.Component{
       event.preventDefault();
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      console.log(this.state.date);
-      console.log(this.state.type);
       const clinicId=window.location.pathname.split("/")[2];
       axios.get("http://localhost:8080/api/filter-doctors/"+this.state.date+'/'+this.state.type+'/'+clinicId).then(response => {
-        console.log(response.data);
         let tmpArray = []
+        let available=[]
         for (var i = 0; i < response.data.length; i++) {
           tmpArray.push(response.data[i])
 
         }
-        console.log(tmpArray);
         this.setState({
           doctors: tmpArray,
           filtered:1
@@ -58,8 +60,32 @@ class DoctorsList extends React.Component{
       }).catch((error) => console.log(error))
     }
 
-    schedule= (row)=>{
-      console.log(row);
+    schedule= (doctorId, time)=>{
+
+      const clinicId=window.location.pathname.split("/")[2];
+      const specializationId = window.location.pathname.split("/")[3];
+      var specialization="";
+      for(let i=0; i<this.state.types.length; i++){
+        if(this.state.types[i].id==specializationId){
+          specialization=this.state.types[i].name;
+        }
+      } 
+        this.props.history.push('/scheduling-form/'+doctorId+'/'+clinicId+'/'+time+'/'+specializationId+'/'+specialization);
+    }
+
+    schedule1= (doctorId, time)=>{
+
+      const clinicId = window.location.pathname.split("/")[2];
+      var specialization="";
+      var specializationId="";
+      for(let i=0; i<this.state.types.length; i++){
+        if(this.state.types[i].id==this.state.type){
+          specialization=this.state.types[i].name;
+          specializationId= this.state.types[i].id;
+        }
+      }
+      this.props.history.push('/scheduling-form/'+doctorId+'/'+clinicId+'/'+time+'/'+specializationId+'/'+specialization);
+         
     }
 
 
@@ -84,44 +110,23 @@ class DoctorsList extends React.Component{
       this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
     }
 
-    onRowClick(e, t, rowInfo) {
-      this.setState((oldState) => {
-          let data = oldState.data.slice();
-          let copy = Object.assign({},  data[rowInfo.index]);
-  
-          copy.selected = true;
-          copy.FirstName = "selected";
-          data[rowInfo.index] = copy;
-  
-          return {
-              data: data,
-          }
-      })
-  }
-
     componentDidMount() { 
         const id = window.location.pathname.split("/")[2];
         const type = window.location.pathname.split("/")[3];
         const date = window.location.pathname.split("/")[4];
-        console.log(id);
-        console.log( type);
-        console.log( date);
 
         if(type!=null){
 
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             axios.get("http://localhost:8080/api/filter-doctors/"+date+'/'+type+'/'+id).then(response => {
-              console.log(response.data);
               let tmpArray = []
               for (var i = 0; i < response.data.length; i++) {
                 tmpArray.push(response.data[i])
       
               }
-              console.log(tmpArray);
               this.setState({
                 doctors: tmpArray,
-                //filtered:1
               })
             }).catch((error) => console.log(error))
         }
@@ -133,12 +138,13 @@ class DoctorsList extends React.Component{
               for (var i = 0; i < response.data.length; i++) {
                   tmpArray.push(response.data[i])
               }
-    
+
               this.setState({
                   doctors: tmpArray
               })
           })
         .catch((error) => console.log(error))
+        }
 
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -148,15 +154,12 @@ class DoctorsList extends React.Component{
             for (var i = 0; i < response.data.length; i++) {
               tmpArray.push(response.data[i])
             }
-
             this.setState({
               types: tmpArray
             })
           })
           .catch((error) => console.log(error))
-        }
 
-       
       }
 
       render() {
@@ -177,17 +180,18 @@ class DoctorsList extends React.Component{
             accessor: 'rating'
         },{
           Header:'Avaiable appoint.',
-          //accessor:'free'
           Cell: row => (
             <div>
-                <select required className="custom-select mr-sm-2" name="freeTerms" id="freeTerms" onChange={this.handleChange} >
-                  {row.original.free.map((fr, index) => (
-                      <option key={fr} value={fr}>{fr}</option>
-                    ))}   
-                </select>
+                 { row.original.dto.map((t, index) => (
+                        <Button className="schedule-appointment-button" key={t.timeId} value={t.timeId} onClick={() => this.schedule(row.original.id, t.time)}>{t.time.split(' ')[0]}</Button>
+                   )) }         
              </div>
         )
-      }]
+      },{
+        Header:'Rating',
+        accessor: 'rating'
+    }
+    ]
 
       const columnsAll=[
         {
@@ -205,6 +209,7 @@ class DoctorsList extends React.Component{
           accessor: 'rating'
       }]
 
+      var a=0;
       const columnsAllFiltered=[
         {
           Header:'Id',
@@ -221,34 +226,22 @@ class DoctorsList extends React.Component{
           accessor: 'rating'
       },{
         Header:'Avaiable appoint.',
-       // accessor:'free',
         Cell: row => (
-             <div className="row">
-              <div className="col">
-                <label htmlFor="free"></label>
-                <select required className="custom-select mr-sm-1" name="freeTerms" id="freeTerms" onChange={this.handleChange} >
-                <option defaultValue="0"></option>
-                  {row.original.free.map((fr, index) => (
-                      <option key={fr} value={fr}>{fr}</option>
-                    ))}   
-                </select>
-              </div>
-            </div>
+          <div>
+                 { row.original.dto.map((t, index) => (
+                        <Button className="schedule-appointment-button" key={t.timeId} value={t.timeId} onClick={() => this.schedule1(row.original.id, t.time)}>{t.time.split(' ')[0]}</Button>
+                        )) } 
+
+          </div>
       )
-    },{
-      Header:'',
-      Cell: row=> (
-        <div className="col">
-          <Button className="btn doctors-list-button" onClick={() => this.schedule(row.original)}>Schedule</Button>
-        </div>
-      )
-  }]
+    }]
 
       var clinicDoctors;
       var table;
       var title;
       if(window.location.pathname.split("/")[3]==null){
         clinicDoctors=(
+         
               <form onSubmit={this.FilterDoctors}>
                   <div className="row">
                     <div className="col-5">
@@ -288,23 +281,6 @@ class DoctorsList extends React.Component{
           onFilteredChange = {this.handleOnFilterInputChange}
           defaultPageSize = {6}
           pageSizeOptions = {[6, 10, 15]}
-          /*getTrProps={(state, rowInfo) => {
-            if (rowInfo && rowInfo.row) {
-              return {
-                onClick: (e) => {
-                  this.setState({
-                    selected: rowInfo.index
-                  })
-                },
-                style: {
-                  background: rowInfo.index === this.state.selected ? '#00afec' : 'white',
-                  color: rowInfo.index === this.state.selected ? 'white' : 'black'
-                }
-              }
-            }else{
-              return {}
-            }
-          }}*/
           />)
         }else{
 
