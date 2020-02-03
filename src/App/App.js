@@ -28,6 +28,7 @@ import Drug from './Content/Codebook/Drug/Drug';
 import Diagnosis from './Content/Codebook/Diagnosis/Diagnosis';
 import DoctorsList from './Content/DoctorsList/DoctorsList';
 import ReservationRequests from './Content/ClinicAdmin/ReservationRequests/ReservationRequests';
+import EditClinicPage from './Content/Clinic/EditClinicPage/EditClinicPage';
 
 
 // React Notification
@@ -49,6 +50,9 @@ import RequestLeaveNurse from './Content/Nurse/RequestLeave/RequestLeaveNurse';
 import NurseCalendar from './Content/Nurse/NurseCalendar/NurseCalendar';
 import Doctors from './Content/Doctors/Doctors';
 import SchedulingForm from './Content/Patient/SchedulingForm/SchedulingForm';
+import AppointmentTypes from './Content/AppointmentTypes/AppointmentTypes';
+import PatientProfile from './Content/PatientsList/PatientProfile/PatientProfile';
+import AbsenceRequests from './Content/ClinicAdmin/AbsenceRequests/AbsenceRequests';
 
 function App() {
   return (
@@ -79,9 +83,7 @@ function App() {
           <Route path="/absence-request">
             <AbsenceRequest />
           </Route>
-          <Route path="/new-appointment-doctor">
-            <NewAppointmentDoctor />
-          </Route>
+          <Route path="/new-appointment-doctor" component={NewAppointmentDoctor}/>
           <Route path="/work-calendar">
             <WorkCalendar />
           </Route>
@@ -94,6 +96,9 @@ function App() {
           <Route path="/doctors">
             <Doctors />
           </Route>
+          <Route path="/appointment-types">
+            <AppointmentTypes />
+          </Route>
           <Route path="/appointment-history">
             <AppointmentHistory />
           </Route>
@@ -105,6 +110,9 @@ function App() {
           </Route>
           <Route path="/clinic-admin">
             <ClinicAdmin />
+          </Route>
+          <Route path="/absence-requests">
+            <AbsenceRequests />
           </Route>
           <Route path="/quick-reservation">
             <QuickReservation />
@@ -121,9 +129,8 @@ function App() {
           <Route path="/clinic">
             <ClinicPage />
           </Route>
-          <Route path="/business-report">
-            <BusinessReport />
-          </Route>
+          <Route path='/edit-clinic' component={EditClinicPage} />
+          <Route path="/business-report"component={BusinessReport}/>
           <Route path="/predefined-examinations">
             <PredefinedExaminations />
           </Route>
@@ -165,6 +172,9 @@ function App() {
           </Route>
           <Route path="/medical-card">
             <MedicalCard/>
+          </Route>
+          <Route path="/patient-profile">
+            <PatientProfile/>
           </Route>
           <Route path="/edit-examination-report">
             <EditExaminationReport/>

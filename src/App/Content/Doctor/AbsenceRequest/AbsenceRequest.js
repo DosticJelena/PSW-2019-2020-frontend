@@ -46,6 +46,7 @@ class AbsenceRequest extends React.Component {
     this.state = {
       startDate: "",
       endDate: "",
+      role: '',
       focusedInput: "",
       types: ["ANNUAL_LEAVE", "SICK_LEAVE"],
       typeId: "",
@@ -64,26 +65,56 @@ class AbsenceRequest extends React.Component {
 
   onFocusChange(focusedInput) {
     this.setState({ focusedInput });
+    console.log(this.state);
   }
 
   SendRegisterRequest = event => {
-
     event.preventDefault();
-    console.log(this.state);
-    axios.post("http://localhost:8080/api/nurse/request-leave", {
+    console.log(this.state)
+    var token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get("http://localhost:8080/auth/getMyUser")
+      .then(response => {
+        console.log(response);
+        this.setState({
+          role: response.data.authorities[0].name
+        })
+      }).then(() => {
 
-      startDateTime: this.state.startDate._d,
-      endDateTime: this.state.endDate._d,
-      paidTimeOffType: this.state.typeId,
-      comment: this.state.description
+        if (this.state.role == "ROLE_NURSE") {
+          axios.post("http://localhost:8080/api/nurse/request-leave", {
 
-    }).then((resp) => {
-      NotificationManager.success('Request has been sent. Please wait until administrator informs you if it is accepted.', '', 3000);
-      console.log(resp);
-    })
-      .catch((error) => {
-        NotificationManager.error(error.response.data, 'Error', 3000)
-      })
+            startDateTime: this.state.startDate._d,
+            endDateTime: this.state.endDate._d,
+            paidTimeOffType: this.state.typeId,
+            comment: this.state.description
+
+          }).then((resp) => {
+            NotificationManager.success('Request has been sent. Please wait until administrator informs you if it is accepted.', '', 3000);
+            console.log(resp);
+          })
+            .catch((error) => {
+              NotificationManager.error(error.response.data, 'Error', 3000)
+            })
+        } else if (this.state.role == "ROLE_DOCTOR") {
+          axios.post("http://localhost:8080/api/doctor/request-leave", {
+
+            startDateTime: this.state.startDate._d,
+            endDateTime: this.state.endDate._d,
+            paidTimeOffType: this.state.typeId,
+            comment: this.state.description
+
+          }).then((resp) => {
+            NotificationManager.success('Request has been sent. Please wait until administrator informs you if it is accepted.', '', 3000);
+            console.log(resp);
+          })
+            .catch((error) => {
+              NotificationManager.error('Sorry, something went wrong.', 'Error', 3000)
+            })
+        }
+
+      }).catch((error) => console.log(error));
+
   }
 
   handleKeyUp = () => {
@@ -161,11 +192,12 @@ class AbsenceRequest extends React.Component {
         <Header />
         <div className="row">
           <div className="col-10">
+            <br />
+            <h3>Absence Request</h3>
             <div className="row register-form">
               <div className="col-md-6">
                 <form onSubmit={this.SendRegisterRequest} noValidate>
                   <div className="type">
-                    <label htmlFor="typeId">Type: </label>
                     <Autocomplete
                       id="combo-box-demo"
                       value={this.state.typeId}
