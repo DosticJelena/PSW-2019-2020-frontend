@@ -18,17 +18,17 @@ class PredefinedExaminations extends React.Component {
         this.state={
             examinations: [{
                 id:'',
-                clinic:'',
                 startDateTime:'',
                 endDateTime:'',
                 price:'',
                 ordination:'',
-                doctor:'',
+                doctors:'',
                 discount:''
             }],
             filtered:[],
             selected: undefined,
-            idP:''
+            appointmentId:'',
+            patientId:''
         }
     }
 
@@ -37,6 +37,7 @@ class PredefinedExaminations extends React.Component {
 
         const id = window.location.pathname.split("/")[2];
         axios.get("http://localhost:8080/api/predefined-appointments/"+id).then(response => {
+            console.log(response.data);
             let tmpArray = []
             for (var i = 0; i < response.data.length; i++) {
                 tmpArray.push(response.data[i])
@@ -47,14 +48,6 @@ class PredefinedExaminations extends React.Component {
             })
         })
       .catch((error) => console.log(error))
-
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/api/appointment/get-predefined-available-appointments", 
-        {responseType: 'json'})
-        .then(response => {
-          this.setState({ examinations: response.data });
-      });
   }  
 
   onFilteredChangeCustom = (value, accessor) => {
@@ -81,26 +74,29 @@ class PredefinedExaminations extends React.Component {
  
 
 schedule = (id) =>{
-        
+    var token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.get("http://localhost:8080/auth/getMyUser")  
     .then(response => {
-        console.log(response.data.id);
-        this.state.idP=response.data.id;
+      
+        axios.post("http://localhost:8080/api/schedule-predefined-appointment",{
+             appointmentId: id,
+             patientId: response.data.id
+        }).then(response => {
+        const {examinations} = this.state;
+        examinations.pop(response.data);
+        this.setState({examinations});
+        }).then((resp) => {
+            console.log('Id: ' + id);
+        })
     }).catch((error) => console.log(error))
 
-    axios.post("http://localhost:8080/api/schedule-predefined-appointment/" + id, this.state.idP ).then(response => {
-    const {examinations} = this.state;
-    examinations.pop(response.data);
-    this.setState({examinations});
-    }).then((resp) => this.onSuccessHandler(resp))
-    console.log('Id: ' + id);
+   
 };
 
 
     render() {
 
-        let{examinations}=this.state;
-        console.log(examinations);
         const columns=[{
             Header: 'Id',
             id: 'id',
@@ -108,20 +104,17 @@ schedule = (id) =>{
             filterable: false,
             width: 50
         },{
-            Header:'Clinic',
-            accessor:'clinic'
-        },{
             Header:'Start',
-            accessor:'startDateTime'
+            accessor:'startTime'
         },{
             Header:'End',
-            accessor:'endDateTime'
+            accessor:'endTime'
         },{
             Header:'Price',
             accessor:'price'
         },{
             Header:'Doctor',
-            accessor:'doctor'
+            accessor:'doctors'
         },{
             Header:'Ordination',
             accessor:'ordination'
@@ -149,7 +142,6 @@ schedule = (id) =>{
                 <div className='clinics rtable'>
                     <ReactTable 
                     data={this.state.examinations}
-                    //columns={columns}
                     filterable
                     onFilteredChange = {this.handleOnFilterInputChange}
                     filtered={this.state.filtered}

@@ -35,7 +35,8 @@ class ClinicsList extends React.Component{
             selected: undefined,
             date:'',
             type:'',
-            types:[]
+            types:[],
+            specialized:'',
         }
     }
 
@@ -53,10 +54,12 @@ class ClinicsList extends React.Component{
         }
 
         this.setState({
-          clinics: tmpArray
+          clinics: tmpArray,
+          specialized:1
+
         })
       }).catch((error) => console.log(error))
-    }
+    } 
 
     handleChange(e) {
       this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
@@ -72,7 +75,8 @@ class ClinicsList extends React.Component{
         }
 
         this.setState({
-            clinics: tmpArray
+            clinics: tmpArray,
+            specialized:0
         })
     })
     .catch((error) => console.log(error))
@@ -121,6 +125,13 @@ class ClinicsList extends React.Component{
         this.props.history.push('/clinic/'+id);
     }
 
+    availableDoctors = (clinicId) =>{
+      console.log(this.state.type);
+      console.log(this.state.date);
+
+      this.props.history.push('/doctors-list/' + clinicId +'/'+ this.state.type+ '/' + this.state.date);
+  }
+
     allClinics = () =>{
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
@@ -131,16 +142,42 @@ class ClinicsList extends React.Component{
         }
 
         this.setState({
-          clinics: tmpArray
+          clinics: tmpArray,
+          specialized: 0
         })
       }) .catch((error) => console.log(error))
         }
-      
 
     render(){
-        
+        console.log(this.state.specialized)
         let { clinics } = this.state;
+        
         const columns=[
+          {
+            Header:'Id',
+            id: 'id',
+            accessor: d => d.id
+        },{
+          Header:'Name',
+          accessor: 'name'
+        },{
+            Header:'Address',
+            accessor: 'address'
+        },{
+            Header:'Stars',
+            accessor: 'stars'
+        },{
+          Header: '',
+          Cell: row => (
+              <div>
+                 <button className="primary btn" onClick={() => this.visit(row.original.id)}>Visit</button>
+               </div>
+            ),
+          width: 100
+
+        }]
+
+        const columns1=[
           {
             Header:'Id',
             id: 'id',
@@ -161,12 +198,74 @@ class ClinicsList extends React.Component{
           Header: '',
           Cell: row => (
               <div>
+                 <button className="primary btn" onClick={() => this.availableDoctors(row.original.id)}>Available doctors</button>
+               </div>
+            ),
+          width: 150
+        },{
+          Header: '',
+          Cell: row => (
+              <div>
                  <button className="primary btn" onClick={() => this.visit(row.original.id)}>Visit</button>
                </div>
-          ),
+            ),
           width: 100
 
         }]
+
+
+        var availableDoctors;
+        if (this.state.specialized==1) {
+         availableDoctors=( <ReactTable 
+          data={clinics}
+          filterable
+          filtered={this.state.filtered}
+          onFilteredChange={(filtered, column, value) => {
+            this.onFilteredChangeCustom(value, column.id || column.accessor);
+          }}
+          defaultFilterMethod={(filter, row, column) => {
+            const id = filter.pivotId || filter.id;
+            if (typeof filter.value === "object") {
+              return row[id] !== undefined
+                ? filter.value.indexOf(row[id]) > -1
+                : true;
+            } else {
+              return row[id] !== undefined
+                ? String(row[id]).indexOf(filter.value) > -1
+                : true;
+            }
+          }}
+          columns={columns1}
+          defaultPageSize = {10}
+          pageSizeOptions = {[5, 10, 15]}
+        />
+         )}
+        else{
+          availableDoctors=(<ReactTable 
+          data={clinics}
+          filterable
+          filtered={this.state.filtered}
+          onFilteredChange={(filtered, column, value) => {
+            this.onFilteredChangeCustom(value, column.id || column.accessor);
+          }}
+          defaultFilterMethod={(filter, row, column) => {
+            const id = filter.pivotId || filter.id;
+            if (typeof filter.value === "object") {
+              return row[id] !== undefined
+                ? filter.value.indexOf(row[id]) > -1
+                : true;
+            } else {
+              return row[id] !== undefined
+                ? String(row[id]).indexOf(filter.value) > -1
+                : true;
+            }
+          }}
+          columns={columns}
+          defaultPageSize = {10}
+          pageSizeOptions = {[5, 10, 15]}
+        />)
+
+        }
 
         return (
             <div className="ClinicsList">
@@ -201,37 +300,12 @@ class ClinicsList extends React.Component{
                     <div className="col-2">
                       <br/>
                       <Button type="submit" className="btn clinics-list-button">Filter</Button>
-                      <button className="btn clinics-list-all " onClick={() => this.allClinics()}>All</button>
+                      <Button className="btn clinics-list-all " onClick={() => this.allClinics()}>All</Button>
                     </div>
-                   
-                     </div>
-                  
+                     </div>       
                 </form>
-               
-
-                <ReactTable 
-                  data={clinics}
-                  filterable
-                  filtered={this.state.filtered}
-                  onFilteredChange={(filtered, column, value) => {
-                    this.onFilteredChangeCustom(value, column.id || column.accessor);
-                  }}
-                  defaultFilterMethod={(filter, row, column) => {
-                    const id = filter.pivotId || filter.id;
-                    if (typeof filter.value === "object") {
-                      return row[id] !== undefined
-                        ? filter.value.indexOf(row[id]) > -1
-                        : true;
-                    } else {
-                      return row[id] !== undefined
-                        ? String(row[id]).indexOf(filter.value) > -1
-                        : true;
-                    }
-                  }}
-                  columns={columns}
-                  defaultPageSize = {10}
-                  pageSizeOptions = {[5, 10, 15]}
-                />
+                {availableDoctors}
+                
                 </div>
                 </div> 
               <Footer/>

@@ -49,6 +49,7 @@ import RegisterClinicAdmin from './Content/CCAdmin/RegisterClinicAdmin/RegisterC
 import RequestLeaveNurse from './Content/Nurse/RequestLeave/RequestLeaveNurse';
 import NurseCalendar from './Content/Nurse/NurseCalendar/NurseCalendar';
 import Doctors from './Content/Doctors/Doctors';
+import SchedulingForm from './Content/Patient/SchedulingForm/SchedulingForm';
 import AppointmentTypes from './Content/AppointmentTypes/AppointmentTypes';
 import PatientProfile from './Content/PatientsList/PatientProfile/PatientProfile';
 import AbsenceRequests from './Content/ClinicAdmin/AbsenceRequests/AbsenceRequests';
@@ -189,6 +190,9 @@ function App() {
           </Route>
           <Route path="/nurse-calendar">
             <NurseCalendar/>
+          </Route>
+          <Route path="/scheduling-form">
+            <SchedulingForm/>
           </Route>
         </Switch>
         <NotificationContainer />

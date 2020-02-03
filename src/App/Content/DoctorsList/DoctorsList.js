@@ -24,11 +24,19 @@ class DoctorsList extends React.Component{
               lastName:'',
               rating:'',
               freeTerms:[],
-              free:[]
+              free:[],
+              dto:[{
+                timeId:'',
+                time:''
+              }]
             }],
             type:'',
             date:'',
-            types:[]
+            time:'',
+            types:[],
+            filtered:[],
+            selected:null,
+            appointmentType:''
         }
 
     }
@@ -37,21 +45,47 @@ class DoctorsList extends React.Component{
       event.preventDefault();
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      console.log(this.state.date);
-      console.log(this.state.type);
       const clinicId=window.location.pathname.split("/")[2];
       axios.get("http://localhost:8080/api/filter-doctors/"+this.state.date+'/'+this.state.type+'/'+clinicId).then(response => {
-        console.log(response.data);
         let tmpArray = []
+        let available=[]
         for (var i = 0; i < response.data.length; i++) {
           tmpArray.push(response.data[i])
 
         }
-        console.log(tmpArray);
         this.setState({
-          doctors: tmpArray
+          doctors: tmpArray,
+          filtered:1
         })
       }).catch((error) => console.log(error))
+    }
+
+    schedule= (doctorId, time)=>{
+
+      const clinicId=window.location.pathname.split("/")[2];
+      const specializationId = window.location.pathname.split("/")[3];
+      var specialization="";
+      for(let i=0; i<this.state.types.length; i++){
+        if(this.state.types[i].id==specializationId){
+          specialization=this.state.types[i].name;
+        }
+      } 
+        this.props.history.push('/scheduling-form/'+doctorId+'/'+clinicId+'/'+time+'/'+specializationId+'/'+specialization);
+    }
+
+    schedule1= (doctorId, time)=>{
+
+      const clinicId = window.location.pathname.split("/")[2];
+      var specialization="";
+      var specializationId="";
+      for(let i=0; i<this.state.types.length; i++){
+        if(this.state.types[i].id==this.state.type){
+          specialization=this.state.types[i].name;
+          specializationId= this.state.types[i].id;
+        }
+      }
+      this.props.history.push('/scheduling-form/'+doctorId+'/'+clinicId+'/'+time+'/'+specializationId+'/'+specialization);
+         
     }
 
 
@@ -66,7 +100,8 @@ class DoctorsList extends React.Component{
         }
 
         this.setState({
-          doctors: tmpArray
+          doctors: tmpArray,
+          filtered:0
         })
       }) .catch((error) => console.log(error))
     }
@@ -77,18 +112,39 @@ class DoctorsList extends React.Component{
 
     componentDidMount() { 
         const id = window.location.pathname.split("/")[2];
+        const type = window.location.pathname.split("/")[3];
+        const date = window.location.pathname.split("/")[4];
+
+        if(type!=null){
+
+            var token = localStorage.getItem('token');
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            axios.get("http://localhost:8080/api/filter-doctors/"+date+'/'+type+'/'+id).then(response => {
+              let tmpArray = []
+              for (var i = 0; i < response.data.length; i++) {
+                tmpArray.push(response.data[i])
+      
+              }
+              this.setState({
+                doctors: tmpArray,
+              })
+            }).catch((error) => console.log(error))
+        }
+
+        if(type==null){
         axios.get("http://localhost:8080/api/doctors-list/"+id)  
           .then(response => {
               let tmpArray = []
               for (var i = 0; i < response.data.length; i++) {
                   tmpArray.push(response.data[i])
               }
-    
+
               this.setState({
                   doctors: tmpArray
               })
           })
         .catch((error) => console.log(error))
+        }
 
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -98,17 +154,17 @@ class DoctorsList extends React.Component{
             for (var i = 0; i < response.data.length; i++) {
               tmpArray.push(response.data[i])
             }
-
             this.setState({
               types: tmpArray
             })
           })
           .catch((error) => console.log(error))
+
       }
 
       render() {
 
-        const columns=[
+        const columnsSpecialized=[
           {
             Header:'Id',
             id: 'id',
@@ -124,26 +180,68 @@ class DoctorsList extends React.Component{
             accessor: 'rating'
         },{
           Header:'Avaiable appoint.',
-          //accessor:'free'
           Cell: row => (
             <div>
-                <select required className="custom-select mr-sm-2" name="freeTerms" id="freeTerms" onChange={this.handleChange} >
-                  {row.original.free.map((fr, index) => (
-                      <option key={fr} value={fr}>{fr}</option>
-                    ))}   
-                </select>
+                 { row.original.dto.map((t, index) => (
+                        <Button className="schedule-appointment-button" key={t.timeId} value={t.timeId} onClick={() => this.schedule(row.original.id, t.time)}>{t.time.split(' ')[0]}</Button>
+                   )) }         
              </div>
         )
+      },{
+        Header:'Rating',
+        accessor: 'rating'
+    }
+    ]
+
+      const columnsAll=[
+        {
+          Header:'Id',
+          id: 'id',
+          accessor: d => d.id
+      },{
+        Header:'First Name',
+        accessor: 'firstName'
+      },{
+        Header:'Last Name',
+        accessor: 'lastName'
+      },{
+          Header:'Rating',
+          accessor: 'rating'
       }]
-    
-      return (
-        <div className="DoctorsList">
-          <Header/>
-          <div className="row">
-            <div className="col-10">
-              <br/>
-            <h3>Doctors List</h3>
-              <div className='doctors rtable'>
+
+      var a=0;
+      const columnsAllFiltered=[
+        {
+          Header:'Id',
+          id: 'id',
+          accessor: d => d.id
+      },{
+        Header:'First Name',
+        accessor: 'firstName'
+      },{
+        Header:'Last Name',
+        accessor: 'lastName'
+      },{
+          Header:'Rating',
+          accessor: 'rating'
+      },{
+        Header:'Avaiable appoint.',
+        Cell: row => (
+          <div>
+                 { row.original.dto.map((t, index) => (
+                        <Button className="schedule-appointment-button" key={t.timeId} value={t.timeId} onClick={() => this.schedule1(row.original.id, t.time)}>{t.time.split(' ')[0]}</Button>
+                        )) } 
+
+          </div>
+      )
+    }]
+
+      var clinicDoctors;
+      var table;
+      var title;
+      if(window.location.pathname.split("/")[3]==null){
+        clinicDoctors=(
+         
               <form onSubmit={this.FilterDoctors}>
                   <div className="row">
                     <div className="col-5">
@@ -169,27 +267,66 @@ class DoctorsList extends React.Component{
                     <div className="col-3">
                       <br/>
                       <Button type="submit" className="btn doctors-list-button">Filter</Button>
-                      <button className="btn doctors-list-button1 " onClick={() => this.allClinicDoctors()}>All</button>
+                      <Button className="btn doctors-list-button1 " onClick={() => this.allClinicDoctors()}>All</Button>
                     </div>
                   </div>  
                 </form>
-                <ReactTable 
-                  data={this.state.doctors}
-                  columns={columns}
-                  filterable
-                  onFilteredChange = {this.handleOnFilterInputChange}
-                  defaultPageSize = {6}
-                  pageSizeOptions = {[6, 10, 15]}
-                />
-                </div>
-            </div>
-            <div className="col-2 doctor-list-image">
+      )
+        if(this.state.filtered==1){
+
+          table=( <ReactTable 
+          data={this.state.doctors}
+          columns={columnsAllFiltered}
+          filterable
+          onFilteredChange = {this.handleOnFilterInputChange}
+          defaultPageSize = {6}
+          pageSizeOptions = {[6, 10, 15]}
+          />)
+        }else{
+
+          table=( <ReactTable 
+          data={this.state.doctors}
+          columns={columnsAll}
+          filterable
+          onFilteredChange = {this.handleOnFilterInputChange}
+          defaultPageSize = {6}
+          pageSizeOptions = {[6, 10, 15]}
+        />)
+      }
+        title=(  <div className="clinics-title">Clinic doctors</div>)
+      
+      }else{
+
+        title=( <div className="clinics-title">Available doctors</div>)
+
+        table=(<ReactTable 
+          data={this.state.doctors}
+          columns={columnsSpecialized}
+          filterable
+          onFilteredChange = {this.handleOnFilterInputChange}
+          defaultPageSize = {6}
+          pageSizeOptions = {[6, 10, 15]}
+        />)
+      }
     
+      return (
+        <div className="DoctorsList">
+          <Header/>
+          <div className="row">
+            <div className="col-12">
+              <br/>
+              {title}
+              <br/>
+              <br/>
+              <div className='doctors rtable'>
+                {clinicDoctors}   
+                <br/>   
+                {table}
+              </div>
             </div>
-          </div>
+        </div>
            
-          <Footer/>
-    
+        <Footer/>
         </div>
       );
       }

@@ -13,30 +13,33 @@ class MedicalRecord extends React.Component{
         super(props); 
      
         this.state={
-           patientId:'', 
            height:'',
            weight:'',
            bloodType:'',
            allergies:[],
-           examinationReports:[]
         }
     }
 
     componentDidMount(){
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/api/medicalRecords"+this.state.patientId)  
-          .then(response => {
-              console.log(response.data[0]);
-              this.setState({
-                  patientId: response.data[0].patientId,
-                  height: response.data[0].height,
-                  weight: response.data[0].weight,
-                  bloodType: response.data[0].bloodType,
-                  allergies: response.data[0].allergies,
-                  examinationReports: response.data[0].examinationReports
+      var token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axios.get("http://localhost:8080/auth/getMyUser")  
+        .then(response => {
+            console.log(response.data.id);
+            var token = localStorage.getItem('token');
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            axios.get("http://localhost:8080/api/medicalRecords/"+response.data.id)  
+              .then(response => {
+                  console.log(response.data);
+                  this.setState({
+                      height: response.data.height,
+                      weight: response.data.weight,
+                      bloodType: response.data.bloodType,
+                      allergies: response.data.allergies,
+                  })
 
               })
+              .catch((error) => console.log(error))
           })
         .catch((error) => console.log(error))
      }
