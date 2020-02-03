@@ -125,10 +125,11 @@ class ClinicsList extends React.Component{
         this.props.history.push('/clinic/'+id);
     }
 
-    availableDoctors = (id) =>{
+    availableDoctors = (clinicId) =>{
       console.log(this.state.type);
       console.log(this.state.date);
-      this.props.history.push('/doctors-list/' + id +'/'+ this.state.type+ '/' + this.state.date);
+
+      this.props.history.push('/doctors-list/' + clinicId +'/'+ this.state.type+ '/' + this.state.date);
   }
 
     allClinics = () =>{
@@ -201,7 +202,6 @@ class ClinicsList extends React.Component{
                </div>
             ),
           width: 150
-
         },{
           Header: '',
           Cell: row => (
