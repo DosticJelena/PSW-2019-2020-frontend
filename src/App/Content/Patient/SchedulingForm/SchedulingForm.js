@@ -20,7 +20,7 @@ class SchedulingForm extends React.Component {
           this.state={
 
             patientId:'',
-            name:'',
+            clinicName:'',
             address:'',
             city:'',
             description:'',
@@ -35,8 +35,22 @@ class SchedulingForm extends React.Component {
 
         sendRequest = ()=>{
 
-          //post metod
+          var time="";
+          var year="";
+          year=window.location.pathname.split("/")[4].split("%20")[1].split(".");
+          time=year[2]+'-'+year[1]+'-'+year[0]+" "+window.location.pathname.split("/")[4].split("%20")[0];
+          console.log(time);
+          axios.post("http://localhost:8080/api/appointment-request", {
+            patientId: this.state.patientId,
+            clinicId: window.location.pathname.split("/")[3],
+            appointmentType: this.state.appointmentType,
+            startTime: time,
+            doctorsId: window.location.pathname.split("/")[2]
 
+            }).then((resp) => {
+            NotificationManager.success('Successfuly sent request. ', 'Success!', 4000);
+            })
+            .catch((error)=> NotificationManager.error('Somthing went wrong. Try later.', 'Error!', 4000))
         }
        
         componentDidMount(){
@@ -58,7 +72,7 @@ class SchedulingForm extends React.Component {
           .then(response => {
               console.log(response.data);
               this.setState({
-                  name: response.data.name,
+                  clinicName: response.data.name,
                   address: response.data.address,
                   city: response.data.city,
                   description: response.data.description
@@ -116,7 +130,7 @@ class SchedulingForm extends React.Component {
                             <label><strong> Patient:</strong> {this.state.patientName} {this.state.patientLastName} </label>
                           </div>
                           <div className="form-group" id="clinicName">
-                            <label><strong> Clinic:</strong> {this.state.name} </label>
+                            <label><strong> Clinic:</strong> {this.state.clinicName} </label>
                           </div>
                           <div className="form-group" id="doctor">
                             <label><strong> Doctor:</strong> {this.state.doctorsFirstName} {this.state.doctorsLastName} </label>
