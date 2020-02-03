@@ -25,7 +25,8 @@ class NewDoctor extends React.Component {
             address: '',
             types: [],
             wTimeStart: '',
-            wTimeEnd: ''
+            wTimeEnd: '',
+            spec: ''
         }
     }
 
@@ -57,7 +58,10 @@ class NewDoctor extends React.Component {
                 phoneNumber: this.state.phoneNumber,
                 country: this.state.country,
                 city: this.state.city,
-                address: this.state.address
+                address: this.state.address,
+                workTimeStart: this.state.wTimeStart,
+                workTimeEnd: this.state.wTimeEnd,
+                specialization: this.state.spec
             })
                 .then(() => {
                     NotificationManager.success('New doctor added!', 'Success!', 4000);
@@ -204,11 +208,27 @@ class NewDoctor extends React.Component {
                         <div className="col-3">
                             <div className="form-group">
                                 <label htmlFor="wTimeStart">Working time - start:</label>
+                                <input type="time"
+                                    className="form-control form-control"
+                                    id="wTimeStart"
+                                    name="wTimeStart"
+                                    onChange={this.handleChange}
+                                    placeholder="Enter Phone Number"
+                                    required
+                                />
                             </div>
                         </div>
                         <div className="col-3">
                             <div className="form-group">
                                 <label htmlFor="wTimeEnd">Working time - end:</label>
+                                <input type="time"
+                                    className="form-control form-control"
+                                    id="wTimeEnd"
+                                    name="wTimeEnd"
+                                    onChange={this.handleChange}
+                                    placeholder="Enter Phone Number"
+                                    required
+                                />
                             </div>
                         </div>
                     </div>
