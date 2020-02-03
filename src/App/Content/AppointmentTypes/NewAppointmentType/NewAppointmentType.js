@@ -1,12 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 
-import './NewOrdination.css';
 import { Button } from 'react-bootstrap';
 import {NotificationManager} from 'react-notifications';
 import { withRouter } from 'react-router-dom';
 
-class NewOrdination extends React.Component {
+class NewAppointmentType extends React.Component {
     
     constructor(props){
         super(props); 
@@ -15,34 +14,32 @@ class NewOrdination extends React.Component {
             clinicAdmin: '',
             clinicId: '',
             name: '',
-            type: '0',
-            number: '',
-            ordinations: []
+            types: [],
+            typeName: ''
         }
       }
 
-      AddNewOrdination = event => {
+      AddNewAppointment = event => {
         event.preventDefault();
         console.log(this.state);
         var found = false;
-        for (var i=0; i< this.state.ordinations.length; i++){
-            console.log(this.state.ordinations[i].number);
-            if (this.state.ordinations[i].number == this.state.number){
-                NotificationManager.error('Ordination with given number already exists!', 'Error!', 4000);
+        for (var i=0; i< this.state.types.length; i++){
+            console.log(this.state.types[i].name);
+            if (this.state.types[i].name == this.state.typeName){
+                NotificationManager.error('Type with given name already exists!', 'Error!', 4000);
                 found = true;
                 break;
             }  
         }
 
         if (found == false){
-            this.props.history.push("/ordinations");
-            axios.post("http://localhost:8080/api/ordination/new",{
+            this.props.history.push("/appointment-types");
+            axios.post("http://localhost:8080/api/types/new",{
                 clinicId: this.state.clinicId,
-                number: this.state.number,
-                type: this.state.type
+                name: this.state.typeName
             })
             .then(() => {
-                NotificationManager.success('New ordination added!', 'Success!', 4000);
+                NotificationManager.success('New appointment type added!', 'Success!', 4000);
                 window.location.reload()
             }).catch((error) => console.log(error))
         }
@@ -77,14 +74,14 @@ class NewOrdination extends React.Component {
                         })
                 }).catch((error) => console.log(error))
 
-                axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + this.state.clinicId)  
+                axios.get("http://localhost:8080/api/types/" + this.state.clinicId)  
                     .then(response => {
                         let tmpArray = []
                         for (var i = 0; i < response.data.length; i++) {
                             tmpArray.push(response.data[i])
                         }
                         this.setState({
-                            ordinations: tmpArray
+                            types: tmpArray
                         })
                     })
                   .catch((error) => console.log(error))
@@ -100,26 +97,17 @@ class NewOrdination extends React.Component {
     }
 
     render() {
+        
+        console.log(this.state)
         return (
-            <div className="NewOrdination">
-                <h4>New Ordination (<em>{this.state.name}</em>)</h4>
+            <div className="NewAppointmentType">
+                <h4>New Appointment Type (<em>{this.state.name}</em>)</h4>
                 <hr/>
-                <form onSubmit={this.AddNewOrdination}>
+                <form onSubmit={this.AddNewAppointment}>
                     <div className="form-group row">
-                        <label htmlFor="number" className="col-sm-2 col-form-label">Number</label>
+                        <label htmlFor="typeName" className="col-sm-2 col-form-label">Name</label>
                         <div className="col-sm-10">
-                        <input onChange={this.handleChange} required type="text" className="form-control" id="number" name="number" placeholder="Enter number"/>
-                        </div>
-                    </div>
-                    <div className="form-group row type-check">
-                        <label htmlFor="inputPassword" className="col-sm-2 col-form-label">Type</label>
-                        <div className="form-check form-check-inline">
-                        <input onChange={this.handleChange} defaultChecked className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0"/>
-                        <label className="form-check-label" htmlFor="inlineRadio1">Examination</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                        <input onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1"/>
-                        <label className="form-check-label" htmlFor="inlineRadio2">Operation</label>
+                        <input onChange={this.handleChange} required type="text" className="form-control" id="typeName" name="typeName" placeholder="Enter name"/>
                         </div>
                     </div>
                     <hr/>
@@ -131,4 +119,4 @@ class NewOrdination extends React.Component {
     
 }
 
-export default withRouter(NewOrdination);
+export default withRouter(NewAppointmentType);

@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import axios from 'axios';
 import ReactTable from "react-table";
+import Modal from '../../../UI/Modal/Modal';
+import CreateAppointment from '../CreateAppointment/CreateAppointment';
 
 import './ReservationRequests.css'
 
@@ -25,7 +27,9 @@ class ReservationRequests extends React.Component {
         endDateTime: '',
         type: ''
       }],
-      role: ''
+      role: '',
+      appReqId: '',
+      modalVisible: false
     }
   }
 
@@ -72,12 +76,20 @@ class ReservationRequests extends React.Component {
     return s.charAt(0).toUpperCase() + s.slice(1)
   }
 
+  modalHandler = (appId) => {
+    this.setState({ modalVisible: true, appReqId: appId });
+  }
+
+  modalClosedHandler = () => {
+    this.setState({ modalVisible: false });
+  }
+
   render() {
 
-    let requests  = this.state.appointmentRequests;
-    const columns=[
+    let requests = this.state.appointmentRequests;
+    const columns = [
       {
-        Header:'Id',
+        Header: 'Id',
         id: 'id',
         accessor: d => d.id,
         style: {
@@ -86,43 +98,43 @@ class ReservationRequests extends React.Component {
         },
         width: 50,
         filterable: false
-    },{
-      Header:'Start',
-      accessor: 'startDateTime',
-      style: {
-        textAlign: "center",
-        fontSize: 20
-      }
-    },{
-        Header:'End',
+      }, {
+        Header: 'Start',
+        accessor: 'startDateTime',
+        style: {
+          textAlign: "center",
+          fontSize: 20
+        }
+      }, {
+        Header: 'End',
         accessor: 'endDateTime',
         style: {
           textAlign: "center",
           fontSize: 20
         }
-    },{
-        Header:'Type',
+      }, {
+        Header: 'Type',
         accessor: 'type',
         style: {
           textAlign: "center",
           fontSize: 20
         }
-    },{
-      Header: '',
-      Cell: row => (                        
+      }, {
+        Header: '',
+        Cell: row => (
           <div>
-          <button className="btn primary btn-app-req">Create appointment</button>
-        </div>
-      ),
-      filterable: false,
-      style: {
-        textAlign: "center"
-      }
-    }]
+            <button className="btn primary btn-app-req" onClick={() => this.modalHandler(row.original.id)}>Create appointment</button>
+          </div>
+        ),
+        filterable: false,
+        style: {
+          textAlign: "center"
+        }
+      }]
 
-    const columns_doctor=[
+    const columns_doctor = [
       {
-        Header:'Id',
+        Header: 'Id',
         id: 'id',
         accessor: d => d.id,
         style: {
@@ -131,28 +143,28 @@ class ReservationRequests extends React.Component {
         },
         filterable: false,
         width: 50
-    },{
-      Header:'Start',
-      accessor: 'startDateTime',
-      style: {
-        textAlign: "center",
-        fontSize: 20
-      }
-    },{
-        Header:'End',
+      }, {
+        Header: 'Start',
+        accessor: 'startDateTime',
+        style: {
+          textAlign: "center",
+          fontSize: 20
+        }
+      }, {
+        Header: 'End',
         accessor: 'endDateTime',
         style: {
           textAlign: "center",
           fontSize: 20
         }
-    },{
-        Header:'Type',
+      }, {
+        Header: 'Type',
         accessor: 'type',
         style: {
           textAlign: "center",
           fontSize: 20
         }
-    }]
+      }]
 
     var content;
     if (this.state.role == "ROLE_DOCTOR") {
@@ -163,21 +175,24 @@ class ReservationRequests extends React.Component {
 
     return (
       <div className="ReservationRequests">
+        <Modal show={this.state.modalVisible} modalClosed={this.modalClosedHandler}>
+          <CreateAppointment />
+        </Modal>
         <Header />
         <div className="row">
           <div className="col-10">
-            <br/>
+            <br />
             <h3>Appointment Requests</h3>
             <div className="cards">
               <br />
-              <ReactTable 
-                      data={requests}
-                      columns={content}
-                      filterable
-                      defaultPageSize = {5}
-                      pageSizeOptions = {[5, 10, 15]}
-                      noDataText={"You don't have any appointment reservation requests."}
-                    />
+              <ReactTable
+                data={requests}
+                columns={content}
+                filterable
+                defaultPageSize={5}
+                pageSizeOptions={[5, 10, 15]}
+                noDataText={"You don't have any appointment reservation requests."}
+              />
             </div>
           </div>
           <div className="col-2 res-req-image">

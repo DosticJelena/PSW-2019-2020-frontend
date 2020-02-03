@@ -16,6 +16,7 @@ class ClinicPage extends React.Component {
             clinicId: '',
             name: '',
             avg: '',
+            stars: '',
             doctors: [],
             ordinations: [{
                 number: '',
@@ -72,7 +73,8 @@ class ClinicPage extends React.Component {
                                         name: response.data.name,
                                         address: response.data.address,
                                         city: response.data.city,
-                                        description: response.data.description
+                                        description: response.data.description,
+                                        stars: response.data.stars
                                     })
                                 }).catch((error) => console.log(error))
 
@@ -164,16 +166,15 @@ class ClinicPage extends React.Component {
                 width: 70
             }]
 
-        var path = "/business-report/" + this.state.id;
 
         var busRepBtn;
         if (this.state.role === "ROLE_CLINIC_ADMIN") {
-            busRepBtn = (<Link to={path} className="btn link-btn-patient predefined-btn">Business Report</Link>)
+            busRepBtn = (<Link to={{pathname: "/business-report", state: {clinicId: this.state.clinicId, stars: this.state.stars}}} className="btn link-btn-patient predefined-btn">Business Report</Link>)
         }
 
         var updateBtn;
         if (this.state.role === "ROLE_CLINIC_ADMIN") {
-            updateBtn = (<Link to={path} className="btn update-clinic predefined-btn">Update Clinic info</Link>)
+            updateBtn = (<Link to={{pathname: "/edit-clinic", state: {clinicId: this.state.clinicId}}} className="btn update-clinic predefined-btn">Update Clinic info</Link>)
         }
 
         var doctorsPatient;

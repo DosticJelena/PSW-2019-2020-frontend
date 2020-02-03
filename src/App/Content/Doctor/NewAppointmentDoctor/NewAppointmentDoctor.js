@@ -5,8 +5,10 @@ import Swal from 'sweetalert2';
 import { Button } from 'react-bootstrap';
 import withReactContent from 'sweetalert2-react-content';
 import axios from 'axios';
-import {NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 import { withRouter } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 import './NewAppointmentDoctor.css';
 
@@ -24,10 +26,11 @@ class NewAppointmentDoctor extends React.Component {
       patients: [],
       patName: '',
       patient: '',
-      startDateTime: '',
-      endDateTime: '',
+      startDate: '',
+      endDate: '',
       doctorId: '',
-      type: '0'
+      type: '0',
+      focusedInput: "",
     }
   }
 
@@ -37,8 +40,8 @@ class NewAppointmentDoctor extends React.Component {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.post("http://localhost:8080/api/doctor/schedule-appointment", {
       patient: this.state.patient,
-      startDateTime: this.state.startDateTime.substr(0, 10) + ' ' + this.state.startDateTime.substr(11),
-      endDateTime: this.state.endDateTime.substr(0, 10) + ' ' + this.state.endDateTime.substr(11),
+      startDateTime: this.state.startDate.substr(0, 10) + ' ' + this.state.startDate.substr(11),
+      endDateTime: this.state.endDate.substr(0, 10) + ' ' + this.state.endDate.substr(11),
       doctor: this.state.doctorId,
       type: this.state.type
     })
@@ -90,6 +93,11 @@ class NewAppointmentDoctor extends React.Component {
       .catch((error) => console.log(error))
   }
 
+  onFocusChange = (focusedInput) => {
+    this.setState({ focusedInput });
+    console.log(this.state);
+  }
+
   render() {
     return (
       <div className="NewAppointmentDoctor">
@@ -109,7 +117,7 @@ class NewAppointmentDoctor extends React.Component {
                       <div className="form-group">
                         <div className="col-6">
                           <label htmlFor="patName">Patient:</label>
-                          <input disabled type="text" className="form-control" name="patName" id="patName" value={this.state.patName}/>
+                          <input disabled type="text" className="form-control" name="patName" id="patName" value={this.state.patName} />
                         </div>
                       </div>
                     </div>
@@ -120,12 +128,12 @@ class NewAppointmentDoctor extends React.Component {
                         <div className="row">
                           <div className="col-6">
                             <label htmlFor="time">Start:</label>
-                            <input required type="datetime-local" className="form-control" name="startDateTime" id="time" placeholder="Choose start time"
+                            <input required type="datetime-local" className="form-control" name="startDate" id="time" placeholder="Choose start time"
                               onChange={this.handleChange} />
                           </div>
                           <div className="col-6">
                             <label htmlFor="time">End:</label>
-                            <input required type="datetime-local" className="form-control" name="endDateTime" id="time" placeholder="Choose end time"
+                            <input required type="datetime-local" className="form-control" name="endDate" id="time" placeholder="Choose end time"
                               onChange={this.handleChange} />
                           </div>
                         </div>
@@ -163,4 +171,4 @@ class NewAppointmentDoctor extends React.Component {
   }
 }
 
-export default withRouter (NewAppointmentDoctor);
+export default withRouter(NewAppointmentDoctor);

@@ -8,6 +8,7 @@
     color: white;
 }
 
+
 .AbsenceRequest .welcome {
     background-color: darkcyan;
     height: 100vh;
@@ -36,8 +37,10 @@
 }
 
 .AbsenceRequest .register-form {
-    margin-left: 30px;
-    margin-top: 30px;
+    margin: 40px;
+    background-color: silver;
+    border-radius: 0 25px 0 25px;
+    padding: 40px 40px;
 }
 
 .AbsenceRequest .wrapper {
@@ -64,6 +67,7 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    background-color: silver;
   }
   
   .AbsenceRequest h1 {
