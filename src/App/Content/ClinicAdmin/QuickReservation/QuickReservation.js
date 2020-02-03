@@ -48,11 +48,12 @@ class QuickReservation extends React.Component {
       ordination: this.state.ordination,
       doctor: this.state.doctor,
       price: this.state.price,
-      clinicAdmin: this.state.clinicAdmin
+      clinicAdmin: this.state.clinicAdmin,
+      discount : 5
     })
       .then((resp) => {
         NotificationManager.success('You have created appointment succesfully!', 'Success!', 4000)
-        this.props.history.push('/predefined-examinations');
+        this.props.history.push('/clinic-admin');
       })
       .catch((error) => NotificationManager.error('Incorect values!', 'Error!', 4000))
 
