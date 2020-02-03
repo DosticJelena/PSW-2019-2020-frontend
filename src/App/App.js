@@ -48,6 +48,7 @@ import RegisterClinicAdmin from './Content/CCAdmin/RegisterClinicAdmin/RegisterC
 import RequestLeaveNurse from './Content/Nurse/RequestLeave/RequestLeaveNurse';
 import NurseCalendar from './Content/Nurse/NurseCalendar/NurseCalendar';
 import Doctors from './Content/Doctors/Doctors';
+import SchedulingForm from './Content/Patient/SchedulingForm/SchedulingForm';
 
 function App() {
   return (
@@ -179,6 +180,9 @@ function App() {
           </Route>
           <Route path="/nurse-calendar">
             <NurseCalendar/>
+          </Route>
+          <Route path="/scheduling-form">
+            <SchedulingForm/>
           </Route>
         </Switch>
         <NotificationContainer />
