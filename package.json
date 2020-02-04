@@ -28,6 +28,7 @@
     "react-select": "^3.0.8",
     "react-stepzilla": "^6.0.2",
     "react-table": "^6.10.3",
+    "react-time-range": "^1.0.4",
     "routes": "^2.1.0",
     "sweetalert2": "^9.3.16",
     "sweetalert2-react-content": "^2.0.2"
