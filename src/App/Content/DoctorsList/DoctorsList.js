@@ -187,11 +187,7 @@ class DoctorsList extends React.Component{
                    )) }         
              </div>
         )
-      },{
-        Header:'Rating',
-        accessor: 'rating'
-    }
-    ]
+      }]
 
       const columnsAll=[
         {
