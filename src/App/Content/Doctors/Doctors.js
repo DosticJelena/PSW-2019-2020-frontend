@@ -150,9 +150,8 @@ class Doctors extends React.Component {
         Header: 'Address',
         accessor: 'address'
       }, {
-        Header: 'Stars',
-        accessor: 'stars',
-        width: 100
+        Header: 'Specialization',
+        accessor: 'specialization'
       }, {
         Header: '',
         width: 100,
