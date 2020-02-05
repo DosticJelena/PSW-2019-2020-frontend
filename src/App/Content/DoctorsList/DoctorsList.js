@@ -186,7 +186,7 @@ class DoctorsList extends React.Component{
                         <Button className="schedule-appointment-button" key={t.timeId} value={t.timeId} onClick={() => this.schedule(row.original.id, t.time)}>{t.time.split(' ')[0]}</Button>
                    )) }         
              </div>
-        )
+        ),filterable:false
       }]
 
       const columnsAll=[
@@ -229,7 +229,7 @@ class DoctorsList extends React.Component{
                         )) } 
 
           </div>
-      )
+      ),filterable:false
     }]
 
       var clinicDoctors;

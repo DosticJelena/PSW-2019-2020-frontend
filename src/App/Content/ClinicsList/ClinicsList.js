@@ -173,7 +173,8 @@ class ClinicsList extends React.Component{
                  <button className="primary btn" onClick={() => this.visit(row.original.id)}>Visit</button>
                </div>
             ),
-          width: 100
+          width: 100,
+          filterable:false
 
         }]
 
@@ -201,7 +202,9 @@ class ClinicsList extends React.Component{
                  <button className="primary btn" onClick={() => this.availableDoctors(row.original.id)}>Available doctors</button>
                </div>
             ),
-          width: 150
+          width: 150,
+          filterable:false
+
         },{
           Header: '',
           Cell: row => (
@@ -209,7 +212,8 @@ class ClinicsList extends React.Component{
                  <button className="primary btn" onClick={() => this.visit(row.original.id)}>Visit</button>
                </div>
             ),
-          width: 100
+          width: 100,
+          filterable:false
 
         }]
 
