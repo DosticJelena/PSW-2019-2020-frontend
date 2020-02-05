@@ -173,13 +173,10 @@ class ClinicPage extends React.Component {
             }, {
                 Header: 'Last Name',
                 accessor: 'lastName'
-            }, {
-                Header: 'Phone Number',
-                accessor: 'phoneNumber'
-            }, {
-                Header: 'Address',
-                accessor: 'address'
-            }, {
+            },{
+                Header: 'Specialization',
+                accessor: 'specialization'
+            },{
                 Header: 'Stars',
                 accessor: 'stars',
                 width: 70
