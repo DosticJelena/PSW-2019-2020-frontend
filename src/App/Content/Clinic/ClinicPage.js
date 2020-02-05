@@ -320,6 +320,28 @@ class ClinicPage extends React.Component {
             )
         }
 
+        var patientMap;
+        if (this.state.role === "ROLE_PATIENT"){
+            patientMap = (<div className="col-6"><Map
+                google={this.props.google}
+                zoom={15}
+                style={{ margin: "0 40px 80px 20px", height: "40vh" }}
+                initialCenter={{
+                    lat: parseFloat(this.state.lat),
+                    lng: parseFloat(this.state.longi)
+                }}>
+
+                <Marker onClick={this.onMarkerClick}
+                    name={'Belgrade,Serbia'} />
+
+                <InfoWindow onClose={this.onInfoWindowClose}>
+                    <div>
+                        <h1>Adresa</h1>
+                    </div>
+                </InfoWindow>
+            </Map></div>)
+        }
+
         return (
 
             <div className="Clinic-page">
@@ -342,6 +364,7 @@ class ClinicPage extends React.Component {
                             </div>
                         </div>
                         {docTables}
+                        {patientMap}
                     </div>
                     <div className="col-2 clinic-page-image">
 
