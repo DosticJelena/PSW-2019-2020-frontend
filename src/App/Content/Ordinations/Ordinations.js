@@ -10,7 +10,6 @@ import { withRouter } from 'react-router-dom';
 import OrdinationCalendar from '../Ordinations/OrdinationCalendar/OrdinationCalendar';
 import NewOrdination from './NewOrdination/NewOrdination';
 import UpdateOrdination from './UpdateOrdination/UpdateOrdination';
-import { NotificationManager } from 'react-notifications';
 
 class Ordinations extends React.Component {
 
@@ -85,10 +84,9 @@ class Ordinations extends React.Component {
       responseType: 'json'
     })
       .then(response => {
-        NotificationManager.success('You have deleted ordination succesfully!', 'Success!', 4000)
         window.location.reload();
       })
-      .catch((error) => NotificationManager.error('Something went wrong.', 'Error!', 4000))
+      .catch((error) => console.log(error))
   }
 
   getAppointmentsForOrdination = (ordId) => {

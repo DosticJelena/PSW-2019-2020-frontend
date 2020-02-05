@@ -49,9 +49,8 @@ class BusinessReport extends React.Component {
                     })
                     .then(() => {
 
-                        axios.get("http://localhost:8080/api/clinic-doctors")
+                        axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.id)
                             .then(response => {
-                                console.log(response);
                                 let tmpArray = []
                                 for (var i = 0; i < response.data.length; i++) {
                                     tmpArray.push(response.data[i])
@@ -104,7 +103,8 @@ class BusinessReport extends React.Component {
                         <h3><em>{this.state.name}</em></h3>
                         <hr />
                         <h5>Average grade: {this.state.avg}</h5>
-                        <h5>Income: {this.state.avg}</h5>
+                        <h5>Monthly Income: {this.state.avg}</h5>
+                        <h5>Graph: {this.state.avg}</h5>
                         <br />
                         <h4>Doctors</h4>
                         <div className='doc-table'>

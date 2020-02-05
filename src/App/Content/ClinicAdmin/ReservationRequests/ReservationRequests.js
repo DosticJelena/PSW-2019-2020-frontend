@@ -7,7 +7,6 @@ import axios from 'axios';
 import ReactTable from "react-table";
 import Modal from '../../../UI/Modal/Modal';
 import CreateAppointment from '../CreateAppointment/CreateAppointment';
-import { withRouter } from 'react-router-dom';
 
 import './ReservationRequests.css'
 
@@ -58,44 +57,17 @@ class ReservationRequests extends React.Component {
   }
 
   componentDidMount() {
-    this.modalClosedHandler();
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.get("http://localhost:8080/auth/getMyUser")
       .then(response => {
         console.log(response);
         this.setState({
-          clinicAdmin: response.data.id,
+          appointmentRequests: response.data.appointmentRequests,
           role: response.data.authorities[0].name
         })
         console.log(this.state.appointmentRequests[0]);
-      }).then(() => {
-
-        if (this.state.role == "ROLE_CLINIC_ADMIN") {
-
-          axios.get("http://localhost:8080/api/clinic-app-requests-ca")
-            .then(response => {
-              console.log(response);
-              this.setState({
-                appointmentRequests: response.data
-              })
-            })
-            .catch((error) => console.log(error));
-
-        } else if (this.state.role == "ROLE_DOCTOR") {
-
-          axios.get("http://localhost:8080/api/clinic-app-requests-doc")
-            .then(response => {
-              console.log(response);
-              this.setState({
-                appointmentRequests: response.data
-              })
-            })
-            .catch((error) => console.log(error));
-        }
-
       })
-
       .catch((error) => console.log(error))
   }
 
@@ -106,12 +78,10 @@ class ReservationRequests extends React.Component {
 
   modalHandler = (appId) => {
     this.setState({ modalVisible: true, appReqId: appId });
-    this.props.history.push("/reservation-requests/" + appId);
   }
 
   modalClosedHandler = () => {
     this.setState({ modalVisible: false });
-    this.props.history.push("/reservation-requests");
   }
 
   render() {
@@ -129,41 +99,25 @@ class ReservationRequests extends React.Component {
         width: 50,
         filterable: false
       }, {
-        Header: 'Doctor',
-        accessor: 'doctorFN',
-        style: {
-          textAlign: "center",
-          fontSize: "medium"
-        },
-        width: 90
-      }, {
-        Header: '',
-        accessor: 'doctorLN',
-        style: {
-          textAlign: "center",
-          fontSize: "medium"
-        },
-        width: 90
-      }, {
         Header: 'Start',
         accessor: 'startDateTime',
         style: {
           textAlign: "center",
-          fontSize: "medium"
+          fontSize: 20
         }
       }, {
         Header: 'End',
         accessor: 'endDateTime',
         style: {
           textAlign: "center",
-          fontSize: "medium"
+          fontSize: 20
         }
       }, {
         Header: 'Type',
-        accessor: 'typeEnum',
+        accessor: 'type',
         style: {
           textAlign: "center",
-          fontSize: "medium"
+          fontSize: 20
         }
       }, {
         Header: '',
@@ -190,46 +144,25 @@ class ReservationRequests extends React.Component {
         filterable: false,
         width: 50
       }, {
-        Header: 'Patient',
-        accessor: 'patientFN',
-        style: {
-          textAlign: "center",
-          fontSize: "medium"
-        }
-      }, {
-        Header: '',
-        accessor: 'patientLN',
-        style: {
-          textAlign: "center",
-          fontSize: "medium"
-        }
-      }, {
         Header: 'Start',
         accessor: 'startDateTime',
         style: {
           textAlign: "center",
-          fontSize: "medium"
+          fontSize: 20
         }
       }, {
         Header: 'End',
         accessor: 'endDateTime',
         style: {
           textAlign: "center",
-          fontSize: "medium"
+          fontSize: 20
         }
       }, {
         Header: 'Type',
-        accessor: 'typeEnum',
+        accessor: 'type',
         style: {
           textAlign: "center",
-          fontSize: "medium"
-        }
-      }, {
-        Header: 'Specialization',
-        accessor: 'typeSpec',
-        style: {
-          textAlign: "center",
-          fontSize: "medium"
+          fontSize: 20
         }
       }]
 
@@ -243,7 +176,7 @@ class ReservationRequests extends React.Component {
     return (
       <div className="ReservationRequests">
         <Modal show={this.state.modalVisible} modalClosed={this.modalClosedHandler}>
-          <CreateAppointment appReqId={this.state.appReqId} reload={this.state.modalVisible} />
+          <CreateAppointment />
         </Modal>
         <Header />
         <div className="row">
@@ -273,4 +206,4 @@ class ReservationRequests extends React.Component {
   }
 }
 
-export default withRouter(ReservationRequests);
+export default ReservationRequests;

@@ -26,8 +26,7 @@ class ClinicPage extends React.Component {
             city: '',
             description: '',
             clinicAdmin: '',
-            role: '',
-            prices: []
+            role: ''
         }
     }
 
@@ -75,7 +74,7 @@ class ClinicPage extends React.Component {
                                         address: response.data.address,
                                         city: response.data.city,
                                         description: response.data.description,
-                                        stars: response.data.avg
+                                        stars: response.data.stars
                                     })
                                 }).catch((error) => console.log(error))
 
@@ -100,19 +99,6 @@ class ClinicPage extends React.Component {
 
                                     this.setState({
                                         doctors: tmpArray
-                                    })
-                                })
-                                .catch((error) => console.log(error))
-
-                            axios.get("http://localhost:8080/api/get-appointment-prices")
-                                .then(response => {
-                                    let tmpArray = []
-                                    for (var i = 0; i < response.data.length; i++) {
-                                        tmpArray.push(response.data[i])
-                                    }
-
-                                    this.setState({
-                                        prices: tmpArray
                                     })
                                 })
                                 .catch((error) => console.log(error))
@@ -180,31 +166,15 @@ class ClinicPage extends React.Component {
                 width: 70
             }]
 
-        const columns3 = [
-            {
-                Header: 'Id',
-                id: 'id',
-                accessor: d => d.id,
-                width: 50,
-                filterable: false
-            }, {
-                Header: 'Type',
-                accessor: 'appointmentType'
-            }, {
-                Header: 'Price',
-                accessor: 'appointmentPrice',
-                width: 80
-            }]
-
 
         var busRepBtn;
         if (this.state.role === "ROLE_CLINIC_ADMIN") {
-            busRepBtn = (<Link to={{ pathname: "/business-report", state: { clinicId: this.state.clinicId, stars: this.state.stars } }} className="btn link-btn-patient predefined-btn">Business Report</Link>)
+            busRepBtn = (<Link to={{pathname: "/business-report", state: {clinicId: this.state.clinicId, stars: this.state.stars}}} className="btn link-btn-patient predefined-btn">Business Report</Link>)
         }
 
         var updateBtn;
         if (this.state.role === "ROLE_CLINIC_ADMIN") {
-            updateBtn = (<Link to={{ pathname: "/edit-clinic", state: { clinicId: this.state.clinicId } }} className="btn update-clinic predefined-btn">Update Clinic info</Link>)
+            updateBtn = (<Link to={{pathname: "/edit-clinic", state: {clinicId: this.state.clinicId}}} className="btn update-clinic predefined-btn">Update Clinic info</Link>)
         }
 
         var doctorsPatient;
@@ -219,21 +189,13 @@ class ClinicPage extends React.Component {
             const id = window.location.pathname.split("/")[2];
             var pathPredef = "/predefined-examinations/" + id;
             predefExam = (<Link to={pathPredef} className="btn link-btn-patient predefined-btn">Predefined examinations</Link>)
-        }
-
-        var operationPrices = []
-        var examPrices = []
-        for (var i = 0; i < this.state.prices.length; i++) {
-            if (this.state.prices[i].appointmentEnum == "OPERATION") {
-                operationPrices.push(this.state.prices[i]);
-            } else {
-                examPrices.push(this.state.prices[i]);
-            }
+        } else if (this.state.role === "ROLE_CLINIC_ADMIN") {
+            predefExam = (<Link to="/predefined-examinations" className="btn link-btn-patient predefined-btn">Predefined examinations</Link>)
         }
 
         var docTables;
         if (this.state.role === "ROLE_CLINIC_ADMIN") {
-            docTables = (<div>
+            docTables = (
                 <div className="row">
                     <div className="col-4">
                         <h4>Ordinations</h4>
@@ -248,34 +210,6 @@ class ClinicPage extends React.Component {
                             />
                         </div>
                     </div>
-                    <div className="col-4">
-                        <h4>Price List (Operations)</h4>
-                        <div className='ord-table'>
-                            <ReactTable
-                                data={operationPrices}
-                                columns={columns3}
-                                filterable
-                                onFilteredChange={this.handleOnFilterInputChange}
-                                defaultPageSize={5}
-                                pageSizeOptions={[5, 10, 15]}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-4">
-                        <h4>Price List (Examinations)</h4>
-                        <div className='ord-table'>
-                            <ReactTable
-                                data={examPrices}
-                                columns={columns3}
-                                filterable
-                                onFilteredChange={this.handleOnFilterInputChange}
-                                defaultPageSize={5}
-                                pageSizeOptions={[5, 10, 15]}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
                     <div className="col-8">
                         <h4>Doctors</h4>
                         <div className='doc-table'>
@@ -290,7 +224,6 @@ class ClinicPage extends React.Component {
                         </div>
                     </div>
                 </div>
-            </div>
             )
         }
 

@@ -31,9 +31,6 @@ class NewAppointmentDoctor extends React.Component {
       doctorId: '',
       type: '0',
       focusedInput: "",
-      date: '',
-      startTime: '',
-      endTime: ''
     }
   }
 
@@ -43,8 +40,8 @@ class NewAppointmentDoctor extends React.Component {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.post("http://localhost:8080/api/doctor/schedule-appointment", {
       patient: this.state.patient,
-      startDateTime: this.state.date + ' ' + this.state.startTime,
-      endDateTime: this.state.date + ' ' + this.state.endTime,
+      startDateTime: this.state.startDate.substr(0, 10) + ' ' + this.state.startDate.substr(11),
+      endDateTime: this.state.endDate.substr(0, 10) + ' ' + this.state.endDate.substr(11),
       doctor: this.state.doctorId,
       type: this.state.type
     })
@@ -129,19 +126,14 @@ class NewAppointmentDoctor extends React.Component {
                     <div className="col-8">
                       <div className="form-group">
                         <div className="row">
-                          <div className="form-group col-6">
-                            <label htmlFor="date">Date</label>
-                            <input required type="date" className="form-control" name="date" id="date" placeholder="Date"
+                          <div className="col-6">
+                            <label htmlFor="time">Start:</label>
+                            <input required type="datetime-local" className="form-control" name="startDate" id="time" placeholder="Choose start time"
                               onChange={this.handleChange} />
                           </div>
-                          <div className="form-group col-3">
-                            <label htmlFor="date">Start</label>
-                            <input required type="time" className="form-control" name="startTime" id="start" placeholder="Start time"
-                              onChange={this.handleChange} />
-                          </div>
-                          <div className="form-group col-3">
-                            <label htmlFor="time">End</label>
-                            <input required type="time" className="form-control" name="endTime" id="end" placeholder="End time"
+                          <div className="col-6">
+                            <label htmlFor="time">End:</label>
+                            <input required type="datetime-local" className="form-control" name="endDate" id="time" placeholder="Choose end time"
                               onChange={this.handleChange} />
                           </div>
                         </div>

@@ -7,23 +7,9 @@
     text-align: left;
 }
 
-.history-table {
-    margin: 30px 190px 100px 190px;
+.rtable {
+    margin: 30px 100px 100px 100px;
     font-size: larger;
     text-align:center;
    
-}
-
-.h-table1{
-    margin: 30px 50px 100px 70px;
-    font-size: larger;
-    text-align:center;
-
-}
-
-.h-table2{
-    margin: 30px 50px 100px 30px;
-    font-size: larger;
-    text-align:center;
-
 }

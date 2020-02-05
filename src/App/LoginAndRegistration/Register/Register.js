@@ -45,8 +45,7 @@ class Register extends React.Component {
             address: this.state.address,
             city: this.state.city,
             country: this.state.country,
-            phoneNumber: this.state.phoneNumber,
-            medicalNumber: this.state.medicalNumber
+            phoneNumber: this.state.phoneNumber
 
         }
         ).then((resp) => {
@@ -196,19 +195,6 @@ class Register extends React.Component {
                                                 name="address"
                                                 onChange={this.handleChange}
                                                 placeholder="Enter Address"
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col">
-                                        <div className="form-group">
-                                            <label htmlFor="medicalNumber">Medical number:</label>
-                                            <input type="text"
-                                                className="form-control form-control-sm"
-                                                id="medicalNumber"
-                                                name="medicalNumber"
-                                                onChange={this.handleChange}
-                                                placeholder="Enter medical number"
                                                 required
                                             />
                                         </div>
