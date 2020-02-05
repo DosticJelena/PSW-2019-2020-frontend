@@ -4,13 +4,11 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.8.3",
-    "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.39",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "dependencies": "0.0.1",
     "material-ui": "^0.20.2",
-    "material-ui-icons": "^1.0.0-beta.36",
     "moment": "^2.24.0",
     "react": "^16.12.0",
     "react-big-calendar": "^0.23.0",
