@@ -62,7 +62,7 @@ class MedicalHistory extends React.Component{
             <hr/>
                 <div className="form-group col">
                     <label className="name"><strong>Diagnosis:</strong>  {this.state.diagnosis}</label>
-                    <label className="address"><strong>Prescriptions:</strong> {this.state.prescriptions.map(txt =><li>{txt}</li>)} </label>
+                    <label className="address"><strong>Prescriptions:</strong> {this.state.prescriptions.map(txt =><li key={txt}>{txt}</li>)} </label>
                     <label  className="description"><strong>Comment:</strong>  {this.state.comment}</label>
                     <label  className="description"><strong>Last edited:</strong> {this.state.lastEdited}</label>
                 </div>
