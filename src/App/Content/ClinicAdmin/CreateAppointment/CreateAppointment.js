@@ -25,7 +25,8 @@ class CreateAppointment extends React.Component {
             date: '',
             startTime: '',
             endTime: '',
-            changeTime: false
+            changeTime: false,
+            chooseOrdination: true
         }
     }
 
@@ -68,15 +69,15 @@ class CreateAppointment extends React.Component {
     }
 
     changeDoctorVisible = () => {
-        this.setState({ changeDoctor: true, changeTime: false })
+        this.setState({ changeDoctor: true, changeTime: false, chooseOrdination: false})
     }
 
     changeTimeVisible = () => {
-        this.setState({ changeDoctor: false, changeTime: true })
+        this.setState({ changeDoctor: false, changeTime: true, chooseOrdination: false})
     }
 
     okClose = () => {
-        this.setState({ changeDoctor: false, changeTime: false })
+        this.setState({ changeDoctor: false, changeTime: false, chooseOrdination: true})
     }
 
     handleChangeTime = e => {
@@ -166,6 +167,21 @@ class CreateAppointment extends React.Component {
                 .catch((error) => console.log(error))
         }
 
+        var chooseOrdination;
+        if (this.state.chooseOrdination == true) {
+            chooseOrdination = (<div className="form-row">
+                <div className="form-group col">
+                    <label htmlFor="ordination">Ordination</label>
+                    <select required className="custom-select mr-sm-2" name="ordination" id="ordination" onChange={this.handleChange} >
+                        <option defaultValue="0">Choose...</option>
+                        {this.state.ordinations.map((ord, index) => (
+                            <option key={ord.id} value={ord.id}>{ord.number}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>)
+        }
+
         var doctorsBySpec = []
         for (var i = 0; i < this.state.doctors.length; i++) {
             if (this.state.doctors[i].specialization == this.state.spec) {
@@ -247,17 +263,7 @@ class CreateAppointment extends React.Component {
                         </table>
                     </div>
                     <div className="col-7">
-                        <div className="form-row">
-                            <div className="form-group col">
-                                <label htmlFor="ordination">Ordination</label>
-                                <select required className="custom-select mr-sm-2" name="ordination" id="ordination" onChange={this.handleChange} >
-                                    <option defaultValue="0">Choose...</option>
-                                    {this.state.ordinations.map((ord, index) => (
-                                        <option key={ord.id} value={ord.id}>{ord.number}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
+                        {chooseOrdination}
                         {changeDoctor}
                         {changeTime}
                     </div>
