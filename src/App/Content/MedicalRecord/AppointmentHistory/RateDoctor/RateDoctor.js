@@ -80,7 +80,6 @@ class RateDoctor extends React.Component {
                     <div className="form-group col">
                         <label className="name">First Name: {this.state.firstName} </label>
                         <label className="address">Last Name:{this.state.lastName}</label>
-                        <label className="description">Specialization:</label>
                     </div>
                     <div className="rating" style={{marginLeft:'20rem'}} >
                     <StarRatingComponent 
