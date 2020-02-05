@@ -6,6 +6,11 @@ import ReactTable from "react-table";
 import './AppointmentHistory.css'
 import axios from 'axios';
 import { withRouter } from 'react-router';
+import StarRatingComponent from 'react-star-rating-component';
+import RateClinic from './RateClinic/RateClinic';
+import RateDoctor from './RateDoctor/RateDoctor';
+import Modal from '../../../UI/Modal/Modal';
+import { Button } from 'react-bootstrap';
 
 class AppointmentHistory extends React.Component{
 
@@ -21,15 +26,40 @@ class AppointmentHistory extends React.Component{
                 doctorFirstName:'',
                 doctorLastName:'',
                 type:'',
-                specialization:''
+                specialization:'',
+                doctorId:'',
+                clinicId:'',
+                clinicName:''
             }],
-            filtered:[]
+            filtered:[],
+            ratingDoctors:'',
+            ratingClinics:'',
+            rateModalHandler:false,
+            rateDoctorModalHandler:false,
+            clinicId:'',
+            doctorId:''
         }
     }
 
+    rateModalHandler = (cId) => {
+      this.setState({ clinicId: cId, rateModalHandler: true });
+      this.props.history.push("/appointment-history/" + cId);
+    }
 
+    rateDoctorModalHandler = (dId) => {
+      this.setState({ doctorId: dId, rateDoctorModalHandler: true });
+      this.props.history.push("/appointment-history/" + dId);
+    }
+
+    modalClosedHandler = () => {
+      this.setState({ rateModalHandler: false, rateDoctorModalHandler: false });
+      this.props.history.push("/appointment-history");
+    }
+  
     componentDidMount () {    
-    
+
+      this.modalClosedHandler();
+
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         axios.get("http://localhost:8080/auth/getMyUser")  
@@ -77,14 +107,29 @@ class AppointmentHistory extends React.Component{
           this.setState({ filtered: filtered });
      };
 
+     onStarClickDoctor(nextValue, prevValue, name) {
+      this.setState({ratingDoctors: nextValue});
+    }
+
+    onStarClickClinic(nextValue, prevValue, name) {
+      this.setState({ratingClinics: nextValue});
+    }
+
     render(){
 
         return(
            
             <div className="AppointmentHistory">
+               <Modal show={this.state.rateModalHandler} modalClosed={this.modalClosedHandler}>
+                <RateClinic clinicId={this.state.clinicId} reload={this.state.rateModalHandler} />
+              </Modal>
+              <Modal show={this.state.rateDoctorModalHandler} modalClosed={this.modalClosedHandler}>
+                <RateDoctor doctorId={this.state.doctorId} reload={this.state.rateDoctorModalHandler} />
+              </Modal>
                 <Header/>
-                    <div className='appointment-history rtable'>
+                    <div className='appointment-history history-table'>
                      <div className="appointment-history-title">History of appointments</div>
+                      <br/>
               
                      <ReactTable 
                         data={this.state.history}
@@ -134,6 +179,105 @@ class AppointmentHistory extends React.Component{
                     />
 
                 </div>
+                <br/>
+                <div className="col-6">
+                    <h3>Rating time!</h3>
+                    <hr/>
+                </div>
+                <div className="row">
+                  <div className="col h-table1">
+                  <ReactTable 
+                        data={this.state.history}
+                        filterable
+                        filtered={this.state.filtered}
+                        onFilteredChange={(filtered, column, value) => {
+                          this.onFilteredChangeCustom(value, column.id || column.accessor);
+                        }}
+                        defaultFilterMethod={(filter, row, column) => {
+                            const id = filter.pivotId || filter.id;
+                            if (typeof filter.value === "object") {
+                              return row[id] !== undefined
+                                ? filter.value.indexOf(row[id]) > -1
+                                : true;
+                            } else {
+                              return row[id] !== undefined
+                                ? String(row[id]).indexOf(filter.value) > -1
+                                : true;
+                            }
+                          }}
+                        columns={[
+                                  {
+                                    Header: 'Id',
+                                    accessor: 'doctorId',
+                                }, 
+                                {
+                                    Header: 'Doctors name',
+                                    accessor: 'doctorFirstName',
+                                }, 
+                                {
+                                    Header: 'Doctors last name',
+                                    accessor: 'doctorLastName',
+                                },
+                                {
+                                    Header: 'Specialization',
+                                    accessor: 'specialization',
+                                },
+                                {Header:'Rate doctor',
+                                Cell: row => (                        
+                                  <div>
+                              <Button onClick={() => this.rateDoctorModalHandler(row.original.doctorId)}>Rate</Button>
+                                  </div>
+                                  ),
+                              }
+                        ]}
+                        defaultPageSize = {10}
+                    />
+
+                  </div>
+                  <div className="col h-table2">
+
+                  <ReactTable 
+                        data={this.state.history}
+                        filterable
+                        filtered={this.state.filtered}
+                        onFilteredChange={(filtered, column, value) => {
+                          this.onFilteredChangeCustom(value, column.id || column.accessor);
+                        }}
+                        defaultFilterMethod={(filter, row, column) => {
+                            const id = filter.pivotId || filter.id;
+                            if (typeof filter.value === "object") {
+                              return row[id] !== undefined
+                                ? filter.value.indexOf(row[id]) > -1
+                                : true;
+                            } else {
+                              return row[id] !== undefined
+                                ? String(row[id]).indexOf(filter.value) > -1
+                                : true;
+                            }
+                          }}
+                        columns={[
+                                {
+                                    Header: 'Id',
+                                    accessor: 'clinicId',
+                                }, 
+                                {
+                                    Header: 'Clinic',
+                                    accessor: 'clinicName',
+                                }, 
+                                {
+                                  Header:'Rate clinic',
+                                  Cell: row => (                        
+                                    <div>
+                                <Button onClick={() => this.rateModalHandler(row.original.clinicId)}>Rate</Button>
+                                    </div>
+                                    ),
+                                }
+                        ]}
+                        defaultPageSize = {10}
+                    />
+                  </div>
+                </div>
+
                 <Footer/>
             </div>
         );
@@ -141,4 +285,4 @@ class AppointmentHistory extends React.Component{
 
 }
 
-export default AppointmentHistory;
+export default withRouter(AppointmentHistory);
