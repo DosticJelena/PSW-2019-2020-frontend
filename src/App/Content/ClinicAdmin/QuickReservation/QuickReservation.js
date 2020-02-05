@@ -8,6 +8,9 @@ import axios from 'axios';
 import { NotificationManager } from 'react-notifications';
 import { withRouter } from 'react-router-dom';
 import StepZilla from "react-stepzilla";
+import TimeRange from 'react-time-range';
+import moment from 'moment';
+import DatePicker from 'react-datepicker'
 
 import './QuickReservation.css';
 
@@ -32,7 +35,13 @@ class QuickReservation extends React.Component {
       doctors: [],
       ordinations: [],
       formErrors: [],
-      disabled: true
+      disabled: true,
+      startTime: '07:00',
+      endTime: '07:30',
+      prices: [],
+      priceSpec: '',
+      priceValue: '',
+      date: ''
     }
 
   }
@@ -42,14 +51,14 @@ class QuickReservation extends React.Component {
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.post("http://localhost:8080/api/clinic-admin/quick-reservation", {
-      startDateTime: this.state.startDateTime.substr(0, 10) + ' ' + this.state.startDateTime.substr(11),
-      endDateTime: this.state.endDateTime.substr(0, 10) + ' ' + this.state.endDateTime.substr(11),
+      startDateTime: this.state.date + ' ' + this.state.startTime,
+      endDateTime: this.state.date + ' ' + this.state.endTime,
       type: this.state.type,
       ordination: this.state.ordination,
       doctor: this.state.doctor,
       price: this.state.price,
       clinicAdmin: this.state.clinicAdmin,
-      discount : 5
+      discount: 5
     })
       .then((resp) => {
         NotificationManager.success('You have created appointment succesfully!', 'Success!', 4000)
@@ -107,9 +116,14 @@ class QuickReservation extends React.Component {
         }
       }
     }
-    this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
 
+    this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
     this.handleKeyUp();
+  }
+
+  handleChangeTime = e => {
+    this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
+    this.fetchDoctors();
   }
 
   handleDateChange(e) {
@@ -120,6 +134,32 @@ class QuickReservation extends React.Component {
     this.setState({ ...this.state, [e.target.name]: value });
   }
 
+  setStartDate = (date) => {
+    console.log(date);
+    var newTime = new Date();
+    newTime.setHours(String(date).substr(15, 2))
+    newTime.setMinutes(String(date).substr(19, 2))
+    this.setState({ startTime: newTime });
+  }
+
+  fetchDoctors = () => {
+    axios.post("http://localhost:8080/api/doctors-by-working-time", {
+      start: this.state.startTime,
+      end: this.state.endTime
+    })
+      .then(response => {
+        console.log(response)
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+          doctors: tmpArray
+        })
+      })
+      .catch((error) => console.log(error))
+  }
 
   componentDidMount() {
 
@@ -127,7 +167,6 @@ class QuickReservation extends React.Component {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.get("http://localhost:8080/auth/getMyUser")
       .then(response => {
-        console.log(response.data);
         this.setState({
           clinicAdmin: response.data.id
         })
@@ -135,7 +174,6 @@ class QuickReservation extends React.Component {
       .then(() => {
         axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)
           .then(response => {
-            console.log(response.data);
             this.setState({
               clinicId: response.data
             })
@@ -154,7 +192,9 @@ class QuickReservation extends React.Component {
               })
               .catch((error) => console.log(error))
 
-            axios.get("http://localhost:8080/api/clinic-doctors/" + this.state.clinicId)
+              this.fetchDoctors();
+
+            axios.get("http://localhost:8080/api/get-appointment-prices")
               .then(response => {
                 let tmpArray = []
                 for (var i = 0; i < response.data.length; i++) {
@@ -162,7 +202,7 @@ class QuickReservation extends React.Component {
                 }
 
                 this.setState({
-                  doctors: tmpArray
+                  prices: tmpArray
                 })
               })
               .catch((error) => console.log(error))
@@ -173,119 +213,172 @@ class QuickReservation extends React.Component {
 
   }
 
+  isValidated() {
+
+  }
+
   render() {
 
     var ordinationsByTipe = []
-    for (var i=0;i<this.state.ordinations.length;i++){
-      if (this.state.type == "0"){
-        if (this.state.ordinations[i].type == "EXAMINATION"){
+    for (var i = 0; i < this.state.ordinations.length; i++) {
+      if (this.state.type == "0") {
+        if (this.state.ordinations[i].type == "EXAMINATION") {
           ordinationsByTipe.push(this.state.ordinations[i]);
         }
-      } else if (this.state.type == "1"){
-        if (this.state.ordinations[i].type == "OPERATION"){
+      } else if (this.state.type == "1") {
+        if (this.state.ordinations[i].type == "OPERATION") {
           ordinationsByTipe.push(this.state.ordinations[i]);
         }
       }
     }
 
-    console.log(ordinationsByTipe);
+    var pricesByEnum = [];
+    for (var i = 0; i < this.state.prices.length; i++) {
+      if (this.state.prices[i].appointmentEnum == "EXAMINATION" && this.state.type == '0') {
+        pricesByEnum.push(this.state.prices[i]);
+      } else if (this.state.prices[i].appointmentEnum == "OPERATION" && this.state.type == '1')
+        pricesByEnum.push(this.state.prices[i]);
+    }
+
+    var selectedPrice = [];
+    for (var i = 0; i < this.state.prices.length; i++) {
+      if (this.state.prices[i].id == this.state.price) {
+        selectedPrice.push(this.state.prices[i]);
+      } 
+    }
+
+    var doctorsBySpec = []
+    for (var i = 0; i < this.state.doctors.length; i++) {
+      if (selectedPrice.length > 0){
+        if (this.state.doctors[i].specialization == selectedPrice[0].appointmentType) {
+          doctorsBySpec.push(this.state.doctors[i]);
+        } 
+      }     
+    }
 
     const steps =
-      [
-        {
-          name: 'Step 1',
-          component:
-            (<div className="stepp">
-              <hr />
-              <h5>Choose doctor and type of the appointment:</h5>
-              <hr />
-              <div className="form-row">
-                <div className="form-group col-md-6"><label htmlFor="doctor">Doctor</label>
-                  <select required className="custom-select mr-sm-2" name="doctor" id="doctor" onChange={this.handleChange} >
-                    <option defaultValue="0" >Choose...</option>
-                    {this.state.doctors.map((doctor, index) => (
-                      <option key={doctor.id} value={doctor.id}>{doctor.firstName} {doctor.lastName}</option>
-                    ))}
-                  </select>
+      [{
+        name: 'Date & Time',
+        component:
+          (<div className="stepp">
+            <hr />
+            <h5>Choose start and end time of the appointment:</h5>
+            <p>Work time is from 07:00 to 20:00</p>
+            <hr />
+            <div className="form-row">
+              <div className="form-group col-md-3">
+                <label htmlFor="date">Date</label>
+                <input required type="date"  className="form-control" name="date" id="date" placeholder="Date"
+                  onChange={this.handleChange} />
+              </div>
+              <div className="form-group col-md-2">
+                <label htmlFor="date">Start</label>
+                <input required type="time" min="07:00" defaultValue={this.state.startTime} className="form-control" name="startTime" id="start" placeholder="Start time"
+                  onChange={this.handleChangeTime} />
+              </div>
+              <div className="form-group col-md-2">
+                <label htmlFor="time">End</label>
+                <input required type="time" max="20:00" defaultValue={this.state.endTime} className="form-control" name="endTime" id="end" placeholder="End time"
+                  onChange={this.handleChangeTime} />
+              </div>
+            </div>
+          </div>)
+      },
+      {
+        name: 'Type',
+        component:
+          (<div className="stepp">
+            <hr />
+            <h5>Choose type of the appointment:</h5>
+            <hr />
+            <div className="form-row">
+              <div className="form-group col-md-6"><label htmlFor="doctor">Specialization:</label>
+                <select required className="custom-select mr-sm-2" name="price" id="price" onChange={this.handleChange} >
+                  <option defaultValue="0" >Choose...</option>
+                  {pricesByEnum.map((price, index) => (
+                    <option key={price.id} value={price.id}>{price.appointmentType}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-2"></div>
+              <div className="form-group col-md-4">
+                <label htmlFor="type">Type</label>
+                <div className="form-check form-check">
+                  <input defaultChecked={this.state.type == "0"} onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0" />
+                  <label className="form-check-label" htmlFor="examination">Examination</label>
                 </div>
-                <div className="col-md-2"></div>
-                <div className="form-group col-md-4">
-                  <label htmlFor="type">Type</label>
-                  <div className="form-check form-check">
-                    <input defaultChecked={this.state.type == "0"} onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0" />
-                    <label className="form-check-label" htmlFor="examination">Examination</label>
-                  </div>
-                  <div className="form-check form-check">
-                    <input defaultChecked={this.state.type == "1"} onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1" />
-                    <label className="form-check-label" htmlFor="operation">Operation</label>
-                  </div>
+                <div className="form-check form-check">
+                  <input defaultChecked={this.state.type == "1"} onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1" />
+                  <label className="form-check-label" htmlFor="operation">Operation</label>
                 </div>
               </div>
-            </div>)
-        },
-        {
-          name: 'Step 2',
-          component:
-            (<div className="stepp">
-              <hr />
-              <h5>Choose ordination for the appointment:</h5>
-              <hr />
-              <div className="form-row">
-                <div className="form-group col-md-6">
-                  <label htmlFor="ordination">Ordination</label>
-                  <select required className="custom-select mr-sm-2" name="ordination" id="ordination" onChange={this.handleChange} >
-                    <option defaultValue="0" >Choose...</option>
-                    {ordinationsByTipe.map((ord, index) => (
-                      <option key={ord.id} value={ord.id}>{ord.number}</option>
-                    ))}
-                  </select>
-                </div>
+            </div>
+          </div>)
+      },
+      {
+        name: 'Doctor',
+        component:
+          (<div className="stepp">
+            <hr />
+            <h5>Choose doctor of the appointment:</h5>
+            <hr />
+            <div className="form-row">
+              <div className="form-group col-md-6"><label htmlFor="doctor">Doctor</label>
+                <select required className="custom-select mr-sm-2" name="doctor" id="doctor" onChange={this.handleChange} >
+                  <option defaultValue="0" >Choose...</option>
+                  {doctorsBySpec.map((doctor, index) => (
+                    <option key={doctor.id} value={doctor.id}>{doctor.firstName} {doctor.lastName} ({doctor.specialization})</option>
+                  ))}
+                </select>
               </div>
-            </div>)
-        },
-        {
-          name: 'Step 3',
-          component:
-            (<div className="stepp">
-              <hr />
-              <h5>Choose start and end time of the appointment:</h5>
-              <hr />
-              <div className="form-row">
-                <div className="form-group col-md-3">
-                  <label htmlFor="date">Start</label>
-                  <input required type="datetime-local" className="form-control" name="startDateTime" id="start" placeholder="Start date and time"
-                    onChange={this.handleChange} />
-                </div>
-                <div className="form-group col-md-3">
-                  <label htmlFor="time">End</label>
-                  <input required type="datetime-local" className="form-control" name="endDateTime" id="end" placeholder="End date and time"
-                    onChange={this.handleChange} />
-                </div>
+            </div>
+          </div>)
+      },
+      {
+        name: 'Ordination',
+        component:
+          (<div className="stepp">
+            <hr />
+            <h5>Choose ordination for the appointment:</h5>
+            <hr />
+            <div className="form-row">
+              <div className="form-group col-md-6">
+                <label htmlFor="ordination">Ordination</label>
+                <select required className="custom-select mr-sm-2" name="ordination" id="ordination" onChange={this.handleChange} >
+                  <option defaultValue="0" >Choose...</option>
+                  {ordinationsByTipe.map((ord, index) => (
+                    <option key={ord.id} value={ord.id}>{ord.number}</option>
+                  ))}
+                </select>
               </div>
-            </div>)
-        },
-        {
-          name: 'Step 4',
-          component:
-            (<div className="stepp">
-              <hr />
-              <h5>Choose ordination for the appointment:</h5>
-              <hr />
-              <div className="form-row">
-                <div className="form-group col-md-5">
-                  <label htmlFor="price">Price</label>
-                  <input required type="number" className="form-control" name="price" id="price" placeholder="00.0"
-                    onChange={this.handleChange} />
-                </div>
-                <div className="form-group col-md-1">
-                  <label htmlFor="currency">Currency</label>
-                  <input required disabled type="text" className="form-control" name="currency" id="currency" placeholder="€"
-                    value="€" />
-                </div>
-                <Button type="submit" onClick={this.SendQuickReservationRequest} className="btn quick-res-btn">Create</Button>
+            </div>
+          </div>)
+      },
+      {
+        name: 'Create!',
+        component:
+          (<div className="stepp">
+            <hr />
+            <h5>Choose price for the appointment:</h5>
+            <hr />
+            <div className="form-row">
+              <div className="form-group col-md-6">
+                <label htmlFor="ordination">Price</label>
+                <select disabled required className="custom-select mr-sm-2" name="price" id="price" onChange={this.handleChange} >                  
+                  {selectedPrice.map((price, index) => (
+                    <option key={price.id} value={price.id}>{price.appointmentType} | {price.appointmentEnum} | {price.appointmentPrice}</option>
+                  ))}
+                </select>
               </div>
-            </div>)
-        }
+              <div className="form-group col-md-1">
+                <label htmlFor="currency">Currency</label>
+                <input required disabled type="text" className="form-control" name="currency" id="currency" placeholder="€"
+                  value="€" />
+              </div>
+              <Button type="submit" onClick={this.SendQuickReservationRequest} className="btn quick-res-btn">Create</Button>
+            </div>
+          </div>)
+      }
       ]
 
 
