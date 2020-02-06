@@ -60,6 +60,11 @@ class CCAdminRegistrationRequests extends React.Component{
               disabled: false
             })
           }
+          else {
+            this.setState({
+              disabled: true
+            })
+          }
       }
 
       handleChange = e => {
@@ -75,7 +80,7 @@ class CCAdminRegistrationRequests extends React.Component{
           default:
             break;
         }
-        this.setState({ formErrors, [name]: value}, () => console.log(this.state));
+        this.setState({ formErrors, [name]: value});
       }
 
       handleOpenModal = (id) =>{
@@ -104,7 +109,7 @@ class CCAdminRegistrationRequests extends React.Component{
 
           this.fetchData(this.state)
 
-        }).then((resp) => {NotificationManager.success('Patient registration request has been sucessfully approved. \n Confirmation email has been sent', '', 3000);}) 
+        }).then((resp) => {NotificationManager.success('Patient registration request has been sucessfully approved. \n Verification email has been sent', '', 3000);}) 
       }
 
       reject = () =>{
@@ -146,7 +151,6 @@ class CCAdminRegistrationRequests extends React.Component{
                         variant="outlined"
                         onChange={this.handleChange}
                         onKeyUp={this.handleKeyUp}
-
               />
               
               <div className="rejectButton">
@@ -213,4 +217,5 @@ class CCAdminRegistrationRequests extends React.Component{
       }
     }
 
+Modal.setAppElement('body')
 export default CCAdminRegistrationRequests

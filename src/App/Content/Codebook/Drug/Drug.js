@@ -29,6 +29,10 @@ class Drug extends React.Component{
           this.handleChange = this.handleChange.bind(this);
           this.addNewDrug = this.addNewDrug.bind(this);
           this.fetchData = this.fetchData.bind(this);
+          this.openModal = this.openModal.bind(this);
+          this.openEditModal = this.openEditModal.bind(this);
+          this.closeModal = this.closeModal.bind(this);
+          this.closeEditModal = this.closeEditModal.bind(this);
 
           this.state = {
               tableData: [
@@ -58,17 +62,13 @@ class Drug extends React.Component{
               editModalIsOpen: false,
               loading: false
           };
-          this.openModal = this.openModal.bind(this);
-          this.openEditModal = this.openEditModal.bind(this);
-          this.closeModal = this.closeModal.bind(this);
-          this.closeEditModal = this.closeEditModal.bind(this);
       }
 
       openModal() {
         this.setState({modalIsOpen: true});
       }
 
-      openEditModal(p_id, p_name, p_description, p_ingredient) {
+      openEditModal(p_id, p_name, p_ingredient, p_description) {
         const editModal = {...this.state.editModal}
         editModal.id = p_id;
         editModal.name = p_name;
@@ -147,8 +147,8 @@ class Drug extends React.Component{
           })
       }
 
-      handleChange(e) {
-        this.setState({...this.state, [e.target.name]: e.target.value});
+      handleChange = e => {
+        //this.setState({...this.state, [e.target.name]: e.target.value});
         console.log(this.state)
       }
 
@@ -173,12 +173,7 @@ class Drug extends React.Component{
           style={customStyles}
           isOpen={this.state.editModalIsOpen}
           onRequestClose={this.closeEditModal}
-          contentLabel="Example Modal"
           >
-          <button onClick={this.closeEditModal} type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-          </button>
-          <form>
                     <div class="form-group">
                       <label htmlFor="name" class="col-form-label">Name:</label>
                       <input type="text" 
@@ -217,7 +212,6 @@ class Drug extends React.Component{
                     <div class="modal-footer">
                       <Button onClick={() => this.editDrug(this.state.editModal.id)}>Save</Button>
             </div>
-          </form>
         </Modal>
 
         <button className="btn primary jej" onClick={this.openModal}>Add new Drug</button>

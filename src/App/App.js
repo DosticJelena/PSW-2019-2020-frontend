@@ -53,6 +53,7 @@ import SchedulingForm from './Content/Patient/SchedulingForm/SchedulingForm';
 import AppointmentTypes from './Content/AppointmentTypes/AppointmentTypes';
 import PatientProfile from './Content/PatientsList/PatientProfile/PatientProfile';
 import AbsenceRequests from './Content/ClinicAdmin/AbsenceRequests/AbsenceRequests';
+import AssignOrdination from './Content/CCAdmin/AssignOrdination/AssignOrdination';
 
 function App() {
   return (
@@ -193,6 +194,9 @@ function App() {
           </Route>
           <Route path="/scheduling-form">
             <SchedulingForm/>
+          </Route>
+          <Route path="/assign-ordination">
+            <AssignOrdination/>
           </Route>
         </Switch>
         <NotificationContainer />
