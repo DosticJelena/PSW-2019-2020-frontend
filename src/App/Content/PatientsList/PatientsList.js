@@ -22,20 +22,38 @@ class PatientsList extends React.Component {
   }
 
   componentDidMount() {
-    var token = localStorage.getItem('token');
-    axios.get("http://localhost:8080/api/patients")
-      .then(response => {
-        console.log(response)
-        let tmpArray = []
-        for (var i = 0; i < response.data.length; i++) {
-          tmpArray.push(response.data[i])
-        }
-
-        this.setState({
-          patients: tmpArray
-        })
-      })
-      .catch((error) => console.log(error))
+    axios.get("http://localhost:8080/auth/getMyUser")
+      .then((resp) => {
+                        if (resp.data.authorities[0].name == "ROLE_DOCTOR"){
+                          axios.get("http://localhost:8080/api/doctor-patients")
+                          .then(response => {
+                            console.log(response)
+                            let tmpArray = []
+                            for (var i = 0; i < response.data.length; i++) {
+                              tmpArray.push(response.data[i])
+                            }
+                    
+                            this.setState({
+                              patients: tmpArray
+                            })
+                          })
+                          .catch((error) => console.log(error))}
+                        if (resp.data.authorities[0].name == "ROLE_NURSE"){
+                          axios.get("http://localhost:8080/api/nurse-patients")
+                          .then(response => {
+                            console.log(response)
+                            let tmpArray = []
+                            for (var i = 0; i < response.data.length; i++) {
+                              tmpArray.push(response.data[i])
+                            }
+                    
+                            this.setState({
+                              patients: tmpArray
+                            })
+                          })
+                          .catch((error) => console.log(error))
+                        }
+                      })
   }
 
   fetchSearchResults(updatedPageNumber = '', query) {
@@ -80,21 +98,16 @@ class PatientsList extends React.Component {
 
     const columns = [
       {
-        Header: 'Id',
-        id: 'id',
-        accessor: d => d.id,
-        width: 50,
-        filterable: false
-      }, {
+        Header: 'Medical Number',
+        accessor: 'medicalNumber'
+      },
+      {
         Header: 'First Name',
         accessor: 'firstName'
       }, {
         Header: 'Last Name',
         accessor: 'lastName'
-      }, {
-        Header: 'Medical Number',
-        accessor: 'medicalNumber'
-      }, {
+      },{
         Header: 'Email Address',
         accessor: 'username'
       },{

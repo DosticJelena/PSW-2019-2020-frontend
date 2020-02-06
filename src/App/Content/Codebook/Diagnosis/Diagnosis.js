@@ -8,6 +8,7 @@ import {NotificationManager} from 'react-notifications';
 import { Button} from 'react-bootstrap';
 import './Diagnosis.css'
 import Modal from 'react-modal';
+import TextField from '@material-ui/core/TextField';
 
 const customStyles = {
   content : {
@@ -52,7 +53,10 @@ class Diagnosis extends React.Component{
               },
               modalIsOpen: false,
               editModalIsOpen: false,
-              loading: false
+              loading: false,
+              id: '',
+              name: '',
+              description: ''
           };
           this.openModal = this.openModal.bind(this);
           this.openEditModal = this.openEditModal.bind(this);
@@ -66,11 +70,10 @@ class Diagnosis extends React.Component{
       }
 
       openEditModal(p_id, p_name, p_description) {
-        const editModal = {...this.state.editModal}
-        editModal.id = p_id;
-        editModal.name = p_name;
-        editModal.description = p_description;
-        this.setState({editModal})
+
+        this.setState({id: p_id})
+        this.setState({name: p_name})
+        this.setState({description: p_description})
         this.setState({editModalIsOpen: true});
       }
      
@@ -109,13 +112,12 @@ class Diagnosis extends React.Component{
           });
       }
 
-      addNewDiagnosis =  event => {
-        event.preventDefault();
+      addNewDiagnosis =  (name, description) => {
         this.setState({modalIsOpen: false});
         console.log(this.state);
         axios.post("http://localhost:8080/api/cc-admin/add-diagnosis/", {
-          name: this.state.name,
-          description: this.state.description
+          name: name,
+          description: description
         })
         .then(response => {
           this.fetchData(this.state)
@@ -156,7 +158,7 @@ class Diagnosis extends React.Component{
       }
 
       editDiagnosis =  (id) => {
-        //this.setState({editModalIsOpen: false});
+        this.setState({editModalIsOpen: false});
         axios.put("http://localhost:8080/api/cc-admin/update-diagnosis/" + id, {
           name: this.state.name,
           description: this.state.description
@@ -185,33 +187,35 @@ class Diagnosis extends React.Component{
           <button onClick={this.closeEditModal} type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
           </button>
-          <form>
-          <div class="form-group">
+                    <div class="form-group">
                       <label htmlFor="name" class="col-form-label">Name:</label>
-                      <input type="text" 
-                             className="form-control form-control-sm"
+                      <TextField 
                              id="name"
                              name="name"
-                             defaultValue={this.state.editModal.name}
+                             defaultValue={this.state.name}
                              onChange={this.handleEditChange}
                              placeholder="Enter Name"
+                             variant="outlined"
+                             style={{ width: 550 }}
                              required/>
                     </div>
                     <div class="form-group">
                       <label htmlFor="description" class="col-form-label">Description:</label>
-                      <input type="text" 
-                             className="form-control form-control-sm"
+                      <TextField 
+                      
                              id="description"
                              name="description"
-                             defaultValue={this.state.editModal.description}
+                             defaultValue={this.state.description}
                              onChange={this.handleEditChange}
                              placeholder="Enter Description"
+                             variant="outlined"
+                             style={{ width: 550 }}
                              required/>
                     </div>
-                    <div class="modal-footer">
+                    <hr/>
+                    <div>
                       <Button onClick={() => this.editDiagnosis(this.state.id)}>Save</Button>
-            </div>
-          </form>
+                    </div>
         </Modal>
 
         <button className="btn primary jej" onClick={this.openModal}>Add new Diagnosis</button>
@@ -221,34 +225,39 @@ class Diagnosis extends React.Component{
           onRequestClose={this.closeModal}
           contentLabel="Example Modal"
         >
+          <div>
           <button onClick={this.closeModal} type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
           </button>
-          <form onSubmit={this.addNewDiagnosis}>
-          <div class="form-group">
+                    <div>
                       <label htmlFor="name" class="col-form-label">Name:</label>
-                      <input type="text" 
-                             className="form-control form-control-sm"
+                      <TextField
                              id="name"
                              name="name"
+                             style={{ width: 550 }}
                              onChange={this.handleChange}
                              placeholder="Enter Name"
+                             variant="outlined"
                              required/>
                     </div>
-                    <div class="form-group">
+                    <div>
                       <label htmlFor="description" class="col-form-label">Description:</label>
-                      <input type="text" 
-                             className="form-control form-control-sm"
-                             id="description"
+                      <TextField 
+                            style={{ width: 550 }}
+                            id="outlined-multiline-flexible"
                              name="description"
                              onChange={this.handleChange}
                              placeholder="Enter Description"
+                             multiline
+                            rows="5"
+                            variant="outlined"
                              required/>
                     </div>
-                    <div class="modal-footer">
-                      <Button type="submit">Save</Button>
+                    <hr/>
+                    <div>
+                      <Button onClick={() => this.addNewDiagnosis(this.state.name, this.state.description)}>>Save</Button>
+                    </div>
             </div>
-          </form>
         </Modal>
       </div>
           <div className='newDrug'>
@@ -280,7 +289,7 @@ class Diagnosis extends React.Component{
                         Header: '',
                         Cell: row => (
                             <div>
-                                <button className="primary btn" onClick={() => this.deleteDiagnosis(row.original.id)}>Delete</button>
+                                <button className="primary btn" onClick={() => { if (window.confirm('Are you sure you wish to delete this item?')) this.deleteDiagnosis(row.original.id) } }>Delete</button>
                             </div>
                         ),                      
                         width: 125

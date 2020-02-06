@@ -145,7 +145,8 @@ class RegisterClinicAdmin extends React.Component {
         }
         return true;
     }
-  handleChange = e => {
+    type="phoneNumber"
+    handleChange = e => {
     e.preventDefault();
     const { name, value } = e.target;
     let formErrors = { ...this.state.formErrors };
@@ -198,7 +199,7 @@ class RegisterClinicAdmin extends React.Component {
     }
     this.setState({ formErrors, [name]: value}, () => console.log(this.state));
 
-    this.handleKeyUp();
+    //this.handleKeyUp();
   }
 
   handleClinic = (e, values) => {
@@ -210,7 +211,7 @@ class RegisterClinicAdmin extends React.Component {
 
     this.setState({ formErrors, clinicId: values}, () => console.log(this.state));
 
-    this.handleKeyUp();
+    //this.handleKeyUp();
 
   }
 
@@ -231,11 +232,12 @@ class RegisterClinicAdmin extends React.Component {
                 getOptionLabel={option => option.name}
                 style={{ width: 400 }}
                 onChange={this.handleClinic}
+                onPointerOut={this.handleKeyUp}
                 renderInput={params => (
                     <TextField {...params} label="Choose clinic" variant="outlined" fullWidth
                     name="clinicId"
                     className={formErrors.clinicId.length > 0 ? "error" : null}
-                    onKeyUp={this.handleKeyUp}
+                    onInputChange={this.handleChange}
                     />
                 )}
                 />
