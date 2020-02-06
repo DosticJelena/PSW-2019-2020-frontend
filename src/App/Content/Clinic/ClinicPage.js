@@ -6,6 +6,7 @@ import Footer from '../Footer/Footer';
 import './ClinicPage.css';
 import axios from 'axios';
 import ReactTable from "react-table";
+import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 
 class ClinicPage extends React.Component {
 
@@ -27,7 +28,9 @@ class ClinicPage extends React.Component {
             description: '',
             clinicAdmin: '',
             role: '',
-            prices: []
+            prices: [],
+            lat: '45.254410',
+            longi: '19.842550'
         }
     }
 
@@ -75,7 +78,9 @@ class ClinicPage extends React.Component {
                                         address: response.data.address,
                                         city: response.data.city,
                                         description: response.data.description,
-                                        stars: response.data.avg
+                                        stars: response.data.avg,
+                                        lat: response.data.latitude,
+                                        longi: response.data.longitude
                                     })
                                 }).catch((error) => console.log(error))
 
@@ -168,13 +173,10 @@ class ClinicPage extends React.Component {
             }, {
                 Header: 'Last Name',
                 accessor: 'lastName'
-            }, {
-                Header: 'Phone Number',
-                accessor: 'phoneNumber'
-            }, {
-                Header: 'Address',
-                accessor: 'address'
-            }, {
+            },{
+                Header: 'Specialization',
+                accessor: 'specialization'
+            },{
                 Header: 'Stars',
                 accessor: 'stars',
                 width: 70
@@ -276,7 +278,7 @@ class ClinicPage extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-8">
+                    <div className="col-7">
                         <h4>Doctors</h4>
                         <div className='doc-table'>
                             <ReactTable
@@ -289,9 +291,52 @@ class ClinicPage extends React.Component {
                             />
                         </div>
                     </div>
+                    <div className="col-5">
+                        <h4>Location</h4>
+                        <Map
+                            google={this.props.google}
+                            zoom={15}
+                            style={{ margin: "0 40px 80px 20px" }}
+                            initialCenter={{
+                                lat: parseFloat(this.state.lat),
+                                lng: parseFloat(this.state.longi)
+                            }}>
+
+                            <Marker onClick={this.onMarkerClick}
+                                name={'Belgrade,Serbia'} />
+
+                            <InfoWindow onClose={this.onInfoWindowClose}>
+                                <div>
+                                    <h1>Adresa</h1>
+                                </div>
+                            </InfoWindow>
+                        </Map>
+                    </div>
                 </div>
             </div>
             )
+        }
+
+        var patientMap;
+        if (this.state.role === "ROLE_PATIENT"){
+            patientMap = (<div className="col-6"><Map
+                google={this.props.google}
+                zoom={15}
+                style={{ margin: "0 40px 80px 20px", height: "40vh" }}
+                initialCenter={{
+                    lat: parseFloat(this.state.lat),
+                    lng: parseFloat(this.state.longi)
+                }}>
+
+                <Marker onClick={this.onMarkerClick}
+                    name={'Belgrade,Serbia'} />
+
+                <InfoWindow onClose={this.onInfoWindowClose}>
+                    <div>
+                        <h1>Adresa</h1>
+                    </div>
+                </InfoWindow>
+            </Map></div>)
         }
 
         return (
@@ -301,19 +346,22 @@ class ClinicPage extends React.Component {
                 <div className="row">
                     <div className="col-10">
                         <div className="row cp-header">
-                            <br />
-                            <h3>{this.state.name}</h3>
-                            <h5><em>{this.state.address}, {this.state.city}</em></h5>
-                            <hr />
-                            <h5>Description: <p>{this.state.description}</p></h5>
-                            {updateBtn}
-                            <div className="btn-predefined-exam">
-                                {predefExam}
-                                {busRepBtn}
-                                {doctorsPatient}
+                            <div className="col-12">
+                                <br />
+                                <h3>{this.state.name}</h3>
+                                <h5><em>{this.state.address}, {this.state.city}</em></h5>
+                                <hr />
+                                <h5>Description: <p>{this.state.description}</p></h5>
+                                {updateBtn}
+                                <div className="btn-predefined-exam">
+                                    {predefExam}
+                                    {busRepBtn}
+                                    {doctorsPatient}
+                                </div>
                             </div>
                         </div>
                         {docTables}
+                        {patientMap}
                     </div>
                     <div className="col-2 clinic-page-image">
 
@@ -326,4 +374,6 @@ class ClinicPage extends React.Component {
     }
 }
 
-export default withRouter(ClinicPage);
+export default GoogleApiWrapper({
+    apiKey: ("AIzaSyB6m1BLxud0bteLf3Cxwzt5_q5DpIzMfdM")
+})(withRouter(ClinicPage))
