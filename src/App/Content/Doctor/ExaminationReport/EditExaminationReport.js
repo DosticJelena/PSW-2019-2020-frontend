@@ -24,6 +24,12 @@ const formValid = ({ formErrors, ...rest }) => {
     return valid;
   };
 
+  const displayDrugs = (list) => { 
+    const listItems = list.map((d) => <em key={d.name}>{d.name} |</em>);
+    return (
+      <strong>{listItems }</strong>
+    );
+  }
 
 class EditExaminationReport extends React.Component {
 
@@ -43,7 +49,6 @@ class EditExaminationReport extends React.Component {
         formErrors: {
             comment: "",
             diagnosisId: "",
-            drugIds: "",            
         },
         diagnosisList: [
           {
@@ -54,11 +59,9 @@ class EditExaminationReport extends React.Component {
             version: null
           }
         ],
-        drugsList: [],
         comment: "",
         diagnosisId: {},
-        drugIds: [
-        ],
+        drugs: [],
         disabled: true
       }
    }
@@ -72,16 +75,6 @@ class EditExaminationReport extends React.Component {
             console.log(this.state.diagnosisList)
     })
     .catch((error) => console.log)
-
-    axios.get('http://localhost:8080/api/cc-admin/get-all-drugs', {
-      responseType: 'json'
-    })
-          .then(response => {
-            this.setState({drugsList: response.data});
-            console.log(this.state.drugsList)
-
-    })
-    .catch((error) => console.log(error))
 
     const examinationReportId = window.location.pathname.split("/")[2];
 
@@ -103,7 +96,7 @@ class EditExaminationReport extends React.Component {
             });
 
             this.setState({
-              drugIds: examinationReport.drugs
+              drugs: examinationReport.drugs
             });
             
             console.log(this.state)
@@ -115,13 +108,11 @@ class EditExaminationReport extends React.Component {
   publishExaminationReport = event => {
       event.preventDefault();
       const examinationReportId = window.location.pathname.split("/")[2];
-      let drugIds = this.state.drugIds.map(a => a.id);
       console.log(this.state);
       if (formValid(this.state)) {
           axios.put("http://localhost:8080/api/examination-report/edit/" + examinationReportId, {
             comment: this.state.comment,
             diagnosisId: this.state.diagnosisId.id,
-            drugIds: drugIds
         }).then((resp) => {NotificationManager.success('Examination Report Edited', 'Success', 3000);
         this.props.history.push('/doctor-calendar');
       }) 
@@ -147,7 +138,7 @@ class EditExaminationReport extends React.Component {
         console.log('disabled');
     }
     else{
-        if (this.state.comment != "" && this.state.diagnosisId.length !=0 && this.state.drugIds.length != 0){
+        if (this.state.comment != "" && this.state.diagnosisId.length !=0){
           this.setState({disabled: false});
           console.log('enabled');
         }
@@ -191,18 +182,6 @@ class EditExaminationReport extends React.Component {
 
   }
 
-  handleDrugIds = (e, values) => {
-    e.preventDefault();
-
-    let formErrors = { ...this.state.formErrors};
-
-    formErrors.drugIds = values.length == 0 ? "You must input at least one drug" : ""
-
-    this.setState({ formErrors, drugIds: values}, () => console.log(this.state));
-
-    this.checkEnabled();
-  }
-
   render() {
       const { examinationReport, formErrors } = this.state;
       
@@ -224,26 +203,14 @@ class EditExaminationReport extends React.Component {
                   <em>
                     Last Edited: <strong>{examinationReport.lastEdited != null ? examinationReport.lastEdited : "Never"}</strong>
                   </em>
+                  <br></br>
+                  <em>
+                    Issued drugs: {displayDrugs(this.state.drugs)}
+                  </em>
+                  <br></br>
                 </span>
-                <div className="comment"><br></br>
-                <label htmlFor="comment">Comment: </label>
-              <TextField
-                        value={this.state.comment}
-                        style={{ width: 550 }}
-                        id="outlined-multiline-flexible"
-                        name="comment"
-                        label="Add comment"
-                        multiline
-                        rows="10"
-                        variant="outlined"
-                        onChange={this.handleChange}
-
-              />
-              {formErrors.comment.length > 0 && (
-                <span className="errorMessage">{formErrors.comment}</span>
-                )}
-            </div>
-            <div className="diagnosisId">
+                <div>
+              <div className="diagnosisId">
               <label htmlFor="diagnosisId">Diagnosis: </label>
               <Autocomplete
                 id="combo-box-demo"
@@ -263,36 +230,28 @@ class EditExaminationReport extends React.Component {
                 <span className="errorMessage">{formErrors.diagnosisId}</span>
                 )}
 
-            </div>
-            <div className="drugIds">
-              <label htmlFor="drugIds">Drugs: </label>
-              <Autocomplete
-                    multiple
-                    value={this.state.drugIds}
-                    id="tags-outlined"
-                    options={this.state.drugsList}
-                    getOptionLabel={option => option.name}
-                    filterSelectedOptions
-                    style={{ width: 400 }}
-                    onChange={this.handleDrugIds}
-                    className={this.state.drugIds.length > 0 ? "error" : null}
-                    renderInput={params => (
-                    <TextField
-                        name="drugIds"
-                        {...params}
+              </div>
+              <div className="comment"><br></br>
+                <label htmlFor="comment">Comment: </label>
+              <TextField
+                        value={this.state.comment}
+                        style={{ width: 550 }}
+                        id="outlined-multiline-flexible"
+                        name="comment"
+                        label="Add comment"
+                        multiline
+                        rows="10"
                         variant="outlined"
-                        label="Choose drugs"
-                        fullWidth
-                    />
-                    )}
-                    
-                />
-                {formErrors.drugIds.length > 0 && (
-                <span className="errorMessage">{formErrors.drugIds}</span>
+                        onChange={this.handleChange}
+
+              />
+              {formErrors.comment.length > 0 && (
+                <span className="errorMessage">{formErrors.comment}</span>
                 )}
+                <hr></hr>
             </div>
-                <hr/>
-                <Button disabled={this.state.disabled} className="publishExaminationReport" type="submit">Create</Button>
+                <Button disabled={this.state.disabled} className="publishExaminationReport" type="submit">Edit Examination Report</Button>
+              </div>
                 </form>
                 </div>
             </div>

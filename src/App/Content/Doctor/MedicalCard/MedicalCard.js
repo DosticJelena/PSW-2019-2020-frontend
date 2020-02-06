@@ -356,8 +356,11 @@ class MedicalCard extends React.Component {
                             accessor: 'timeCreated',
                         },
                         {
+                            Header: 'Last Edited',
+                            accessor: 'lastEdited',
+                        },
+                        {
                             Header: 'Edit',
-                            width: 150,
                             Cell: row => (                        
                             <div>
                                 <button className="btn primary" onClick={() => this.editExaminationReport(row.original.id)}>Edit</button>

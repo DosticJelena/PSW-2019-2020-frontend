@@ -8,6 +8,7 @@ import {NotificationManager} from 'react-notifications';
 import { Button} from 'react-bootstrap';
 import './Drug.css'
 import Modal from 'react-modal';
+import TextField from '@material-ui/core/TextField';
 
 const customStyles = {
   content : {
@@ -18,7 +19,7 @@ const customStyles = {
     marginRight           : '-50%',
     transform             : 'translate(-50%, -50%)',
     background            : 'silver',
-    width                 : '30em'
+    width                 : '40em'
   }
 };
 
@@ -55,6 +56,7 @@ class Drug extends React.Component{
                 description: '',
                 ingredient: ''
               },
+              id: '',
               name: '',
               description: '',
               ingredient: '',
@@ -69,12 +71,10 @@ class Drug extends React.Component{
       }
 
       openEditModal(p_id, p_name, p_ingredient, p_description) {
-        const editModal = {...this.state.editModal}
-        editModal.id = p_id;
-        editModal.name = p_name;
-        editModal.description = p_description;
-        editModal.ingredient = p_ingredient;
-        this.setState({editModal})
+        this.setState({id: p_id})
+        this.setState({name: p_name})
+        this.setState({ingredient: p_ingredient})
+        this.setState({description: p_description})
         this.setState({editModalIsOpen: true});
       }
      
@@ -117,14 +117,13 @@ class Drug extends React.Component{
           });
       }
 
-      addNewDrug =  event => {
-        event.preventDefault();
+      addNewDrug =  (name, ingredient, description) => {
         this.setState({modalIsOpen: false});
         console.log(this.state);
         axios.post("http://localhost:8080/api/cc-admin/add-drug/", {
-          name: this.state.name,
-          description: this.state.description,
-          ingredient: this.state.ingredient
+          name: name,
+          description: description,
+          ingredient: ingredient
       }).then(response => {
           NotificationManager.success('Drug successfuly added!', '', 3000);
           this.fetchData(this.state)
@@ -148,11 +147,14 @@ class Drug extends React.Component{
       }
 
       handleChange = e => {
-        //this.setState({...this.state, [e.target.name]: e.target.value});
+        e.preventDefault();
+
+        this.setState({...this.state, [e.target.name]: e.target.value});
         console.log(this.state)
       }
 
       editDrug =  (id) => {
+        this.setState({editModalIsOpen: false});
         axios.put("http://localhost:8080/api/cc-admin/update-drug/" + id, {
           name: this.state.name,
           description: this.state.description,
@@ -174,44 +176,48 @@ class Drug extends React.Component{
           isOpen={this.state.editModalIsOpen}
           onRequestClose={this.closeEditModal}
           >
-                    <div class="form-group">
-                      <label htmlFor="name" class="col-form-label">Name:</label>
-                      <input type="text" 
-                             className="form-control form-control-sm"
-                             id="name"
-                             name="name"
-                             defaultValue={this.state.editModal.name}
+                  <div class="form-group">
+                      <label htmlFor="name" class="col-form-label">Drug Name:</label>
+                      <TextField
+                            id="outlined-multiline-flexible"
+                            name="name"
+                             style={{ width: 550 }}
+                             defaultValue={this.state.name}
                              onChange={this.handleChange}
                              placeholder="Enter Name"
+                             variant="outlined"
                              required/>
                     </div>
                     <div class="form-group">
                       <label htmlFor="ingredient" class="col-form-label">Ingredient:</label>
-                      <input type="text" 
-                             className="form-control form-control-sm"
-                             id="ingredient"
+                      <TextField 
+                            style={{ width: 550 }}
+                            id="outlined-multiline-flexible"
                              name="ingredient"
-                             defaultValue={this.state.editModal.ingredient}
+                             defaultValue={this.state.ingredient}
                              onChange={this.handleChange}
-                             placeholder="Enter Name"
+                             placeholder="Enter Ingredient"
+                            variant="outlined"
                              required/>
                     </div>
                     <div class="form-group">
                       <label htmlFor="description" class="col-form-label">Description:</label>
-                      <textarea 
-                             rows="7"
-                             type="text" 
-                             className="form-control form-control-sm"
-                             id="description"
+                      <TextField 
+                            style={{ width: 550 }}
+                            id="outlined-multiline-flexible"
                              name="description"
-                             defaultValue={this.state.editModal.description}
+                             defaultValue={this.state.description}
                              onChange={this.handleChange}
                              placeholder="Enter Description"
+                             multiline
+                            rows="5"
+                            variant="outlined"
                              required/>
                     </div>
-                    <div class="modal-footer">
-                      <Button onClick={() => this.editDrug(this.state.editModal.id)}>Save</Button>
-            </div>
+                    <hr/>
+                    <div>
+                      <Button onClick={() => this.editDrug(this.state.id)}>Save</Button>
+                    </div>
         </Modal>
 
         <button className="btn primary jej" onClick={this.openModal}>Add new Drug</button>
@@ -224,43 +230,45 @@ class Drug extends React.Component{
           <button onClick={this.closeModal} type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
           </button>
-          <form onSubmit={this.addNewDrug}>
           <div class="form-group">
-                      <label htmlFor="name" class="col-form-label">Name:</label>
-                      <input type="text" 
-                             className="form-control form-control-sm"
-                             id="name"
-                             name="name"
+                      <label htmlFor="name" class="col-form-label">Drug Name:</label>
+                      <TextField
+                            id="outlined-multiline-flexible"
+                            name="name"
+                             style={{ width: 550 }}
                              onChange={this.handleChange}
                              placeholder="Enter Name"
+                             variant="outlined"
                              required/>
                     </div>
                     <div class="form-group">
                       <label htmlFor="ingredient" class="col-form-label">Ingredient:</label>
-                      <input type="text" 
-                             className="form-control form-control-sm"
-                             id="ingredient"
+                      <TextField 
+                            style={{ width: 550 }}
+                            id="outlined-multiline-flexible"
                              name="ingredient"
                              onChange={this.handleChange}
                              placeholder="Enter Ingredient"
+                            variant="outlined"
                              required/>
                     </div>
                     <div class="form-group">
                       <label htmlFor="description" class="col-form-label">Description:</label>
-                      <textarea 
-                             rows="7"
-                             type="text" 
-                             className="form-control form-control-sm"
-                             id="description"
+                      <TextField 
+                            style={{ width: 550 }}
+                            id="outlined-multiline-flexible"
                              name="description"
                              onChange={this.handleChange}
                              placeholder="Enter Description"
+                             multiline
+                            rows="5"
+                            variant="outlined"
                              required/>
                     </div>
-                    <div class="modal-footer">
-                      <Button type="submit">Save</Button>
+                    <hr/>
+                    <div>
+                      <Button onClick={() => this.addNewDrug(this.state.name, this.state.ingredient, this.state.description)}>Save</Button>
                   </div>
-          </form>
         </Modal>
           </div>
           <div className='nonccadmins rtable'>
@@ -295,7 +303,7 @@ class Drug extends React.Component{
                         Header: '',
                         Cell: row => (
                             <div>
-                                <button className="primary btn" onClick={() => this.deleteDrug(row.original.id)}>Delete</button>
+                                <button className="primary btn" onClick={() => {if (window.confirm('Are you sure you wish to delete this item?')) this.deleteDrug(row.original.id)}}>Delete</button>
                             </div>
                         ),                      
                         width: 125

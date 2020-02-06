@@ -53,16 +53,7 @@ class ChangePassword extends React.Component {
                 password: this.state.newPassword
             })
             .then((resp) => {
-                localStorage.setItem('token', resp.data.accessToken);  
-                if (this.state.role == "ROLE_CC_ADMIN"){
-                    this.props.history.push('/ccadmin');
-                } else if (this.state.role == "ROLE_CLINIC_ADMIN"){
-                    this.props.history.push('/clinic-admin');
-                } else if (this.state.role == "ROLE_DOCTOR"){
-                    this.props.history.push('/doctor');
-                } else if (this.state.role == "ROLE_NURSE"){
-                    this.props.history.push('/nurse');
-                }   
+                    this.props.history.push('/login');
             })  
         })
         .catch((error) =>{NotificationManager.error('Wrong input', 'Error!', 4000);
