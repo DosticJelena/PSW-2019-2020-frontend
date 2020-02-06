@@ -24,7 +24,9 @@ class MedicalRecord extends React.Component{
            history:[],
            filtered:[],
            id:'',
-           reportModalHandler:false
+           reportModalHandler:false,
+           futureCancelApp:[],
+           futureFixApp:[]
         }
     }
 
@@ -69,7 +71,7 @@ class MedicalRecord extends React.Component{
               var token = localStorage.getItem('token');
               axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
               axios.get('http://localhost:8080/api/appointment/history/' +response.data.id).then(response => {
-  
+
                       let tmpArray = []
                       for (var i = 0; i < response.data.length; i++) {
                           tmpArray.push(response.data[i])
@@ -79,9 +81,41 @@ class MedicalRecord extends React.Component{
                       })
               })
               .catch((error) => console.log(error))  
+
+
+              var token = localStorage.getItem('token');
+              axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+              axios.get('http://localhost:8080/api/appointment/future-cancel-appointments/' +response.data.id).then(response => {
+
+                      console.log(response.data);
+                      let tmpArray = []
+                      for (var i = 0; i < response.data.length; i++) {
+                          tmpArray.push(response.data[i])
+                      }        
+                      this.setState({
+                          futureCancelApp: tmpArray
+                      })
+              })
+              .catch((error) => console.log(error))  
+
+
+              var token = localStorage.getItem('token');
+              axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+              axios.get('http://localhost:8080/api/appointment/future-fix-appointments/' +response.data.id).then(response => {
+
+                      let tmpArray = []
+                      for (var i = 0; i < response.data.length; i++) {
+                          tmpArray.push(response.data[i])
+                      }        
+                      this.setState({
+                          futureFixApp: tmpArray
+                      })
+              })
+              .catch((error) => console.log(error))  
           })
         .catch((error) => console.log(error))
-     }
+           
+      }
 
      onFilteredChangeCustom = (value, accessor) => {
       let filtered = this.state.filtered;
@@ -103,8 +137,20 @@ class MedicalRecord extends React.Component{
     
         this.setState({ filtered: filtered });
    };
+
+   cancelApp = (id) =>{
+    console.log(id);
+    axios.put("http://localhost:8080/api/appointment/cancel-Patient/" + id).then(response => {
+          const {futureCancelApp} = this.state;
+          futureCancelApp.pop(response.data);
+          this.setState({futureCancelApp});
+        }).then((resp) => console.log("Canceled."))
+}
+
   
     render(){
+
+
         return(
 
             <div className="MedicalRecord">
@@ -198,13 +244,14 @@ class MedicalRecord extends React.Component{
                         defaultPageSize = {10}
                     />
                 </div>
+
                 <div className="col-6">
                     <h3>Scheduled appointments</h3>
                     <hr/>
                 </div>
                 <div className="rtable">
                 <ReactTable 
-                        data={this.state.history}
+                        data={this.state.futureFixApp}
                         filterable
                         filtered={this.state.filtered}
                         onFilteredChange={(filtered, column, value) => {
@@ -222,7 +269,12 @@ class MedicalRecord extends React.Component{
                                 : true;
                             }
                           }}
-                        columns={[{
+                        columns={[
+                                  {
+                                    Header: 'Appointment id',
+                                    accessor: 'id',
+                                },
+                                {
                                     Header: 'Start time',
                                     accessor: 'startTime',
                                 },
@@ -231,13 +283,13 @@ class MedicalRecord extends React.Component{
                                     accessor: 'endTime',
                                 },
                                 {
-                                    Header: 'Doctors name',
-                                    accessor: 'doctorFirstName',
+                                    Header: 'Doctors',
+                                    accessor: 'doctors',
                                     width:150
                                 }, 
                                 {
-                                    Header: 'Doctors last name',
-                                    accessor: 'doctorLastName',
+                                    Header: 'Price',
+                                    accessor: 'price',
                                     width:200
                                 },
                                 {
@@ -245,20 +297,79 @@ class MedicalRecord extends React.Component{
                                     accessor: 'type',
                                 },
                                 {
-                                    Header: 'Specialization',
-                                    accessor: 'specialization',
+                                    Header: 'Ordination',
+                                    accessor: 'ordination',
+                                },
+                        ]}
+                        defaultPageSize = {5}
+                    />
+                  </div>  
+                
+
+                <div className="col-6">
+                    <h3>Cancelable appointments</h3>
+                    <hr/>
+                </div>
+                <div className="rtable">
+                <ReactTable 
+                        data={this.state.futureCancelApp}
+                        filterable
+                        filtered={this.state.filtered}
+                        onFilteredChange={(filtered, column, value) => {
+                          this.onFilteredChangeCustom(value, column.id || column.accessor);
+                        }}
+                        defaultFilterMethod={(filter, row, column) => {
+                            const id = filter.pivotId || filter.id;
+                            if (typeof filter.value === "object") {
+                              return row[id] !== undefined
+                                ? filter.value.indexOf(row[id]) > -1
+                                : true;
+                            } else {
+                              return row[id] !== undefined
+                                ? String(row[id]).indexOf(filter.value) > -1
+                                : true;
+                            }
+                          }}
+                        columns={[ {
+                                    Header: 'Appointment id',
+                                    accessor: 'id',
+                                },{
+                                    Header: 'Start time',
+                                    accessor: 'startTime',
+                                },
+                                {
+                                    Header: 'End time',
+                                    accessor: 'endTime',
+                                },
+                                {
+                                    Header: 'Doctors',
+                                    accessor: 'doctors',
+                                    width:150
+                                }, 
+                                {
+                                    Header: 'Price',
+                                    accessor: 'price',
+                                    width:200
+                                },
+                                {
+                                    Header: 'Appointment type',
+                                    accessor: 'type',
+                                },
+                                {
+                                    Header: 'Ordination',
+                                    accessor: 'ordination',
                                 },
                                 {
                                   Header: '',
                                   Cell: row => (                        
                                     <div>
-                                      <Button onClick={() => this.cancelApp(row.original.doctorId)}>Cancel</Button>
+                                        <Button onClick={() => this.cancelApp(row.original.id)}>Cancel</Button>
                                     </div>
                                     ),
                                     filterable:false
                                 }
                         ]}
-                        defaultPageSize = {10}
+                        defaultPageSize = {5}
                     />
                   </div>  
                 </div>
