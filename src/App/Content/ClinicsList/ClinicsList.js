@@ -288,7 +288,7 @@ class ClinicsList extends React.Component{
                           <select required className="custom-select mr-sm-2" name="type" id="type" onChange={this.handleChange} >
                             <option defaultValue="0"></option>
                             {this.state.types.map((type, index) => (
-                              <option key={type.id} value={type.id}>{type.name}</option>
+                              <option key={type.name} value={type.name}>{type.name}</option>
                             ))}  
                           </select>
                         </div>

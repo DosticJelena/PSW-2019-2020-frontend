@@ -63,23 +63,23 @@ class DoctorsList extends React.Component{
     schedule= (doctorId, time)=>{
 
       const clinicId=window.location.pathname.split("/")[2];
-      const specializationId = window.location.pathname.split("/")[3];
-      var specialization="";
+      const specialization = window.location.pathname.split("/")[3];
+      var specializationId="";
       for(let i=0; i<this.state.types.length; i++){
-        if(this.state.types[i].id==specializationId){
-          specialization=this.state.types[i].name;
+        if(this.state.types[i].name==specialization){
+          specializationId=this.state.types[i].id;
         }
       } 
-        this.props.history.push('/scheduling-form/'+doctorId+'/'+clinicId+'/'+time+'/'+specializationId+'/'+specialization);
+
+      this.props.history.push('/scheduling-form/'+doctorId+'/'+clinicId+'/'+time+'/'+specializationId+'/'+specialization);
     }
 
     schedule1= (doctorId, time)=>{
-
       const clinicId = window.location.pathname.split("/")[2];
       var specialization="";
       var specializationId="";
       for(let i=0; i<this.state.types.length; i++){
-        if(this.state.types[i].id==this.state.type){
+        if(this.state.types[i].name==this.state.type){
           specialization=this.state.types[i].name;
           specializationId= this.state.types[i].id;
         }
@@ -148,7 +148,7 @@ class DoctorsList extends React.Component{
 
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/api/types")
+        axios.get("http://localhost:8080/api/types/"+id)
           .then(response => {
             let tmpArray = []
             for (var i = 0; i < response.data.length; i++) {
@@ -247,7 +247,7 @@ class DoctorsList extends React.Component{
                           <select required className="custom-select mr-sm-2" name="type" id="type" onChange={this.handleChange} >
                             <option defaultValue="0"></option>
                             {this.state.types.map((type, index) => (
-                                <option key={type.id} value={type.id}>{type.name}</option>
+                                <option key={type.name} value={type.name}>{type.name}</option>
                               ))}   
                           </select>
                         </div>
