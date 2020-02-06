@@ -30,7 +30,7 @@ class VerifyEmail extends React.Component {
         if (this.state.redirect === true){
             this.props.history.push("/login");
         }
-        return <h1>Email verification successful!</h1>
+        return <h1></h1>
       }
 
 }

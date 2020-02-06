@@ -40,18 +40,13 @@ class ChangePassword extends React.Component {
 
     SendLoginRequest = event => {
         event.preventDefault();
-        console.log(this.state);
-        this.setState({
-            dto: {
-                newPassword: this.state.newPassword,
-                oldPassword: this.state.oldPassword
-            }
-        })
-        this.setState({...this.state.dto, newPassword: this.state.newPassword});
-        console.log(this.state);
 
-        axios.post("http://localhost:8080/auth/change-password", this.state.dto)
+        axios.put("http://localhost:8080/auth/change-password", {
+            newPassword: this.state.newPassword,
+            oldPassword: this.state.oldPassword
+        })
         .then((resp) => {
+            console.log(this.state);
             NotificationManager.success('Welcome to the Clinic Center System. Your password has been changed', '', 4000);
             axios.post("http://localhost:8080/auth/login", {
                 email: this.state.email,
@@ -60,7 +55,7 @@ class ChangePassword extends React.Component {
             .then((resp) => {
                 localStorage.setItem('token', resp.data.accessToken);  
                 if (this.state.role == "ROLE_CC_ADMIN"){
-                    this.props.history.push('/cc-admin');
+                    this.props.history.push('/ccadmin');
                 } else if (this.state.role == "ROLE_CLINIC_ADMIN"){
                     this.props.history.push('/clinic-admin');
                 } else if (this.state.role == "ROLE_DOCTOR"){
@@ -76,8 +71,6 @@ class ChangePassword extends React.Component {
     }
 
     componentDidMount(){
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         axios.get("http://localhost:8080/auth/getMyUser")  
           .then(response => {
               console.log(response.data);
@@ -121,6 +114,7 @@ class ChangePassword extends React.Component {
                                             id="oldPassword" 
                                             name="oldPassword"
                                             onChange={this.handleChange}
+                                            value={this.state.oldPassword}
                                             placeholder="Old Password"/>
                                     </div>
                                 </div>
@@ -135,6 +129,7 @@ class ChangePassword extends React.Component {
                                             id="newPassword" 
                                             name="newPassword"
                                             onChange={this.handleChange}
+                                            value={this.state.newPassword}
                                             placeholder="New Password"/>
                                     </div>
                                 </div>
