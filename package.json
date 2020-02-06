@@ -8,6 +8,8 @@
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "dependencies": "0.0.1",
+    "google-maps-api": "^2.0.1",
+    "google-maps-react": "^2.0.2",
     "material-ui": "^0.20.2",
     "moment": "^2.24.0",
     "react": "^16.12.0",

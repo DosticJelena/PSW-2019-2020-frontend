@@ -6,7 +6,7 @@ import Footer from '../../Footer/Footer';
 import Modal from '../../../UI/Modal/Modal';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom';
-import {NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 
 class AbsenceRequests extends React.Component {
@@ -33,26 +33,31 @@ class AbsenceRequests extends React.Component {
     }
 
     sendDenialRequest = () => {
-        axios.post("http://localhost:8080/api/absence/" + this.state.isNurseOrDoctor + "-deny", {
-            id: this.state.id,
-            startDateTime: this.state.start,
-            endDateTime: this.state.end,
-            firstName: this.state.name,
-            email: this.state.email,
-            denialComment: this.state.denialComment
-        })
-            .then(() => {
-                NotificationManager.success('Succesfully denied!', 'Success!', 4000);
-                window.location.reload();
+        if (this.state.denialComment == ""){
+            NotificationManager.error('You have to enter denial comment.', 'Error!', 4000)
+        } else {
+            axios.post("http://localhost:8080/api/absence/" + this.state.isNurseOrDoctor + "-deny", {
+                id: this.state.id,
+                startDateTime: this.state.start,
+                endDateTime: this.state.end,
+                firstName: this.state.name,
+                email: this.state.email,
+                denialComment: this.state.denialComment
             })
-            .catch((error) => NotificationManager.error('Something went wrong.', 'Error!', 4000))
+                .then(() => {
+                    NotificationManager.success('Succesfully denied!', 'Success!', 4000);
+                    window.location.reload();
+                })
+                .catch((error) => NotificationManager.error('Something went wrong.', 'Error!', 4000))
+        }
+        
     }
 
-    DenyModalHandler = (isNurseOrDoc,id,start, end, name, email) => {
-        this.setState({ denyModalVisible: true, isNurseOrDoctor: isNurseOrDoc, id: id, start: start, end: end, email: email, name: name});
+    DenyModalHandler = (isNurseOrDoc, id, start, end, name, email) => {
+        this.setState({ denyModalVisible: true, isNurseOrDoctor: isNurseOrDoc, id: id, start: start, end: end, email: email, name: name });
     }
 
-    AcceptDoc = (id,start, end, name, email) => {
+    AcceptDoc = (id, start, end, name, email) => {
         axios.post("http://localhost:8080/api/absence/doctor-accept", {
             id: id,
             startDateTime: start,
@@ -188,7 +193,7 @@ class AbsenceRequests extends React.Component {
                         <button
                             className="delete-ord btn"
                             style={{ fontSize: 'small' }}
-                            onClick={() => this.DenyModalHandler("nurse",row.original.id, row.original.startDateTime, row.original.endDateTime, row.original.firstName, row.original.email)}>
+                            onClick={() => this.DenyModalHandler("nurse", row.original.id, row.original.startDateTime, row.original.endDateTime, row.original.firstName, row.original.email)}>
                             Deny</button>
                     </div>
                 ),
@@ -254,7 +259,7 @@ class AbsenceRequests extends React.Component {
                 Cell: row => (
                     <div>
                         <button className="delete-ord btn" style={{ fontSize: 'small' }}
-                            onClick={() => this.DenyModalHandler("doctor",row.original.id, row.original.startDateTime, row.original.endDateTime, row.original.firstName, row.original.email)}>
+                            onClick={() => this.DenyModalHandler("doctor", row.original.id, row.original.startDateTime, row.original.endDateTime, row.original.firstName, row.original.email)}>
                             Deny</button>
                     </div>
                 ),
@@ -268,11 +273,12 @@ class AbsenceRequests extends React.Component {
                     <h3>Accept</h3>
                 </Modal>
                 <Modal show={this.state.denyModalVisible} modalClosed={this.modalClosedHandler}>
-                    <h3>Deny</h3>
-                    <hr/>
-                    <label>Denial comment:</label>
-                    <input type="text" name="denialComment" onChange={this.handleChange}/>
-                    <button className="btn calendar-ord" onClick={() => this.sendDenialRequest()}>Send</button>
+                            <h3>Deny</h3>
+                            <hr />
+                            <label>Denial comment:</label>
+                            <input style={{marginLeft: "10px", borderRadius: "5px", width: "300px"}} type="text" name="denialComment" onChange={this.handleChange} />
+                            <hr/>
+                            <button className="btn calendar-ord" onClick={() => this.sendDenialRequest()}>Send</button>
                 </Modal>
                 <Header />
                 <div className="row">
