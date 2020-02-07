@@ -47,23 +47,12 @@ class ChangePassword extends React.Component {
         })
             .then((resp) => {
                 console.log(this.state);
-                NotificationManager.success('Welcome to the Clinic Center System. Your password has been changed', '', 4000);
+                NotificationManager.success('Your password has been changed. You can now log in to the Clinic Center with new password.', '', 4000);
                 axios.post("http://localhost:8080/auth/login", {
                     email: this.state.email,
                     password: this.state.newPassword
-                })
-                    .then((resp) => {
-                        localStorage.setItem('token', resp.data.accessToken);
-                        if (this.state.role == "ROLE_CC_ADMIN") {
-                            this.props.history.push('/ccadmin');
-                        } else if (this.state.role == "ROLE_CLINIC_ADMIN") {
-                            this.props.history.push('/clinic-admin');
-                        } else if (this.state.role == "ROLE_DOCTOR") {
-                            this.props.history.push('/doctor');
-                        } else if (this.state.role == "ROLE_NURSE") {
-                            this.props.history.push('/nurse');
-                        }
-                    })
+                }).then(() => {
+                    this.props.history.push('/login');
             })
             .catch((error) => {
                 if (this.state.newPassword.length < 6) {
@@ -72,7 +61,6 @@ class ChangePassword extends React.Component {
                     NotificationManager.error('Wrong input', 'Error!', 4000);
                 }
             })
-
     }
 
     componentDidMount() {
