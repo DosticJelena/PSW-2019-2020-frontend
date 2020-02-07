@@ -29,7 +29,7 @@ class QuickReservation extends React.Component {
       type: '0',
       ordination: '',
       doctor: '',
-      price: null,
+      price: '',
       clinicAdmin: '',
       clinicId: '',
       doctors: [],
@@ -41,65 +41,49 @@ class QuickReservation extends React.Component {
       prices: [],
       priceSpec: '',
       priceValue: '',
-      date: ''
+      date: '2020-02-20',
+      doctorError: true
     }
 
   }
 
-  SendQuickReservationRequest = event => {
+  SendQuickReservationRequest = (event, step) => {
     event.preventDefault();
-    var token = localStorage.getItem('token');
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.post("http://localhost:8080/api/clinic-admin/quick-reservation", {
-      startDateTime: this.state.date + ' ' + this.state.startTime,
-      endDateTime: this.state.date + ' ' + this.state.endTime,
-      type: this.state.type,
-      ordination: this.state.ordination,
-      doctor: this.state.doctor,
-      price: this.state.price,
-      clinicAdmin: this.state.clinicAdmin,
-      discount: 5
-    })
-      .then((resp) => {
-        NotificationManager.success('You have created appointment succesfully!', 'Success!', 4000)
-        this.props.history.push('/clinic-admin');
+    var st = parseInt(String(this.state.startTime).substr(0, 2));
+    var en = parseInt(String(this.state.endTime).substr(0, 2));
+    if (st > en) {
+      NotificationManager.error('Start time must be before end time.', 'Error!', 4000);
+    } else if (this.state.date == '') {
+      NotificationManager.error('Date cannot be empty.', 'Error!', 4000);
+    } else if (this.state.startTime == '' || this.state.startTime == '') {
+      NotificationManager.error('Time cannot be empty.', 'Error!', 4000);
+    } else if (this.state.price == '') {
+      NotificationManager.error('Specialization cannot be empty.', 'Error!', 4000);
+    } else if (this.state.doctor == '') {
+      NotificationManager.error('Doctor cannot be empty.', 'Error!', 4000);
+    } else if (this.state.ordination == '') {
+      NotificationManager.error('Ordination cannot be empty.', 'Error!', 4000);
+    } else {
+      var token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axios.post("http://localhost:8080/api/clinic-admin/quick-reservation", {
+        startDateTime: this.state.date + ' ' + this.state.startTime,
+        endDateTime: this.state.date + ' ' + this.state.endTime,
+        type: this.state.type,
+        ordination: this.state.ordination,
+        doctor: this.state.doctor,
+        price: this.state.price,
+        clinicAdmin: this.state.clinicAdmin,
+        discount: 5
       })
-      .catch((error) => NotificationManager.error('Incorect values!', 'Error!', 4000))
+        .then((resp) => {
+          NotificationManager.success('You have created appointment succesfully!', 'Success!', 4000)
+          this.props.history.push('/clinic-admin');
+        })
+        .catch((error) => NotificationManager.error('Incorect values!', 'Error!', 4000))
 
-  }
-
-  handleKeyUp = () => {
-    var empty = true;
-
-    Object.keys(this.state.formErrors).forEach(e => {
-      if (this.state.formErrors[e] != "") {
-        empty = false;
-      }
-    });
-
-    if (!empty) {
-      this.setState({ disabled: true });
-      console.log('disabled');
     }
 
-    else {
-      if (this.state.price != (null && "") && this.state.doctor != (null && "" && "0") && this.state.ordination != (null && "" && "0") && !this.isEmpty(this.state.startDateTime) && !this.isEmpty(this.state.endDateTime)) {
-        this.setState({ disabled: false });
-        console.log('enabled');
-      }
-      else {
-        this.setState({ disabled: true });
-        console.log('disabled');
-      }
-    }
-  }
-
-  isEmpty = (obj) => {
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key))
-        return false;
-    }
-    return true;
   }
 
   handleChange = e => {
@@ -118,12 +102,12 @@ class QuickReservation extends React.Component {
     }
 
     this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
-    this.handleKeyUp();
   }
 
   handleChangeTime = e => {
     this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
     this.fetchDoctors();
+    this.fetchOrdinations();
   }
 
   handleDateChange(e) {
@@ -143,9 +127,9 @@ class QuickReservation extends React.Component {
   }
 
   fetchDoctors = () => {
-    axios.post("http://localhost:8080/api/doctors-by-working-time", {
-      start: this.state.startTime,
-      end: this.state.endTime
+    axios.post("http://localhost:8080/api/available-doctors-by-date-and-time", {
+      start: this.state.date + ' ' + this.state.startTime,
+      end: this.state.date + ' ' + this.state.endTime
     })
       .then(response => {
         console.log(response)
@@ -161,59 +145,44 @@ class QuickReservation extends React.Component {
       .catch((error) => console.log(error))
   }
 
-  componentDidMount() {
-
-    var token = localStorage.getItem('token');
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("http://localhost:8080/auth/getMyUser")
+  fetchOrdinations = () => {
+    axios.post("http://localhost:8080/api/appointment/available-ordinations-by-date", {
+      startDateTime: this.state.date + ' ' + this.state.startTime,
+      endDateTime: this.state.date + ' ' + this.state.endTime,
+      appType: this.state.type
+    })
       .then(response => {
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
         this.setState({
-          clinicAdmin: response.data.id
+          ordinations: tmpArray
         })
       })
-      .then(() => {
-        axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)
-          .then(response => {
-            this.setState({
-              clinicId: response.data
-            })
-          })
-          .then(() => {
-
-            axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + this.state.clinicId)
-              .then(response => {
-                let tmpArray = []
-                for (var i = 0; i < response.data.length; i++) {
-                  tmpArray.push(response.data[i])
-                }
-                this.setState({
-                  ordinations: tmpArray
-                })
-              })
-              .catch((error) => console.log(error))
-
-              this.fetchDoctors();
-
-            axios.get("http://localhost:8080/api/get-appointment-prices")
-              .then(response => {
-                let tmpArray = []
-                for (var i = 0; i < response.data.length; i++) {
-                  tmpArray.push(response.data[i])
-                }
-
-                this.setState({
-                  prices: tmpArray
-                })
-              })
-              .catch((error) => console.log(error))
-
-          }).catch((error) => console.log(error))
-
-      }).catch((error) => console.log(error))
-
+      .catch((error) => console.log(error))
   }
 
-  isValidated() {
+  fetchPrices = () => {
+    axios.get("http://localhost:8080/api/get-appointment-prices")
+      .then(response => {
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+          prices: tmpArray
+        })
+      })
+      .catch((error) => console.log(error))
+  }
+
+  componentDidMount() {
+
+    this.fetchOrdinations();
+    this.fetchDoctors();
+    this.fetchPrices();
 
   }
 
@@ -244,16 +213,39 @@ class QuickReservation extends React.Component {
     for (var i = 0; i < this.state.prices.length; i++) {
       if (this.state.prices[i].id == this.state.price) {
         selectedPrice.push(this.state.prices[i]);
-      } 
+      }
     }
 
     var doctorsBySpec = []
     for (var i = 0; i < this.state.doctors.length; i++) {
-      if (selectedPrice.length > 0){
+      if (selectedPrice.length > 0) {
         if (this.state.doctors[i].specialization == selectedPrice[0].appointmentType) {
           doctorsBySpec.push(this.state.doctors[i]);
-        } 
-      }     
+        }
+      }
+    }
+
+    var doctorError;
+    if (this.state.price == '') {
+      doctorError = (<div>
+        <label style={{ color: 'white' }}>...</label>
+        <p style={{ color: 'red' }}>You have to choose specialization first.</p>
+      </div>)
+    } else if (doctorsBySpec.length == 0) {
+      doctorError = (<div>
+        <label style={{ color: 'white' }}>...</label>
+        <p style={{ color: 'red' }}>There are no available specialized doctors during choosen time. Please change date or time.</p>
+      </div>)
+    }
+
+    var timeError;
+    var st = parseInt(String(this.state.startTime).substr(0, 2));
+    var en = parseInt(String(this.state.endTime).substr(0, 2));
+    if (st > en) {
+      timeError = (<div>
+        <label style={{ color: 'white' }}>...</label>
+        <p style={{ color: 'red' }}>Start time must be set before end time.</p>
+      </div>)
     }
 
     const steps =
@@ -263,13 +255,13 @@ class QuickReservation extends React.Component {
           (<div className="stepp">
             <hr />
             <h5>Choose start and end time of the appointment:</h5>
-            <p>Work time is from 07:00 to 20:00</p>
+            <p>Work time is from 08:00 to 20:00</p>
             <hr />
             <div className="form-row">
               <div className="form-group col-md-3">
                 <label htmlFor="date">Date</label>
-                <input required type="date"  className="form-control" name="date" id="date" placeholder="Date"
-                  onChange={this.handleChange} />
+                <input required type="date" value={this.state.date} className="form-control" name="date" id="date" placeholder="Date"
+                  onChange={this.handleChangeTime} />
               </div>
               <div className="form-group col-md-2">
                 <label htmlFor="date">Start</label>
@@ -280,6 +272,9 @@ class QuickReservation extends React.Component {
                 <label htmlFor="time">End</label>
                 <input required type="time" max="20:00" defaultValue={this.state.endTime} className="form-control" name="endTime" id="end" placeholder="End time"
                   onChange={this.handleChangeTime} />
+              </div>
+              <div className="form-group col-md-5">
+                {timeError}
               </div>
             </div>
           </div>)
@@ -296,7 +291,7 @@ class QuickReservation extends React.Component {
                 <select required className="custom-select mr-sm-2" name="price" id="price" onChange={this.handleChange} >
                   <option defaultValue="0" >Choose...</option>
                   {pricesByEnum.map((price, index) => (
-                    <option key={price.id} value={price.id}>{price.appointmentType}</option>
+                    <option key={price.id} selected={price.id == this.state.price} value={price.id}>{price.appointmentType}</option>
                   ))}
                 </select>
               </div>
@@ -327,9 +322,14 @@ class QuickReservation extends React.Component {
                 <select required className="custom-select mr-sm-2" name="doctor" id="doctor" onChange={this.handleChange} >
                   <option defaultValue="0" >Choose...</option>
                   {doctorsBySpec.map((doctor, index) => (
-                    <option key={doctor.id} value={doctor.id}>{doctor.firstName} {doctor.lastName} ({doctor.specialization})</option>
+                    <option key={doctor.id} selected={doctor.id == this.state.doctor} value={doctor.id}>{doctor.firstName} {doctor.lastName} ({doctor.specialization})</option>
                   ))}
                 </select>
+              </div>
+              <div className="form-group col-md-1">
+              </div>
+              <div className="form-group col-md-5">
+                {doctorError}
               </div>
             </div>
           </div>)
@@ -347,7 +347,7 @@ class QuickReservation extends React.Component {
                 <select required className="custom-select mr-sm-2" name="ordination" id="ordination" onChange={this.handleChange} >
                   <option defaultValue="0" >Choose...</option>
                   {ordinationsByTipe.map((ord, index) => (
-                    <option key={ord.id} value={ord.id}>{ord.number}</option>
+                    <option key={ord.id} selected={ord.id == this.state.ordination} value={ord.id}>{ord.number}</option>
                   ))}
                 </select>
               </div>
@@ -364,7 +364,7 @@ class QuickReservation extends React.Component {
             <div className="form-row">
               <div className="form-group col-md-6">
                 <label htmlFor="ordination">Price</label>
-                <select disabled required className="custom-select mr-sm-2" name="price" id="price" onChange={this.handleChange} >                  
+                <select disabled required className="custom-select mr-sm-2" name="price" id="price" onChange={this.handleChange} >
                   {selectedPrice.map((price, index) => (
                     <option key={price.id} value={price.id}>{price.appointmentType} | {price.appointmentEnum} | {price.appointmentPrice}</option>
                   ))}
@@ -375,7 +375,7 @@ class QuickReservation extends React.Component {
                 <input required disabled type="text" className="form-control" name="currency" id="currency" placeholder="€"
                   value="€" />
               </div>
-              <Button type="submit" onClick={this.SendQuickReservationRequest} className="btn quick-res-btn">Create</Button>
+              <Button type="submit" onClick={(event) => this.SendQuickReservationRequest(event)} className="btn quick-res-btn">Create</Button>
             </div>
           </div>)
       }
@@ -408,66 +408,3 @@ class QuickReservation extends React.Component {
 }
 
 export default withRouter(QuickReservation);
-
-/*<div className="row quick-res-form">
-<div className="col-sm">
-<form onSubmit={this.SendQuickReservationRequest}>
-  <div className="form-row">
-    <div className="form-group col-md-6">
-      <label htmlFor="doctor">Doctor</label>
-      <select required className="custom-select mr-sm-2" name="doctor" id="doctor" onChange={this.handleChange} >
-        <option defaultValue="0" >Choose...</option>
-        {this.state.doctors.map((doctor, index) => (
-          <option key={doctor.id} value={doctor.id}>{doctor.firstName} {doctor.lastName}</option>
-        ))}
-      </select>
-    </div>
-    <div className="form-group col-md-6">
-      <label htmlFor="ordination">Ordination</label>
-      <select required className="custom-select mr-sm-2" name="ordination" id="ordination" onChange={this.handleChange} >
-        <option defaultValue="0" >Choose...</option>
-        {this.state.ordinations.map((ord, index) => (
-          <option key={ord.id} value={ord.id}>{ord.number}</option>
-        ))}
-      </select>
-    </div>
-  </div>
-  <div className="form-row">
-    <div className="form-group col-md-3">
-      <label htmlFor="date">Start</label>
-      <input required type="datetime-local" className="form-control" name="startDateTime" id="start" placeholder="Start date and time"
-        onChange={this.handleChange} />
-    </div>
-    <div className="form-group col-md-3">
-      <label htmlFor="time">End</label>
-      <input required type="datetime-local" className="form-control" name="endDateTime" id="end" placeholder="End date and time"
-        onChange={this.handleChange} />
-    </div>
-  </div>
-  <div className="form-group">
-    <label htmlFor="type">Type</label>
-    <div className="form-check form-check">
-      <input disabled defaultChecked onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0" />
-      <label className="form-check-label" htmlFor="examination">Examination</label>
-    </div>
-    <div className="form-check form-check">
-      <input disabled onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1" />
-      <label className="form-check-label" htmlFor="operation">Operation</label>
-    </div>
-  </div>
-  <div className="form-row">
-    <div className="form-group col-md-5">
-      <label htmlFor="price">Price</label>
-      <input required type="number" className="form-control" name="price" id="price" placeholder="00.0"
-        onChange={this.handleChange} />
-    </div>
-    <div className="form-group col-md-1">
-      <label htmlFor="currency">Currency</label>
-      <input required disabled type="text" className="form-control" name="currency" id="currency" placeholder="€"
-        value="€" />
-    </div>
-  </div>
-  <Button disabled={this.state.disabled} type="submit" className="btn quick-res-btn">Create</Button>
-</form>
-</div>
-</div>*/
