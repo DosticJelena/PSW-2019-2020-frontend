@@ -288,7 +288,8 @@ class AbsenceRequests extends React.Component {
                         <hr />
                         <div className="row" style={{ marginLeft: '40px' }}>
                             <h4>Doctor Requests</h4>
-                            <div className='patients' style={{ fontSize: 'small', textAlign: 'center' }}>
+                            <br/>
+                            <div style={{ fontSize: 'small', textAlign: 'center'}}>
                                 <ReactTable
                                     data={this.state.doctors}
                                     columns={columnsDoctor}
@@ -302,7 +303,7 @@ class AbsenceRequests extends React.Component {
                         <hr />
                         <div className="row" style={{ marginLeft: '40px', marginBottom: '30px' }}>
                             <h4>Nurse Requests</h4>
-                            <div className='patients' style={{ fontSize: 'small', textAlign: 'center' }}>
+                            <div style={{ fontSize: 'small', textAlign: 'center'}}>
                                 <ReactTable
                                     data={this.state.nurses}
                                     columns={columnsNurse}
