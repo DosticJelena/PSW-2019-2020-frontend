@@ -86,13 +86,18 @@ class CCAdminRegistrationRequests extends React.Component{
       handleOpenModal = (id) =>{
         this.setState({ showModal: true });
         this.setState({ id: id});
+        this.setState({
+          disabled: true
+        })
       }
       
       handleCloseModal = () =>{
         this.setState({ showModal: false });
         this.setState({ id: ""});
         this.setState({ message: ""});
-
+        this.setState({
+          disabled: true
+        })
       }
 
       fetchData(state, instance) {

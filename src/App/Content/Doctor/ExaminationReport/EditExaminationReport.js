@@ -24,10 +24,12 @@ const formValid = ({ formErrors, ...rest }) => {
     return valid;
   };
 
-  const displayDrugs = (list) => { 
-    const listItems = list.map((d) => <em key={d.name}>{d.name} |</em>);
+  const displayDrugs = (list, drugString) => { 
+    const listItems2 = drugString.map((d) => <li key={d}>{d} </li>);
+
     return (
-      <strong>{listItems }</strong>
+      <strong>{listItems2}</strong>
+
     );
   }
 
@@ -62,7 +64,8 @@ class EditExaminationReport extends React.Component {
         comment: "",
         diagnosisId: {},
         drugs: [],
-        disabled: true
+        disabled: true,
+        drugString: []
       }
    }
 
@@ -97,6 +100,10 @@ class EditExaminationReport extends React.Component {
 
             this.setState({
               drugs: examinationReport.drugs
+            });
+
+            this.setState({
+              drugString: examinationReport.drugString
             });
             
             console.log(this.state)
@@ -205,7 +212,7 @@ class EditExaminationReport extends React.Component {
                   </em>
                   <br></br>
                   <em>
-                    Issued drugs: {displayDrugs(this.state.drugs)}
+                    Issued drugs: {displayDrugs(this.state.drugs, this.state.drugString)}
                   </em>
                   <br></br>
                 </span>

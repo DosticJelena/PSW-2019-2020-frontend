@@ -130,7 +130,7 @@ class AssignOrdination extends React.Component {
         console.log('disabled');
     }
     else{
-        if (this.state.doctorIds.length != 0){
+        if (this.state.doctorIds.length == 0){
           this.setState({disabled: false});
           console.log('enabled');
         }

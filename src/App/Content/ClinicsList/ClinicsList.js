@@ -176,10 +176,6 @@ class ClinicsList extends React.Component{
 
         const columns1=[
           {
-            Header:'Id',
-            id: 'id',
-            accessor: d => d.id
-        },{
           Header:'Name',
           accessor: 'name'
         },{
