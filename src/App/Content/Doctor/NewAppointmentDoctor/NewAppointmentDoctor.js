@@ -32,28 +32,39 @@ class NewAppointmentDoctor extends React.Component {
       type: '0',
       focusedInput: "",
       date: '',
-      startTime: '',
-      endTime: ''
+      startTime: '07:00',
+      endTime: '08:00'
     }
   }
 
   SendAppointmentRequest = event => {
     event.preventDefault();
-    var token = localStorage.getItem('token');
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.post("http://localhost:8080/api/doctor/schedule-appointment", {
-      patient: this.state.patient,
-      startDateTime: this.state.date + ' ' + this.state.startTime,
-      endDateTime: this.state.date + ' ' + this.state.endTime,
-      doctor: this.state.doctorId,
-      type: this.state.type
-    })
-      .then((resp) => {
-        console.log(this.state);
-        NotificationManager.success('You have scheduled appointment succesfully!', 'Success!', 4000);
-        this.props.history.push('/reservation-requests');
+    var st = parseInt(String(this.state.startTime).substr(0,2));
+    var en = parseInt(String(this.state.endTime).substr(0,2));
+    if (st > en){
+      NotificationManager.error('Start time must be before end time.', 'Error!', 4000);
+    } else if (this.state.date == ''){
+      NotificationManager.error('Date cannot be empty.', 'Error!', 4000);
+    } else if (this.state.startTime == '' || this.state.startTime == '') {
+      NotificationManager.error('Time cannot be empty.', 'Error!', 4000);
+    } else {
+      var token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axios.post("http://localhost:8080/api/doctor/schedule-appointment", {
+        patient: this.state.patient,
+        startDateTime: this.state.date + ' ' + this.state.startTime,
+        endDateTime: this.state.date + ' ' + this.state.endTime,
+        doctor: this.state.doctorId,
+        type: this.state.type
       })
-      .catch(() => NotificationManager.error('Incorect values!', 'Error!', 4000))
+        .then((resp) => {
+          console.log(this.state);
+          NotificationManager.success('You have scheduled appointment succesfully!', 'Success!', 4000);
+          this.props.history.push('/reservation-requests');
+        })
+        .catch(() => NotificationManager.error('Something went wrong.', 'Error!', 4000))
+    }
+    
   }
 
   onSuccessHandler(resp) {
@@ -131,17 +142,17 @@ class NewAppointmentDoctor extends React.Component {
                         <div className="row">
                           <div className="form-group col-6">
                             <label htmlFor="date">Date</label>
-                            <input required type="date" className="form-control" name="date" id="date" placeholder="Date"
+                            <input type="date" className="form-control" name="date" id="date" placeholder="Date"
                               onChange={this.handleChange} />
                           </div>
                           <div className="form-group col-3">
                             <label htmlFor="date">Start</label>
-                            <input required type="time" className="form-control" name="startTime" id="start" placeholder="Start time"
+                            <input type="time" className="form-control" value={this.state.startTime} name="startTime" id="start" placeholder="Start time"
                               onChange={this.handleChange} />
                           </div>
                           <div className="form-group col-3">
                             <label htmlFor="time">End</label>
-                            <input required type="time" className="form-control" name="endTime" id="end" placeholder="End time"
+                            <input type="time" className="form-control" value={this.state.endTime} name="endTime" id="end" placeholder="End time"
                               onChange={this.handleChange} />
                           </div>
                         </div>
