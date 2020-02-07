@@ -47,9 +47,9 @@ class NewDoctor extends React.Component {
         } else if (this.state.wTimeStart == '' || this.state.wTimeEnd == '') {
             NotificationManager.error('Working time cannot be empty.', 'Error!', 4000);
         } else if (st > en) {
-            NotificationManager.error('Start time must be before end time.', 'Error!', 4000);
-        } else if (en-st < 8) {
-            NotificationManager.error('Working time must be 8 hours.', 'Error!', 4000);
+            NotificationManager.error('Start time must be set before end time.', 'Error!', 4000);
+        } else if (en-st < 6) {
+            NotificationManager.error('Working time must be minimum 6 hours.', 'Error!', 4000);
         } else if (this.state.address == '') {
             NotificationManager.error('ADdress cannot be empty.', 'Error!', 4000);
         } else if (this.state.city == '') {
