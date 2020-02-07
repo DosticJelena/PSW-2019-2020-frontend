@@ -11,8 +11,6 @@ import { NotificationManager } from 'react-notifications';
 
 import logo from '../../../images/med128.png'
 
-const LoginAlert = withReactContent(Swal)
-
 class ChangePassword extends React.Component {
 
     constructor(props) {
@@ -61,7 +59,7 @@ class ChangePassword extends React.Component {
                     NotificationManager.error('Wrong input', 'Error!', 4000);
                 }
             })
-    }
+    })}
 
     componentDidMount() {
         axios.get("http://localhost:8080/auth/getMyUser")
