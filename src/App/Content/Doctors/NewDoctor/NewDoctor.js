@@ -24,29 +24,58 @@ class NewDoctor extends React.Component {
             city: '',
             address: '',
             types: [],
-            wTimeStart: '',
-            wTimeEnd: '',
+            wTimeStart: '07:00',
+            wTimeEnd: '15:00',
             spec: ''
         }
     }
 
     AddNewDoctor = event => {
         event.preventDefault();
-        console.log(this.state);
-        var found = false;
-        for (var i = 0; i < this.state.doctors.length; i++) {
-            console.log(this.state.doctors[i].username);
-            if (this.state.doctors[i].username == this.state.email) {
-                NotificationManager.error('Doctor with given email address already exists!', 'Error!', 4000);
-                found = true;
-                break;
-            }
-            if (this.state.doctors[i].phoneNumber == this.state.phoneNumber) {
-                NotificationManager.error('Doctor with given phone number already exists!', 'Error!', 4000);
-                found = true;
-                break;
+        var st = parseInt(String(this.state.wTimeStart).substr(0, 2));
+        var en = parseInt(String(this.state.wTimeEnd).substr(0, 2));
+        if (this.state.firstName == '') {
+            NotificationManager.error('First name cannot be empty.', 'Error!', 4000);
+        } else if (this.state.lastName == '') {
+            NotificationManager.error('Last name cannot be empty.', 'Error!', 4000);
+        } else if (this.state.email == '') {
+            NotificationManager.error('Email address cannot be empty.', 'Error!', 4000);
+        } else if (this.state.phoneNumber == '') {
+            NotificationManager.error('Phone number cannot be empty.', 'Error!', 4000);
+        } else if (this.state.phoneNumber.length < 9 || this.state.phoneNumber.length > 10 || String(this.state.phoneNumber).substr(0, 2) != "06") {
+            NotificationManager.error('You have to enter number correctly.\nFormat: "06******* "\n9 or 10 numbers required.', 'Error!', 4000);
+        } else if (this.state.wTimeStart == '' || this.state.wTimeEnd == '') {
+            NotificationManager.error('Working time cannot be empty.', 'Error!', 4000);
+        } else if (st > en) {
+            NotificationManager.error('Start time must be before end time.', 'Error!', 4000);
+        } else if (en-st < 8) {
+            NotificationManager.error('Working time must be 8 hours.', 'Error!', 4000);
+        } else if (this.state.address == '') {
+            NotificationManager.error('ADdress cannot be empty.', 'Error!', 4000);
+        } else if (this.state.city == '') {
+            NotificationManager.error('City cannot be empty.', 'Error!', 4000);
+        } else if (this.state.country == '') {
+            NotificationManager.error('Country cannot be empty.', 'Error!', 4000);
+        } else if (this.state.spec == '') {
+            NotificationManager.error('You have to choose one specialization.', 'Error!', 4000);
+        } else {
+            console.log(this.state);
+            var found = false;
+            for (var i = 0; i < this.state.doctors.length; i++) {
+                console.log(this.state.doctors[i].username);
+                if (this.state.doctors[i].username == this.state.email) {
+                    NotificationManager.error('Doctor with given email address already exists!', 'Error!', 4000);
+                    found = true;
+                    break;
+                }
+                if (this.state.doctors[i].phoneNumber == this.state.phoneNumber) {
+                    NotificationManager.error('Doctor with given phone number already exists!', 'Error!', 4000);
+                    found = true;
+                    break;
+                }
             }
         }
+
 
         if (found == false) {
             this.props.history.push("/doctors");
@@ -146,7 +175,7 @@ class NewDoctor extends React.Component {
                                     name="firstName"
                                     onChange={this.handleChange}
                                     placeholder="Enter First Name"
-                                    required
+
                                 />
                             </div>
                         </div>
@@ -159,7 +188,7 @@ class NewDoctor extends React.Component {
                                     name="lastName"
                                     onChange={this.handleChange}
                                     placeholder="Enter Last Name"
-                                    required
+
                                 />
                             </div>
                         </div>
@@ -174,7 +203,7 @@ class NewDoctor extends React.Component {
                                     name="email"
                                     onChange={this.handleChange}
                                     placeholder="Enter Email Address"
-                                    required
+
                                 />
                             </div>
                         </div>
@@ -187,7 +216,7 @@ class NewDoctor extends React.Component {
                                     name="phoneNumber"
                                     onChange={this.handleChange}
                                     placeholder="Enter Phone Number"
-                                    required
+
                                 />
                             </div>
                         </div>
@@ -214,7 +243,7 @@ class NewDoctor extends React.Component {
                                     name="wTimeStart"
                                     onChange={this.handleChange}
                                     placeholder="Enter Phone Number"
-                                    required
+                                    defaultValue={this.state.wTimeStart}
                                 />
                             </div>
                         </div>
@@ -227,12 +256,12 @@ class NewDoctor extends React.Component {
                                     name="wTimeEnd"
                                     onChange={this.handleChange}
                                     placeholder="Enter Phone Number"
-                                    required
+                                    defaultValue={this.state.wTimeEnd}
                                 />
                             </div>
                         </div>
                     </div>
-                    <hr/>
+                    <hr />
                     <div className="form-row">
                         <div className="col">
                             <div className="form-group">
@@ -243,7 +272,7 @@ class NewDoctor extends React.Component {
                                     name="country"
                                     onChange={this.handleChange}
                                     placeholder="Enter Country"
-                                    required
+
                                 />
                             </div>
                         </div>
@@ -256,7 +285,7 @@ class NewDoctor extends React.Component {
                                     name="city"
                                     onChange={this.handleChange}
                                     placeholder="Enter City"
-                                    required
+
                                 />
                             </div>
                         </div>
@@ -269,7 +298,7 @@ class NewDoctor extends React.Component {
                                     name="address"
                                     onChange={this.handleChange}
                                     placeholder="Enter Address"
-                                    required
+
                                 />
                             </div>
                         </div>
