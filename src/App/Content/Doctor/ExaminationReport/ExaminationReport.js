@@ -100,7 +100,7 @@ class ExaminationReport extends React.Component {
         }).then((resp) => {NotificationManager.success('Examination Report Created', 'Success', 3000);
         this.props.history.push('/doctor-calendar');
       }) 
-        .catch((error)=> {NotificationManager.error('System error. Appointment sheduled for '+ this.state.appointment.start + ' has not yet started. Please try again later.', 'Error', 3000);})
+        .catch((error)=> {NotificationManager.error(error.response.data, 'Error', 3000);})
       }
       else {
         NotificationManager.error('Wrong form input. Please input the correct strings.', 'Error', 3000);

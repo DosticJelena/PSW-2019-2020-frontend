@@ -66,7 +66,6 @@ class RegisterNewCCAdmin extends React.Component {
   SendRegisterRequest = event => {
 
       event.preventDefault();
-      console.log(this.state);
       if (formValid(this.state)) {
           axios.post("http://localhost:8080/api/cc-admin/register-cc-admin", {
             email: this.state.email,
@@ -102,7 +101,6 @@ class RegisterNewCCAdmin extends React.Component {
 
     if (!empty){
         this.setState({disableSumbit: true});
-        console.log('disabled');
     }
     else{
 
@@ -111,11 +109,9 @@ class RegisterNewCCAdmin extends React.Component {
         )
         {
           this.setState({disableSumbit: false});
-          console.log('enabled');
         }
         else {
           this.setState({disableSumbit: true});
-          console.log('disabled');
         }
     }
   }
@@ -171,7 +167,7 @@ class RegisterNewCCAdmin extends React.Component {
       default:
         break;
     }
-    this.setState({ formErrors, [name]: value}, () => console.log(this.state));
+    this.setState({ formErrors, [name]: value});
   }
 
   render() {
