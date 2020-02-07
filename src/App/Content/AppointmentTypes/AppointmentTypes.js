@@ -63,6 +63,16 @@ class AppointmentTypes extends React.Component {
     this.props.history.push("/appointment-types");
   }
 
+  filterCaseInsensitive = (filter, row) => {
+    const id = filter.pivotId || filter.id;
+    return (
+      row[id] !== undefined ?
+        String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+      :
+        true
+    );
+  }
+
   componentDidMount() {
 
     var token = localStorage.getItem('token');
@@ -157,6 +167,7 @@ class AppointmentTypes extends React.Component {
                 onFilteredChange={this.handleOnFilterInputChange}
                 defaultPageSize={6}
                 pageSizeOptions={[6, 10, 15]}
+                defaultFilterMethod={this.filterCaseInsensitive}
               />
             </div>
           </div>
