@@ -78,8 +78,8 @@ class RegisterNewCCAdmin extends React.Component {
             phoneNumber: this.state.phoneNumber
 
         }).then((resp) => {
+          this.props.history.push('/ccadmin');
           NotificationManager.success('Clinic Center Admin registration request has been sucessfull. \n Confirmation email has been sent', '', 3000);
-          //this.props.history.push("/ccadmin");
         }) 
         .catch((error)=> {
           NotificationManager.error(error.response.data, 'Error', 3000)
