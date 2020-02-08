@@ -51,7 +51,7 @@ class Patient extends React.Component {
                         <div className="col link">
                             <h4>All clinics</h4>
                             <p>See all clinics.</p>
-                            <Link to="/clinics" className="btn link-btn-patient">View clinics</Link>
+                            <Link id="displayClinics" to="/clinics" className="btn link-btn-patient">View clinics</Link>
                         </div>
                         <div className="col link">
                             <h4>History of appointments and surgeries</h4>
