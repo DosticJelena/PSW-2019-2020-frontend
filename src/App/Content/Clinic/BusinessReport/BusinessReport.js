@@ -103,8 +103,8 @@ class BusinessReport extends React.Component {
                         <h3>Business Report </h3>
                         <h3><em>{this.state.name}</em></h3>
                         <hr />
-                        <h5>Average grade: {this.state.avg}</h5>
-                        <h5>Income: {this.state.avg}</h5>
+                        <h5>Average grade: {String(this.state.avg).substr(0,3)}</h5>
+                        <h5>Income: </h5>
                         <br />
                         <h4>Doctors</h4>
                         <div className='doc-table'>

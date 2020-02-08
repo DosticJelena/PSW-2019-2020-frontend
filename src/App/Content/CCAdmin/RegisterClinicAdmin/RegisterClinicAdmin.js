@@ -98,6 +98,7 @@ class RegisterClinicAdmin extends React.Component {
             clinicId: this.state.clinicId.id
 
         }).then((resp) => {
+          //this.props.history.push('/ccadmin');
           NotificationManager.success('Clinic Admin registration request has been sucessfull. \n Confirmation email has been sent', '', 3000);
         }) 
         .catch((error)=> {
@@ -145,7 +146,8 @@ class RegisterClinicAdmin extends React.Component {
         }
         return true;
     }
-  handleChange = e => {
+    type="phoneNumber"
+    handleChange = e => {
     e.preventDefault();
     const { name, value } = e.target;
     let formErrors = { ...this.state.formErrors };
@@ -198,7 +200,7 @@ class RegisterClinicAdmin extends React.Component {
     }
     this.setState({ formErrors, [name]: value}, () => console.log(this.state));
 
-    this.handleKeyUp();
+    //this.handleKeyUp();
   }
 
   handleClinic = (e, values) => {
@@ -210,7 +212,7 @@ class RegisterClinicAdmin extends React.Component {
 
     this.setState({ formErrors, clinicId: values}, () => console.log(this.state));
 
-    this.handleKeyUp();
+    //this.handleKeyUp();
 
   }
 
@@ -228,14 +230,19 @@ class RegisterClinicAdmin extends React.Component {
                 id="combo-box-demo"
                 value={this.state.clinicId}
                 options={this.state.clinics}
-                getOptionLabel={option => option.name}
+                getOptionLabel={option => option.name + "(" + option.city + ")"}
                 style={{ width: 400 }}
                 onChange={this.handleClinic}
+                onPointerOut={this.handleKeyUp}
                 renderInput={params => (
-                    <TextField {...params} label="Choose clinic" variant="outlined" fullWidth
-                    name="clinicId"
-                    className={formErrors.clinicId.length > 0 ? "error" : null}
-                    onKeyUp={this.handleKeyUp}
+                    <TextField {...params} 
+                      label="Choose clinic" 
+                      variant="outlined" 
+                      fullWidth
+                      name="clinicId"
+                      placeholder="Choose Clinic"
+                      className={formErrors.clinicId.length > 0 ? "error" : null}
+                      onInputChange={this.handleChange}
                     />
                 )}
                 />

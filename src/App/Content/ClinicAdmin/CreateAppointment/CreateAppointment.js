@@ -69,20 +69,39 @@ class CreateAppointment extends React.Component {
     }
 
     changeDoctorVisible = () => {
-        this.setState({ changeDoctor: true, changeTime: false, chooseOrdination: false})
+        this.setState({ changeDoctor: true, changeTime: false, chooseOrdination: false })
     }
 
     changeTimeVisible = () => {
-        this.setState({ changeDoctor: false, changeTime: true, chooseOrdination: false})
+        this.setState({ changeDoctor: false, changeTime: true, chooseOrdination: false })
     }
 
     okClose = () => {
-        this.setState({ changeDoctor: false, changeTime: false, chooseOrdination: true})
+        this.setState({ changeDoctor: false, changeTime: false, chooseOrdination: true })
+    }
+
+    fetchDoctors = () => {
+        console.log(this.state)
+        axios.post("http://localhost:8080/api/available-doctors-by-date-and-time", {
+            start: this.state.date + ' ' + this.state.startTime,
+            end: this.state.date + ' ' + this.state.endTime
+        })
+            .then(response => {
+                let tmpArray = []
+                for (var i = 0; i < response.data.length; i++) {
+                    tmpArray.push(response.data[i])
+                }
+
+                this.setState({
+                    doctors: tmpArray
+                })
+            })
+            .catch((error) => console.log(error))
     }
 
     handleChangeTime = e => {
         this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
-        //this.fetchDoctors();
+        this.fetchDoctors();
     }
 
     render() {
@@ -138,18 +157,7 @@ class CreateAppointment extends React.Component {
                         })
                         .catch((error) => console.log(error))
 
-                    axios.get("http://localhost:8080/api/clinic-doctors")
-                        .then(response => {
-                            let tmpArray = []
-                            for (var i = 0; i < response.data.length; i++) {
-                                tmpArray.push(response.data[i])
-                            }
-
-                            this.setState({
-                                doctors: tmpArray
-                            })
-                        })
-                        .catch((error) => console.log(error))
+                    this.fetchDoctors();
 
                     axios.get("http://localhost:8080/api/get-appointment-prices")
                         .then(response => {
