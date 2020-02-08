@@ -36,12 +36,12 @@ class QuickReservation extends React.Component {
       ordinations: [],
       formErrors: [],
       disabled: true,
-      startTime: '07:00',
-      endTime: '07:30',
+      startTime: '08:00',
+      endTime: '08:30',
       prices: [],
       priceSpec: '',
       priceValue: '',
-      date: '2020-02-20',
+      date: '2020-02-24',
       doctorError: true
     }
 
@@ -241,7 +241,7 @@ class QuickReservation extends React.Component {
     var timeError;
     var st = parseInt(String(this.state.startTime).substr(0, 2));
     var en = parseInt(String(this.state.endTime).substr(0, 2));
-    if (st > en) {
+    if (st >= en) {
       timeError = (<div>
         <label style={{ color: 'white' }}>...</label>
         <p style={{ color: 'red' }}>Start time must be set before end time.</p>
@@ -265,7 +265,7 @@ class QuickReservation extends React.Component {
               </div>
               <div className="form-group col-md-2">
                 <label htmlFor="date">Start</label>
-                <input required type="time" min="07:00" defaultValue={this.state.startTime} className="form-control" name="startTime" id="start" placeholder="Start time"
+                <input required type="time" min="08:00" defaultValue={this.state.startTime} className="form-control" name="startTime" id="start" placeholder="Start time"
                   onChange={this.handleChangeTime} />
               </div>
               <div className="form-group col-md-2">

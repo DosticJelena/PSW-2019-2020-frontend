@@ -31,19 +31,19 @@ class NewAppointmentDoctor extends React.Component {
       doctorId: '',
       type: '0',
       focusedInput: "",
-      date: '',
-      startTime: '07:00',
-      endTime: '08:00'
+      date: '2020-02-24',
+      startTime: '08:00',
+      endTime: '09:00'
     }
   }
 
   SendAppointmentRequest = event => {
     event.preventDefault();
-    var st = parseInt(String(this.state.startTime).substr(0,2));
-    var en = parseInt(String(this.state.endTime).substr(0,2));
-    if (st > en){
+    var st = parseInt(String(this.state.startTime).substr(0, 2));
+    var en = parseInt(String(this.state.endTime).substr(0, 2));
+    if (st > en) {
       NotificationManager.error('Start time must be before end time.', 'Error!', 4000);
-    } else if (this.state.date == ''){
+    } else if (this.state.date == '') {
       NotificationManager.error('Date cannot be empty.', 'Error!', 4000);
     } else if (this.state.startTime == '' || this.state.startTime == '') {
       NotificationManager.error('Time cannot be empty.', 'Error!', 4000);
@@ -64,7 +64,7 @@ class NewAppointmentDoctor extends React.Component {
         })
         .catch(() => NotificationManager.error('Something went wrong.', 'Error!', 4000))
     }
-    
+
   }
 
   onSuccessHandler(resp) {
@@ -113,6 +113,16 @@ class NewAppointmentDoctor extends React.Component {
   }
 
   render() {
+
+    var timeError;
+    var st = parseInt(String(this.state.startTime).substr(0, 2));
+    var en = parseInt(String(this.state.endTime).substr(0, 2));
+    if (st >= en) {
+      timeError = (<div>
+        <p style={{ color: 'red' }}>Start time must be set before end time.</p>
+      </div>)
+    }
+
     return (
       <div className="NewAppointmentDoctor">
         <Header />
@@ -142,7 +152,7 @@ class NewAppointmentDoctor extends React.Component {
                         <div className="row">
                           <div className="form-group col-6">
                             <label htmlFor="date">Date</label>
-                            <input type="date" className="form-control" name="date" id="date" placeholder="Date"
+                            <input type="date" value={this.state.date} className="form-control" name="date" id="date" placeholder="Date"
                               onChange={this.handleChange} />
                           </div>
                           <div className="form-group col-3">
@@ -170,6 +180,13 @@ class NewAppointmentDoctor extends React.Component {
                           <label className="form-check-label" htmlFor="operation">Operation</label>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-4">
+                    </div>
+                    <div className="col-6">
+                      {timeError}
                     </div>
                   </div>
                   <div className="col-sm">

@@ -23,7 +23,8 @@ class AppointmentTypes extends React.Component {
       deleteModalVisible: false,
       appTypeId: 0,
       appointments: [],
-      clinicAdmin: ''
+      clinicAdmin: '',
+      doctors: []
     }
   }
 
@@ -39,6 +40,7 @@ class AppointmentTypes extends React.Component {
   deleteModalHandler = (appTypeId) => {
     this.setState({ deleteModalVisible: true, appTypeId: appTypeId });
     this.props.history.push("/appointment-types/" + appTypeId);
+    this.fetchDoctors();
   }
 
   deleteType = (typeId) => {
@@ -68,9 +70,25 @@ class AppointmentTypes extends React.Component {
     return (
       row[id] !== undefined ?
         String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
-      :
+        :
         true
     );
+  }
+
+  fetchDoctors = () => {
+    axios.get("http://localhost:8080/api/doctors-by-specialization/" + window.location.pathname.split("/")[2])
+      .then(response => {
+        let tmpArray = []
+        for (var i = 0; i < response.data.length; i++) {
+          tmpArray.push(response.data[i])
+        }
+
+        this.setState({
+          doctors: tmpArray
+        })
+      })
+      .catch((error) => console.log(error))
+
   }
 
   componentDidMount() {
@@ -140,6 +158,18 @@ class AppointmentTypes extends React.Component {
         filterable: false
       }]
 
+    var deleteType;
+    if (this.state.doctors.length > 0) {
+      deleteType = (<h4>Clinic has doctors with this specialization type. It cannot be deleted.</h4>)
+    } else {
+      deleteType = (<div>
+        <h4>Are you sure you want to delete this appointment type?</h4>
+        <hr />
+        <button className="calendar-ord btn" onClick={() => this.deleteType(window.location.pathname.split("/")[2])}>Yes</button>
+      </div>)
+    }
+
+
     return (
       <div className="AppointmentTypes">
         <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
@@ -149,9 +179,7 @@ class AppointmentTypes extends React.Component {
           <UpdateAppointmentType types={this.state.types} ordinationId={this.state.ordinationId} reload={this.state.updateModalHandler} />
         </Modal>
         <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
-          <h4>Are you sure you want to delete this appointment type?</h4>
-          <hr />
-          <button className="calendar-ord btn" onClick={() => this.deleteType(window.location.pathname.split("/")[2])}>Yes</button>
+          {deleteType}
         </Modal>
         <Header />
         <div className="row">

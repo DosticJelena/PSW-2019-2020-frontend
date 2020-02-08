@@ -23,13 +23,13 @@ class Doctors extends React.Component {
       deleteModalVisible: false,
       doctorId: 0,
       appointments: [],
-      clinicAdmin: ''
+      clinicAdmin: '',
+      doctorsApp: []
     }
   }
 
   modalHandler = (ordId) => {
     this.setState({ modalVisible: true, ordinationId: ordId });
-    this.getAppointmentsForOrdination(ordId);
   }
 
   newModalHandler = () => {
@@ -38,7 +38,8 @@ class Doctors extends React.Component {
 
   deleteModalHandler = (docId) => {
     this.setState({ deleteModalVisible: true, doctorId: docId });
-    this.props.history.push("/doctors/"+docId);
+    this.props.history.push("/doctors/" + docId);
+    this.fetchAppointments();
   }
 
   deleteDoctor = (docId) => {
@@ -73,17 +74,12 @@ class Doctors extends React.Component {
     }
   }
 
-  getAppointmentsForOrdination = (ordId) => {
-    var token = localStorage.getItem('token');
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get('http://localhost:8080/api/appointment/get-ordination-appointments/' + ordId, {
+  fetchAppointments = () => {
+    axios.get("http://localhost:8080/api/appointment/get-doctor-appointments/" + window.location.pathname.split("/")[2], {
       responseType: 'json'
     })
       .then(response => {
-        console.log(response);
-        this.setState({ appointments: response.data });
-        this.renderDates();
-        console.log(this.state);
+        this.setState({ doctorsApp: response.data })
       })
       .catch((error) => console.log(error))
   }
@@ -102,7 +98,6 @@ class Doctors extends React.Component {
       .then(() => {
         axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)
           .then(response => {
-            console.log(response.data);
             this.setState({
               id: response.data
             })
@@ -133,7 +128,7 @@ class Doctors extends React.Component {
     return (
       row[id] !== undefined ?
         String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
-      :
+        :
         true
     );
   }
@@ -173,6 +168,17 @@ class Doctors extends React.Component {
         filterable: false
       }]
 
+    var deleteContent;
+    if (this.state.doctorsApp.length == 0) {
+      deleteContent = (<div>
+        <h4>Are you sure you want to delete this doctor?</h4>
+        <hr />
+        <button className="calendar-ord btn" onClick={() => this.deleteDoctor(window.location.pathname.split("/")[2])}>Yes</button>
+      </div>)
+    } else {
+      deleteContent = (<h4>This doctor has reserved appointments. It cannot be deleted.</h4>)
+    }
+
     return (
       <div className="Doctors">
         <Modal show={this.state.newModalVisible} modalClosed={this.modalClosedHandler}>
@@ -182,9 +188,7 @@ class Doctors extends React.Component {
           <h4>Update ordination</h4>
         </Modal>
         <Modal show={this.state.deleteModalVisible} modalClosed={this.modalClosedHandler}>
-          <h4>Are you sure you want to delete this doctor?</h4>
-          <hr />
-          <button className="calendar-ord btn" onClick={() => this.deleteDoctor(window.location.pathname.split("/")[2])}>Yes</button>
+            {deleteContent}
         </Modal>
         <Header />
         <div className="row">
