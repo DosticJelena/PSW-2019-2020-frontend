@@ -40,6 +40,8 @@ class SchedulingForm extends React.Component {
           year=window.location.pathname.split("/")[4].split("%20")[1].split(".");
           time=year[2]+'-'+year[1]+'-'+year[0]+" "+window.location.pathname.split("/")[4].split("%20")[0];
           console.log(time);
+          var token = localStorage.getItem('token');
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           axios.post("http://localhost:8080/api/appointment-request", {
             patientId: this.state.patientId,
             clinicId: window.location.pathname.split("/")[3],

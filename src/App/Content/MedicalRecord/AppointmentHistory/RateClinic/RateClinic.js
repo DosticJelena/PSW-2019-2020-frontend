@@ -29,19 +29,25 @@ class RateClinic extends React.Component {
         this.setState({rating: nextValue});
     }
 
-    rateClinic = event =>{
-        event.preventDefault();
+    rateClinic = () =>{
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.put("http://localhost:8080/api/clinic/" + this.state.clinicId, {
-           // number: this.state.number,
-           //dodaj na zbir
+        axios.get("http://localhost:8080/auth/getMyUser")  
+          .then(response => {
 
-        }).then(() => {
-            NotificationManager.success('Successfully updated', 'Success!', 4000);
-            window.location.replace('/appointment-history');
-        }
-        ).catch((error) => NotificationManager.error('Something went wrong', 'Error!', 4000))
+            axios.put("http://localhost:8080/api/voteClinic" , {
+                patientId: response.data.id,
+                forId: this.state.clinicId,
+                rating: this.state.rating
+
+            }).then((response) => {
+                NotificationManager.success('Successfully updated', 'Success!', 4000);
+                window.location.replace('/appointment-history');
+            }
+            ).catch((error) => NotificationManager.error('Something went wrong', 'Error!', 4000))
+            
+          })
+        .catch((error) => console.log(error))
 
     }
 
@@ -80,7 +86,7 @@ class RateClinic extends React.Component {
                         onStarClick={this.onStarClickClinic.bind(this)}/>  
                     </div>                             
                     <hr/>
-                    <Button type="submit" className="btn rate-btn">Update</Button>
+                    <Button className="btn rate-btn"  onClick={() => this.rateClinic()}>Update</Button>
                 </form>
                 <br /></div>
             </div>
