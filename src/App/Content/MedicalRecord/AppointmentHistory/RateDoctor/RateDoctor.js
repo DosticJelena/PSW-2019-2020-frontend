@@ -38,20 +38,27 @@ class RateDoctor extends React.Component {
         this.setState({rating: nextValue});
       }
 
-    rateDoctor = event =>{
-        event.preventDefault();
+    rateDoctor = () =>{
+        
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-       /* axios.put("http://localhost:8080/api/doctor/" + this.state.doctorId, {
-           // number: this.state.number,
-           //dodaj na zbir
+        axios.get("http://localhost:8080/auth/getMyUser")  
+          .then(response => {
 
-        }).then(() => {
-            NotificationManager.success('Successfully updated', 'Success!', 4000);
-            window.location.replace('/appointment-history');
-        }
-        ).catch((error) => NotificationManager.error('Something went wrong', 'Error!', 4000))
-*/
+            axios.put("http://localhost:8080/api/voteDoctor" , {
+                patientId: response.data.id,
+                forId: this.state.doctorId,
+                rating: this.state.rating
+    
+            }).then((response) => {
+                console.log(response.data);
+                NotificationManager.success('Successfully updated', 'Success!', 4000);
+                window.location.replace('/appointment-history');
+            }
+            ).catch((error) => NotificationManager.error('Something went wrong', 'Error!', 4000))
+            
+          })
+        .catch((error) => console.log(error))
     }
 
 
@@ -76,7 +83,6 @@ class RateDoctor extends React.Component {
             <div className="RateDoctor">
             <div><h4>Rate doctor</h4>
                 <hr/>
-                <form onSubmit={this.rateDoctor}>
                     <div className="form-group col">
                         <label className="name">First Name: {this.state.firstName} </label>
                         <label className="address">Last Name:{this.state.lastName}</label>
@@ -87,8 +93,7 @@ class RateDoctor extends React.Component {
                         onStarClick={this.onStarClickDoctor.bind(this)}/>  
                     </div>                             
                     <hr/>
-                    <Button type="submit" className="btn rate-btn">Update</Button>
-                </form>
+                    <Button className="btn rate-btn" onClick={() => this.rateDoctor()}>Update</Button>
                 <br /></div>
             </div>
         );
