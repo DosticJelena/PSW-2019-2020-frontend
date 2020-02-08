@@ -125,7 +125,7 @@ schedule = (id) =>{
             Header:'Schedule',
             Cell: row => (
                 <div>
-                    <Button id="sheduleButton" onClick={() => this.schedule(row.original.id)}>Schedule</Button>
+                    <button onClick={() => this.schedule(row.original.id)}>Schedule</button>
                 </div>
             )
 

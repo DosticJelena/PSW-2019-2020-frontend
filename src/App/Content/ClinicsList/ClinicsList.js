@@ -201,7 +201,7 @@ class ClinicsList extends React.Component{
           Header: '',
           Cell: row => (
               <div>
-                 <button id="visit" className="primary btn" onClick={() => this.visit(row.original.id)}>Visit</button>
+                 <button className="primary btn" onClick={() => this.visit(row.original.id)}>Visit</button>
                </div>
             ),
           width: 100,

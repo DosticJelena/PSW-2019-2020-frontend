@@ -220,7 +220,7 @@ class ClinicPage extends React.Component {
         if (this.state.role === "ROLE_PATIENT") {
             const id = window.location.pathname.split("/")[2];
             var pathPredef = "/predefined-examinations/" + id;
-            predefExam = (<Link id="predefinedButton" to={pathPredef} className="btn link-btn-patient predefined-btn">Predefined examinations</Link>)
+            predefExam = (<Link to={pathPredef} className="btn link-btn-patient predefined-btn">Predefined examinations</Link>)
         }
 
         var operationPrices = []
