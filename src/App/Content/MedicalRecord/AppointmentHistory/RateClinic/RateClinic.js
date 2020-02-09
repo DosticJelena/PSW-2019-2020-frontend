@@ -86,7 +86,7 @@ class RateClinic extends React.Component {
                         onStarClick={this.onStarClickClinic.bind(this)}/>  
                     </div>                             
                     <hr/>
-                    <Button className="btn rate-btn"  onClick={() => this.rateClinic()}>Update</Button>
+                    <Button disabled={!this.state.rating} className="btn rate-btn"  onClick={() => this.rateClinic()}>Update</Button>
                 </form>
                 <br /></div>
             </div>

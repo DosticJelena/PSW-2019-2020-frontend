@@ -114,6 +114,16 @@ class ReservationRequests extends React.Component {
     this.props.history.push("/reservation-requests");
   }
 
+  filterCaseInsensitive = (filter, row) => {
+    const id = filter.pivotId || filter.id;
+    return (
+      row[id] !== undefined ?
+        String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+      :
+        true
+    );
+  }
+
   render() {
 
     let requests = this.state.appointmentRequests;
@@ -259,6 +269,7 @@ class ReservationRequests extends React.Component {
                 defaultPageSize={5}
                 pageSizeOptions={[5, 10, 15]}
                 noDataText={"You don't have any appointment reservation requests."}
+                defaultFilterMethod={this.filterCaseInsensitive}
               />
             </div>
           </div>
