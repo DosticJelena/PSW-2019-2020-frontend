@@ -16,6 +16,7 @@ class BusinessReport extends React.Component {
             id: '',
             name: '',
             avg: '',
+            income: 0,
             doctors: [{
                 id: '',
                 firstName: '',
@@ -63,11 +64,31 @@ class BusinessReport extends React.Component {
                             })
                             .catch((error) => console.log(error))
 
+                            axios.get("http://localhost:8080/api/clinic-income")
+                            .then(response => {
+                                console.log(response);
+                                
+                                this.setState({
+                                    income: response.data
+                                })
+                            })
+                            .catch((error) => console.log(error))
+
                     }).catch((error) => console.log(error))
 
             }).catch((error) => console.log(error))
 
     }
+
+    filterCaseInsensitive = (filter, row) => {
+        const id = filter.pivotId || filter.id;
+        return (
+          row[id] !== undefined ?
+            String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+          :
+            true
+        );
+      }
 
     render() {
 
@@ -104,7 +125,7 @@ class BusinessReport extends React.Component {
                         <h3><em>{this.state.name}</em></h3>
                         <hr />
                         <h5>Average grade: {String(this.state.avg).substr(0,3)}</h5>
-                        <h5>Income: </h5>
+                        <h5>Income: {this.state.income}€ </h5>
                         <br />
                         <h4>Doctors</h4>
                         <div className='doc-table'>
@@ -115,6 +136,7 @@ class BusinessReport extends React.Component {
                                 onFilteredChange={this.handleOnFilterInputChange}
                                 defaultPageSize={5}
                                 pageSizeOptions={[5, 10, 15]}
+                                defaultFilterMethod={this.filterCaseInsensitive}
                             />
                         </div>
                     </div>

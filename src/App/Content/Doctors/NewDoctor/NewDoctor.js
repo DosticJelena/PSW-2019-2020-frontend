@@ -34,6 +34,8 @@ class NewDoctor extends React.Component {
         event.preventDefault();
         var st = parseInt(String(this.state.wTimeStart).substr(0, 2));
         var en = parseInt(String(this.state.wTimeEnd).substr(0, 2));
+        var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+        var enMin = parseInt(String(this.state.endTime).substr(3, 2));
         if (this.state.firstName == '') {
             NotificationManager.error('First name cannot be empty.', 'Error!', 4000);
         } else if (this.state.lastName == '') {
@@ -46,12 +48,12 @@ class NewDoctor extends React.Component {
             NotificationManager.error('You have to enter number correctly.\nFormat: "06******* "\n9 or 10 numbers required.', 'Error!', 4000);
         } else if (this.state.wTimeStart == '' || this.state.wTimeEnd == '') {
             NotificationManager.error('Working time cannot be empty.', 'Error!', 4000);
-        } else if (st > en) {
+        } else if (st > en || (st == en && stMin >= enMin)) {
             NotificationManager.error('Start time must be set before end time.', 'Error!', 4000);
-        } else if (en-st < 6) {
+        } else if (en - st < 6) {
             NotificationManager.error('Working time must be minimum 6 hours.', 'Error!', 4000);
         } else if (this.state.address == '') {
-            NotificationManager.error('ADdress cannot be empty.', 'Error!', 4000);
+            NotificationManager.error('Address cannot be empty.', 'Error!', 4000);
         } else if (this.state.city == '') {
             NotificationManager.error('City cannot be empty.', 'Error!', 4000);
         } else if (this.state.country == '') {

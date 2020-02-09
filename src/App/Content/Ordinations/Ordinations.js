@@ -106,6 +106,16 @@ class Ordinations extends React.Component {
       .catch((error) => console.log(error))
   }
 
+  filterCaseInsensitive = (filter, row) => {
+    const id = filter.pivotId || filter.id;
+    return (
+      row[id] !== undefined ?
+        String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+      :
+        true
+    );
+  }
+
   componentDidMount() {
 
     this.modalClosedHandler();
@@ -226,6 +236,7 @@ class Ordinations extends React.Component {
                 onFilteredChange={this.handleOnFilterInputChange}
                 defaultPageSize={6}
                 pageSizeOptions={[6, 10, 15]}
+                defaultFilterMethod={this.filterCaseInsensitive}
               />
             </div>
           </div>
