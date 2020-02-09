@@ -143,6 +143,16 @@ class ClinicPage extends React.Component {
         this.props.history.push('/doctors-list/' + id);
     }
 
+    filterCaseInsensitive = (filter, row) => {
+        const id = filter.pivotId || filter.id;
+        return (
+          row[id] !== undefined ?
+            String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+          :
+            true
+        );
+      }
+
     render() {
 
         const columns1 = [
@@ -247,6 +257,7 @@ class ClinicPage extends React.Component {
                                 onFilteredChange={this.handleOnFilterInputChange}
                                 defaultPageSize={5}
                                 pageSizeOptions={[5, 10, 15]}
+                                defaultFilterMethod={this.filterCaseInsensitive}
                             />
                         </div>
                     </div>
@@ -260,6 +271,7 @@ class ClinicPage extends React.Component {
                                 onFilteredChange={this.handleOnFilterInputChange}
                                 defaultPageSize={5}
                                 pageSizeOptions={[5, 10, 15]}
+                                defaultFilterMethod={this.filterCaseInsensitive}
                             />
                         </div>
                     </div>
@@ -273,6 +285,7 @@ class ClinicPage extends React.Component {
                                 onFilteredChange={this.handleOnFilterInputChange}
                                 defaultPageSize={5}
                                 pageSizeOptions={[5, 10, 15]}
+                                defaultFilterMethod={this.filterCaseInsensitive}
                             />
                         </div>
                     </div>
@@ -288,6 +301,7 @@ class ClinicPage extends React.Component {
                                 onFilteredChange={this.handleOnFilterInputChange}
                                 defaultPageSize={5}
                                 pageSizeOptions={[5, 10, 15]}
+                                defaultFilterMethod={this.filterCaseInsensitive}
                             />
                         </div>
                     </div>

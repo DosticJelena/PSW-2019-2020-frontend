@@ -91,6 +91,15 @@ class AbsenceRequests extends React.Component {
         this.setState({ acceptModalVisible: false, denyModalVisible: false });
     }
 
+    filterCaseInsensitive = (filter, row) => {
+        const id = filter.pivotId || filter.id;
+        return (
+          row[id] !== undefined ?
+            String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+            :
+            true
+        );
+      }
 
     componentDidMount() {
 
@@ -297,6 +306,7 @@ class AbsenceRequests extends React.Component {
                                     onFilteredChange={this.handleOnFilterInputChange}
                                     defaultPageSize={6}
                                     pageSizeOptions={[6, 10, 15]}
+                                    defaultFilterMethod={this.filterCaseInsensitive}
                                 />
                             </div>
                         </div>
@@ -311,6 +321,7 @@ class AbsenceRequests extends React.Component {
                                     onFilteredChange={this.handleOnFilterInputChange}
                                     defaultPageSize={6}
                                     pageSizeOptions={[6, 10, 15]}
+                                    defaultFilterMethod={this.filterCaseInsensitive}
                                 />
                             </div>
                         </div>
