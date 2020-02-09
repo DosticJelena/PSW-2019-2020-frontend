@@ -12,6 +12,7 @@ import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'rea
 import 'react-dates/lib/css/_datepicker.css';
 import 'react-dates/initialize';
 import moment from 'moment'
+import { Link, withRouter } from 'react-router-dom'
 
 const formValid = ({ formErrors, ...rest }) => {
   let valid = true;
@@ -90,6 +91,7 @@ class AbsenceRequest extends React.Component {
             comment: this.state.description
 
           }).then((resp) => {
+            this.props.history.push('/nurse');
             NotificationManager.success('Request has been sent. Please wait until administrator informs you if it is accepted.', '', 3000);
             console.log(resp);
           })
@@ -258,4 +260,4 @@ class AbsenceRequest extends React.Component {
   }
 }
 
-export default AbsenceRequest;
+export default withRouter(AbsenceRequest);

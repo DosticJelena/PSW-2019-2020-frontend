@@ -64,7 +64,7 @@ class Prescriptions extends React.Component{
         columns={[{
                     Header: 'Issued',
                     accessor: 'issued',
-                    Cell: e =><a href={"/edit-examination-report/" + e.original.examinationReportId}> {e.value} </a>
+                    Cell: e =><a> {e.value} </a>
                   },
                   {
                     Header: 'Diagnosis',

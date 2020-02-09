@@ -122,7 +122,7 @@ class ExaminationReport extends React.Component {
         console.log('disabled');
     }
     else{
-        if (this.state.comment != "" && this.state.diagnosisId != "" && this.state.drugIds.length != 0){
+        if (this.state.comment != "" && this.state.diagnosisId != ""){
           this.setState({disabled: false});
           console.log('enabled');
         }
@@ -171,13 +171,10 @@ class ExaminationReport extends React.Component {
 
     let result = values.map(a => a.id);
 
-    let formErrors = { ...this.state.formErrors};
-
-    formErrors.drugIds = values.length == 0 ? "You must input at least one drug" : ""
-
-    this.setState({ formErrors, drugIds: result}, () => console.log(this.state));
-
+    this.setState({drugIds: result}, () => console.log(this.state));
+    
     this.checkEnabled();
+
   }
 
   render() {
@@ -211,6 +208,7 @@ class ExaminationReport extends React.Component {
                         rows="10"
                         variant="outlined"
                         value={this.state.comment}
+                        onInputChange={this.handleChange}
                         onChange={this.handleChange}
 
               />
