@@ -341,11 +341,11 @@ class MedicalRecord extends React.Component{
                                     Header: 'End time',
                                     accessor: 'endTime',
                                 },
-                                {
+                               /* {
                                     Header: 'Doctors',
                                     accessor: 'doctors',
                                     width:150
-                                }, 
+                                }, */
                                 {
                                     Header: 'Price',
                                     accessor: 'price',

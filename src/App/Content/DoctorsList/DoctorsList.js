@@ -37,7 +37,8 @@ class DoctorsList extends React.Component{
             types:[],
             filtered:[],
             selected:null,
-            appointmentType:''
+            appointmentType:'',
+            fil:[]
         }
 
     }
@@ -110,6 +111,28 @@ class DoctorsList extends React.Component{
     handleChange(e) {
       this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
     }
+
+    onFilteredChangeCustom = (value, accessor) => {
+      let fil = this.state.fil;
+      let insertNewFilter = 1;
+  
+      if (fil.length) {
+        fil.forEach((filter, i) => {
+          if (filter["id"] === accessor) {
+            if (value === "" || !value.length) fil.splice(i, 1);
+            else filter["value"] = value;
+  
+            insertNewFilter = 0;
+          }
+        });
+      }
+      if (insertNewFilter) {
+          fil.push({ id: accessor, value: value });
+        }
+    
+        this.setState({ fil: fil });
+   };
+
 
     componentDidMount() { 
         const id = window.location.pathname.split("/")[2];
@@ -275,9 +298,26 @@ class DoctorsList extends React.Component{
 
           table=( <ReactTable 
           data={this.state.doctors}
-          columns={columnsAllFiltered}
+          //columns={columnsAllFiltered}
           filterable
-          onFilteredChange = {this.handleOnFilterInputChange}
+         // onFilteredChange = {this.handleOnFilterInputChange}
+         fil={this.state.fil}
+         onFilteredChange={(filtered, column, value) => {
+           this.onFilteredChangeCustom(value, column.id || column.accessor);
+         }}
+         defaultFilterMethod={(filter, row, column) => {
+           const id = filter.pivotId || filter.id;
+           if (typeof filter.value === "object") {
+             return row[id] !== undefined
+               ? filter.value.indexOf(row[id]) > -1
+               : true;
+           } else {
+             return row[id] !== undefined
+               ? String(row[id]).indexOf(filter.value) > -1
+               : true;
+           }
+         }}
+         columns={columnsAllFiltered}
           defaultPageSize = {6}
           pageSizeOptions = {[6, 10, 15]}
           />)
@@ -287,7 +327,23 @@ class DoctorsList extends React.Component{
           data={this.state.doctors}
           columns={columnsAll}
           filterable
-          onFilteredChange = {this.handleOnFilterInputChange}
+          fil={this.state.fil}
+          onFilteredChange={(fil, column, value) => {
+            this.onFilteredChangeCustom(value, column.id || column.accessor);
+          }}
+          defaultFilterMethod={(filter, row, column) => {
+              const id = filter.pivotId || filter.id;
+              if (typeof filter.value === "object") {
+                return row[id] !== undefined
+                  ? filter.value.indexOf(row[id]) > -1
+                  : true;
+              } else {
+                return row[id] !== undefined
+                  ? String(row[id]).indexOf(filter.value) > -1
+                  : true;
+              }
+            }}
+          //onFilteredChange = {this.handleOnFilterInputChange}
           defaultPageSize = {6}
           pageSizeOptions = {[6, 10, 15]}
         />)
@@ -300,9 +356,25 @@ class DoctorsList extends React.Component{
 
         table=(<ReactTable 
           data={this.state.doctors}
-          columns={columnsSpecialized}
           filterable
-          onFilteredChange = {this.handleOnFilterInputChange}
+          fil={this.state.filtered}
+          onFilteredChange={(fil, column, value) => {
+            this.onFilteredChangeCustom(value, column.id || column.accessor);
+          }}
+          defaultFilterMethod={(filter, row, column) => {
+              const id = filter.pivotId || filter.id;
+              if (typeof filter.value === "object") {
+                return row[id] !== undefined
+                  ? filter.value.indexOf(row[id]) > -1
+                  : true;
+              } else {
+                return row[id] !== undefined
+                  ? String(row[id]).indexOf(filter.value) > -1
+                  : true;
+              }
+            }}
+          columns={columnsSpecialized}
+          //onFilteredChange = {this.handleOnFilterInputChange}
           defaultPageSize = {6}
           pageSizeOptions = {[6, 10, 15]}
         />)
