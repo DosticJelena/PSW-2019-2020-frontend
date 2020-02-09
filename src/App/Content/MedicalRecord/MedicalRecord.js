@@ -50,12 +50,12 @@ class MedicalRecord extends React.Component{
 
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.get("http://localhost:8080/auth/getMyUser")  
+      axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")  
         .then(response => {
             console.log(response.data.id);
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.get("http://localhost:8080/api/medicalRecords/"+response.data.id)  
+            axios.get("https://psw-isa-tim3.herokuapp.com/api/medicalRecords/"+response.data.id)  
               .then(response => {
                   console.log(response.data);
                   this.setState({
@@ -70,7 +70,7 @@ class MedicalRecord extends React.Component{
 
               var token = localStorage.getItem('token');
               axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-              axios.get('http://localhost:8080/api/appointment/history/' +response.data.id).then(response => {
+              axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/history/' +response.data.id).then(response => {
 
                       let tmpArray = []
                       for (var i = 0; i < response.data.length; i++) {
@@ -85,7 +85,7 @@ class MedicalRecord extends React.Component{
 
               var token = localStorage.getItem('token');
               axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-              axios.get('http://localhost:8080/api/appointment/future-cancel-appointments/' +response.data.id).then(response => {
+              axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/future-cancel-appointments/' +response.data.id).then(response => {
 
                       console.log(response.data);
                       let tmpArray = []
@@ -101,7 +101,7 @@ class MedicalRecord extends React.Component{
 
               var token = localStorage.getItem('token');
               axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-              axios.get('http://localhost:8080/api/appointment/future-fix-appointments/' +response.data.id).then(response => {
+              axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/future-fix-appointments/' +response.data.id).then(response => {
 
                       let tmpArray = []
                       for (var i = 0; i < response.data.length; i++) {
@@ -140,7 +140,7 @@ class MedicalRecord extends React.Component{
 
    cancelApp = (id) =>{
     console.log(id);
-    axios.put("http://localhost:8080/api/appointment/cancel-Patient/" + id).then(response => {
+    axios.put("https://psw-isa-tim3.herokuapp.com/api/appointment/cancel-Patient/" + id).then(response => {
           const {futureCancelApp} = this.state;
           futureCancelApp.pop(response.data);
           this.setState({futureCancelApp});

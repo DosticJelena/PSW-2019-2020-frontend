@@ -42,7 +42,7 @@ class SchedulingForm extends React.Component {
           console.log(time);
           var token = localStorage.getItem('token');
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          axios.post("http://localhost:8080/api/appointment-request", {
+          axios.post("https://psw-isa-tim3.herokuapp.com/api/appointment-request", {
             patientId: this.state.patientId,
             clinicId: window.location.pathname.split("/")[3],
             appointmentType: this.state.appointmentType,
@@ -58,7 +58,7 @@ class SchedulingForm extends React.Component {
         componentDidMount(){
           var token = localStorage.getItem('token');
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          axios.get("http://localhost:8080/auth/getMyUser")  
+          axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")  
             .then(response => {
                 console.log(response.data);
                 this.setState({
@@ -70,7 +70,7 @@ class SchedulingForm extends React.Component {
           .catch((error) => console.log(error))
 
           const clinicId=window.location.pathname.split("/")[3];
-          axios.get("http://localhost:8080/api/clinic/" + clinicId)
+          axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic/" + clinicId)
           .then(response => {
               console.log(response.data);
               this.setState({
@@ -82,7 +82,7 @@ class SchedulingForm extends React.Component {
           }).catch((error) => console.log(error))
 
           const doctorsId=window.location.pathname.split("/")[2];
-          axios.get("http://localhost:8080/api/doctors/" + doctorsId)
+          axios.get("https://psw-isa-tim3.herokuapp.com/api/doctors/" + doctorsId)
           .then(response => {
               console.log(response.data);
               this.setState({
@@ -93,7 +93,7 @@ class SchedulingForm extends React.Component {
 
         const specializationId=window.location.pathname.split("/")[5];
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/api/get-appointment-details/"+specializationId)
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/get-appointment-details/"+specializationId)
           .then(response => {
             console.log(response.data);
             this.setState({

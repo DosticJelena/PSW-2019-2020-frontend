@@ -73,7 +73,7 @@ class RegisterClinicAdmin extends React.Component {
    }
 
    componentDidMount() {
-    axios.get("http://localhost:8080/api/cc-admin/get-all-clinics")
+    axios.get("https://psw-isa-tim3.herokuapp.com/api/cc-admin/get-all-clinics")
             .then((resp) => {
                 this.setState({
                     clinics: resp.data
@@ -87,7 +87,7 @@ class RegisterClinicAdmin extends React.Component {
       event.preventDefault();
       console.log(this.state);
       if (formValid(this.state)) {
-          axios.post("http://localhost:8080/api/cc-admin/register-clinic-admin", {
+          axios.post("https://psw-isa-tim3.herokuapp.com/api/cc-admin/register-clinic-admin", {
             email: this.state.email,
             firstName: this.state.firstName,
             lastName: this.state.lastName,

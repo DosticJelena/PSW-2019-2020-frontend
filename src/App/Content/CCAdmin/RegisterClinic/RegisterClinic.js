@@ -66,7 +66,7 @@ class RegisterClinic extends React.Component {
       event.preventDefault();
       console.log(this.state);
       if (formValid(this.state)) {
-          axios.post("http://localhost:8080/api/cc-admin/register-clinic", {
+          axios.post("https://psw-isa-tim3.herokuapp.com/api/cc-admin/register-clinic", {
             name: this.state.name,
             description: this.state.description,
             address: this.state.address,

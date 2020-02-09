@@ -72,7 +72,7 @@ class MedicalCard extends React.Component {
 
     handleCancelClick = () => {
         const patientId = window.location.pathname.split("/")[2];
-        axios.get('http://localhost:8080/api/medicalRecords/get/' + patientId, {
+        axios.get('https://psw-isa-tim3.herokuapp.com/api/medicalRecords/get/' + patientId, {
           responseType: 'json'
         })
               .then(response => {
@@ -103,7 +103,7 @@ class MedicalCard extends React.Component {
 
 
     checkVersionChanged() {
-        axios.get("http://localhost:8080/api/medicalRecords/check-version", {
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/medicalRecords/check-version", {
 
             id: this.state.medicalCard.id,
             version: this.state.medicalCard.version
@@ -115,7 +115,7 @@ class MedicalCard extends React.Component {
 
     handleSaveClick = () => {
 
-        axios.get("http://localhost:8080/api/medicalRecords/check-version", {
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/medicalRecords/check-version", {
 
             params: {
                 id: this.state.medicalCard.id,
@@ -124,7 +124,7 @@ class MedicalCard extends React.Component {
 
         }).then((resp) => {
     
-            axios.put("http://localhost:8080/api/medicalRecords/edit", {
+            axios.put("https://psw-isa-tim3.herokuapp.com/api/medicalRecords/edit", {
                 patientId: this.state.medicalCard.patient.id,
                 height: this.state.height,
                 weight: this.state.weight,
@@ -201,7 +201,7 @@ class MedicalCard extends React.Component {
 
     componentDidMount () {    
         const patientId = window.location.pathname.split("/")[2];
-        axios.get('http://localhost:8080/api/medicalRecords/get/' + patientId, {
+        axios.get('https://psw-isa-tim3.herokuapp.com/api/medicalRecords/get/' + patientId, {
           responseType: 'json'
         })
               .then(response => {

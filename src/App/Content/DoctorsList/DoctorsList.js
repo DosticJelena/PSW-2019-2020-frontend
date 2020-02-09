@@ -48,7 +48,7 @@ class DoctorsList extends React.Component{
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const clinicId=window.location.pathname.split("/")[2];
-      axios.get("http://localhost:8080/api/filter-doctors/"+this.state.date+'/'+this.state.type+'/'+clinicId).then(response => {
+      axios.get("https://psw-isa-tim3.herokuapp.com/api/filter-doctors/"+this.state.date+'/'+this.state.type+'/'+clinicId).then(response => {
         let tmpArray = []
         let available=[]
         for (var i = 0; i < response.data.length; i++) {
@@ -95,7 +95,7 @@ class DoctorsList extends React.Component{
       const id = window.location.pathname.split("/")[2];
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
-      axios.get("http://localhost:8080/api/doctors-list/"+id) .then(response => {
+      axios.get("https://psw-isa-tim3.herokuapp.com/api/doctors-list/"+id) .then(response => {
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {
           tmpArray.push(response.data[i])
@@ -143,7 +143,7 @@ class DoctorsList extends React.Component{
 
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.get("http://localhost:8080/api/filter-doctors/"+date+'/'+type+'/'+id).then(response => {
+            axios.get("https://psw-isa-tim3.herokuapp.com/api/filter-doctors/"+date+'/'+type+'/'+id).then(response => {
               let tmpArray = []
               for (var i = 0; i < response.data.length; i++) {
                 tmpArray.push(response.data[i])
@@ -156,7 +156,7 @@ class DoctorsList extends React.Component{
         }
 
         if(type==null){
-        axios.get("http://localhost:8080/api/doctors-list/"+id)  
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/doctors-list/"+id)  
           .then(response => {
               let tmpArray = []
               for (var i = 0; i < response.data.length; i++) {
@@ -172,7 +172,7 @@ class DoctorsList extends React.Component{
 
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/api/types/"+id)
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/types/"+id)
           .then(response => {
             let tmpArray = []
             for (var i = 0; i < response.data.length; i++) {

@@ -32,7 +32,7 @@ class NonCCAdmins extends React.Component{
       }
 
       componentDidMount () {
-          axios.get('http://localhost:8080/api/cc-admin/all-non-ccadmin-accounts', {
+          axios.get('https://psw-isa-tim3.herokuapp.com/api/cc-admin/all-non-ccadmin-accounts', {
               responseType: 'json'
           }).then(response => {
               this.setState({ tableData: response.data });
@@ -40,7 +40,7 @@ class NonCCAdmins extends React.Component{
       }
 
       assignCCAdmin = (id) =>{
-        axios.post("http://localhost:8080/api/cc-admin/assign-cc-admin/" + id).then(response => {
+        axios.post("https://psw-isa-tim3.herokuapp.com/api/cc-admin/assign-cc-admin/" + id).then(response => {
           const {tableData} = this.state;
           tableData.pop(response.data);
           this.setState({tableData});

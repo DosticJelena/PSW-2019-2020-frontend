@@ -36,7 +36,7 @@ class AbsenceRequests extends React.Component {
         if (this.state.denialComment == ""){
             NotificationManager.error('You have to enter denial comment.', 'Error!', 4000)
         } else {
-            axios.post("http://localhost:8080/api/absence/" + this.state.isNurseOrDoctor + "-deny", {
+            axios.post("https://psw-isa-tim3.herokuapp.com/api/absence/" + this.state.isNurseOrDoctor + "-deny", {
                 id: this.state.id,
                 startDateTime: this.state.start,
                 endDateTime: this.state.end,
@@ -58,7 +58,7 @@ class AbsenceRequests extends React.Component {
     }
 
     AcceptDoc = (id, start, end, name, email) => {
-        axios.post("http://localhost:8080/api/absence/doctor-accept", {
+        axios.post("https://psw-isa-tim3.herokuapp.com/api/absence/doctor-accept", {
             id: id,
             startDateTime: start,
             endDateTime: end,
@@ -73,7 +73,7 @@ class AbsenceRequests extends React.Component {
     }
 
     AcceptNur = (id, start, end, name, email) => {
-        axios.post("http://localhost:8080/api/absence/nurse-accept", {
+        axios.post("https://psw-isa-tim3.herokuapp.com/api/absence/nurse-accept", {
             id: id,
             startDateTime: start,
             endDateTime: end,
@@ -105,7 +105,7 @@ class AbsenceRequests extends React.Component {
 
         this.modalClosedHandler();
 
-        axios.get("http://localhost:8080/api/absence/nurse-requests")
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/absence/nurse-requests")
             .then(response => {
                 let tmpArray = []
                 for (var i = 0; i < response.data.length; i++) {
@@ -118,7 +118,7 @@ class AbsenceRequests extends React.Component {
             })
             .catch((error) => console.log(error))
 
-        axios.get("http://localhost:8080/api/absence/doctor-requests")
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/absence/doctor-requests")
             .then(response => {
                 let tmpArray = []
                 for (var i = 0; i < response.data.length; i++) {
