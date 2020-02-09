@@ -46,30 +46,53 @@ class CreateAppointment extends React.Component {
     }
 
     createAppointmentRequest = () => {
-        console.log(this.state);
-        var token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.post("http://localhost:8080/api/appointment/new", {
-            startDateTime: this.state.start,
-            endDateTime: this.state.end,
-            patientId: this.state.patientId,
-            priceId: this.state.priceId,
-            ordinationId: this.state.ordination,
-            doctorId: this.state.doctorId,
-            type: this.state.typeString,
-            appReqId: this.state.appReqId
-        })
-            .then(() => {
-                NotificationManager.success('Successfully created', 'Success!', 4000);
-                this.props.history.push("/reservation-requests");
-                window.location.reload();
+        var st = parseInt(String(this.state.startTime).substr(0, 2));
+        var en = parseInt(String(this.state.endTime).substr(0, 2));
+        var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+        var enMin = parseInt(String(this.state.endTime).substr(3, 2));
+        if (st > en || (st == en && stMin >= enMin)) {
+            NotificationManager.error('Start time must be set before end time!', 'Error!', 4000);
+        } else if (this.state.ordination == '') {
+            NotificationManager.error('Ordination cannot be empty!', 'Error!', 4000);
+        } else if (this.state.doctorId == '') {
+            NotificationManager.error('Doctor cannot be empty!', 'Error!', 4000);
+        } else {
+            console.log(this.state);
+            var token = localStorage.getItem('token');
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            axios.post("http://localhost:8080/api/appointment/new", {
+                startDateTime: this.state.start,
+                endDateTime: this.state.end,
+                patientId: this.state.patientId,
+                priceId: this.state.priceId,
+                ordinationId: this.state.ordination,
+                doctorId: this.state.doctorId,
+                type: this.state.typeString,
+                appReqId: this.state.appReqId
             })
-            .catch((error) => NotificationManager.error('Something went wrong.', 'Error!', 4000))
+                .then(() => {
+                    NotificationManager.success('Successfully created', 'Success!', 4000);
+                    this.props.history.push("/reservation-requests");
+                    window.location.reload();
+                })
+                .catch((error) => NotificationManager.error('Something went wrong.', 'Error!', 4000))
+        }
+
 
     }
 
     changeDoctorVisible = () => {
-        this.setState({ changeDoctor: true, changeTime: false, chooseOrdination: false })
+        var st = parseInt(String(this.state.startTime).substr(0, 2));
+        var en = parseInt(String(this.state.endTime).substr(0, 2));
+        var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+        var enMin = parseInt(String(this.state.endTime).substr(3, 2));
+        if (st > en || (st == en && stMin >= enMin)) {
+            NotificationManager.error('Start time must be set before end time!', 'Error!', 4000);
+        } else {
+            this.fetchDoctors();
+            this.setState({ changeDoctor: true, changeTime: false, chooseOrdination: false })
+        }
+
     }
 
     changeTimeVisible = () => {
@@ -77,7 +100,17 @@ class CreateAppointment extends React.Component {
     }
 
     okClose = () => {
-        this.setState({ changeDoctor: false, changeTime: false, chooseOrdination: true })
+        var st = parseInt(String(this.state.startTime).substr(0, 2));
+        var en = parseInt(String(this.state.endTime).substr(0, 2));
+        var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+        var enMin = parseInt(String(this.state.endTime).substr(3, 2));
+        if (st > en || (st == en && stMin >= enMin)) {
+            NotificationManager.error('Start time must be set before end time!', 'Error!', 4000);
+        } else {
+            this.setState({ changeDoctor: false, changeTime: false, chooseOrdination: true },
+                this.fetchOrdinations())
+        }
+
     }
 
     fetchDoctors = () => {
@@ -88,20 +121,74 @@ class CreateAppointment extends React.Component {
         })
             .then(response => {
                 let tmpArray = []
+                var found = false;
+                for (var i = 0; i < response.data.length; i++) {
+                    if (response.data[i].specialization == this.state.spec) {
+                        tmpArray.push(response.data[i])
+                    }
+                    if (response.data[i].id == this.state.doctorId) {
+                        found = true;
+                    }
+                }
+
+                if (tmpArray.length == 0 || found == false) {
+                    this.setState({
+                        doctors: tmpArray,
+                        doctorId: '',
+                        doctorLN: '',
+                        doctorFN: ''
+                    })
+                } else {
+                    this.setState({
+                        doctors: tmpArray
+                    })
+                }
+
+            })
+            .catch((error) => console.log(error))
+    }
+
+    fetchPrices = () => {
+        axios.get("http://localhost:8080/api/get-appointment-prices")
+            .then(response => {
+                let tmpArray = []
                 for (var i = 0; i < response.data.length; i++) {
                     tmpArray.push(response.data[i])
                 }
 
                 this.setState({
-                    doctors: tmpArray
+                    prices: tmpArray
+                })
+            })
+            .catch((error) => console.log(error))
+    }
+
+    fetchOrdinations = () => {
+        console.log("ORDINACIJEEEEE")
+        axios.post("http://localhost:8080/api/appointment/available-ordinations-by-date", {
+            startDateTime: this.state.date + ' ' + this.state.startTime,
+            endDateTime: this.state.date + ' ' + this.state.endTime,
+            appType: this.state.type
+        })
+            .then(response => {
+                let tmpArray = []
+                for (var i = 0; i < response.data.length; i++) {
+                    tmpArray.push(response.data[i])
+                }
+                console.log(tmpArray)
+                this.setState({
+                    ordinations: tmpArray
                 })
             })
             .catch((error) => console.log(error))
     }
 
     handleChangeTime = e => {
-        this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
-        this.fetchDoctors();
+        this.setState({ ...this.state, [e.target.name]: String(e.target.value) },
+            this.fetchDoctors(),
+            this.fetchOrdinations()
+        );
+
     }
 
     render() {
@@ -140,52 +227,39 @@ class CreateAppointment extends React.Component {
                     })
                     console.log(this.state)
                 }).then(() => {
-                    axios.post("http://localhost:8080/api/appointment/available-ordinations-by-date", {
-                        startDateTime: this.state.start,
-                        endDateTime: this.state.end,
-                        appType: this.state.type
-                    })
-                        .then(response => {
-                            let tmpArray = []
-                            for (var i = 0; i < response.data.length; i++) {
-                                tmpArray.push(response.data[i])
-                            }
-                            console.log(tmpArray)
-                            this.setState({
-                                ordinations: tmpArray
-                            })
-                        })
-                        .catch((error) => console.log(error))
 
+                    this.fetchOrdinations();
                     this.fetchDoctors();
+                    this.fetchPrices();
 
-                    axios.get("http://localhost:8080/api/get-appointment-prices")
-                        .then(response => {
-                            let tmpArray = []
-                            for (var i = 0; i < response.data.length; i++) {
-                                tmpArray.push(response.data[i])
-                            }
-
-                            this.setState({
-                                prices: tmpArray
-                            })
-                        })
-                        .catch((error) => console.log(error))
                 })
                 .catch((error) => console.log(error))
         }
 
+        var ordinationError;
+        if (this.state.ordinations.length == 0) {
+            ordinationError = (<div>
+                <label style={{ color: 'white' }}>...</label>
+                <p style={{ color: 'red' }}>There are no available ordinations. Please change the time or a doctor of the appointment.</p>
+            </div>)
+        }
+
         var chooseOrdination;
         if (this.state.chooseOrdination == true) {
-            chooseOrdination = (<div className="form-row">
-                <div className="form-group col">
-                    <label htmlFor="ordination">Ordination</label>
-                    <select required className="custom-select mr-sm-2" name="ordination" id="ordination" onChange={this.handleChange} >
-                        <option defaultValue="0">Choose...</option>
-                        {this.state.ordinations.map((ord, index) => (
-                            <option key={ord.id} value={ord.id}>{ord.number}</option>
-                        ))}
-                    </select>
+            chooseOrdination = (<div>
+                <div className="form-row">
+                    <div className="form-group col">
+                        <label htmlFor="ordination">Ordination</label>
+                        <select required className="custom-select mr-sm-2" name="ordination" id="ordination" onChange={this.handleChange} >
+                            <option defaultValue="0">Choose...</option>
+                            {this.state.ordinations.map((ord, index) => (
+                                <option key={ord.id} selected={ord.id == this.state.ordination} value={ord.id}>{ord.number}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+                <div className="form-row">
+                    {ordinationError}
                 </div>
             </div>)
         }
@@ -195,6 +269,14 @@ class CreateAppointment extends React.Component {
             if (this.state.doctors[i].specialization == this.state.spec) {
                 doctorsBySpec.push(this.state.doctors[i]);
             }
+        }
+
+        var doctorError;
+        if (doctorsBySpec.length == 0) {
+            doctorError = (<div>
+                <label style={{ color: 'white' }}>...</label>
+                <p style={{ color: 'red' }}>There are no available specialized doctors during choosen time. Please change date or time.</p>
+            </div>)
         }
 
         var changeDoctor;
@@ -216,22 +298,37 @@ class CreateAppointment extends React.Component {
                         <button className="btn calendar-ord" onClick={() => this.okClose()}>Ok</button>
                     </div>
                 </div>
+                <div className="form-row">
+                    {doctorError}
+                </div>
+            </div>)
+        }
+
+        var timeError;
+        var st = parseInt(String(this.state.startTime).substr(0, 2));
+        var en = parseInt(String(this.state.endTime).substr(0, 2));
+        var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+        var enMin = parseInt(String(this.state.endTime).substr(3, 2));
+        if (st > en || (st == en && stMin >= enMin)) {
+            timeError = (<div>
+                <label style={{ color: 'white' }}>...</label>
+                <p style={{ color: 'red' }}>Start time must be set before end time.</p>
             </div>)
         }
 
         var changeTime;
         if (this.state.changeTime == true) {
             changeTime = (<div>
-                <p style={{ color: "darkcyan" }}>Work time is from 07:00 to 20:00</p>
+                <p style={{ color: "darkcyan" }}>Work time is from 08:00 to 20:00</p>
                 <div className="form-row">
                     <div className="form-group col-md-5">
                         <label htmlFor="date">Date</label>
-                        <input required type="date" className="form-control" name="date" id="date" placeholder="Date"
+                        <input required type="date" value={this.state.date} className="form-control" name="date" id="date" placeholder="Date"
                             onChange={this.handleChange} />
                     </div>
                     <div className="form-group col-md-3">
                         <label htmlFor="date">Start</label>
-                        <input required type="time" min="07:00" defaultValue={this.state.startTime} className="form-control" name="startTime" id="start" placeholder="Start time"
+                        <input required type="time" min="08:00" defaultValue={this.state.startTime} className="form-control" name="startTime" id="start" placeholder="Start time"
                             onChange={this.handleChangeTime} />
                     </div>
                     <div className="form-group col-md-3">
@@ -244,6 +341,9 @@ class CreateAppointment extends React.Component {
                         <br />
                         <button className="btn calendar-ord" onClick={() => this.okClose()}>Ok</button>
                     </div>
+                </div>
+                <div className="form-row">
+                    {timeError}
                 </div>
             </div>)
         }
@@ -267,7 +367,6 @@ class CreateAppointment extends React.Component {
                             <tr><td>Date: </td><td><em>{this.state.date}</em></td></tr>
                             <tr><td>Start: </td><td><em>{this.state.startTime}</em></td></tr>
                             <tr><td>End: </td><td><em>{this.state.endTime}</em></td></tr>
-                            <tr><td>Ordination: </td><td><em>{this.state.ordination}</em></td></tr>
                         </table>
                     </div>
                     <div className="col-7">
