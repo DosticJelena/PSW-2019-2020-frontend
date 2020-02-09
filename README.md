@@ -1,3 +1,9 @@
+## Authors
+
+Student 1: Sara Fojkar @SaraFojkar
+Student 2: Jelena Dostić @DosticJelena
+Student 3: Djordje Batić @baticdjordje
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
