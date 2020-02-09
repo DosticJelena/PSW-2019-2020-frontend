@@ -278,7 +278,7 @@ class QuickReservation extends React.Component {
     if (ordinationsByTipe.length == 0) {
       ordinationError = (<div>
         <label style={{ color: 'silver' }}>...</label>
-        <p style={{ color: 'red' }}>There are no available ordinations. Please change the time or a doctor of the appointment.</p>
+        <p style={{ color: 'red' }}>There are no available ordinations. Please change the time or a date of the appointment.</p>
       </div>)
     }
 
