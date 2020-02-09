@@ -39,7 +39,7 @@ class RateDoctor extends React.Component {
       }
 
     rateDoctor = () =>{
-        
+
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         axios.get("http://localhost:8080/auth/getMyUser")  
@@ -93,7 +93,7 @@ class RateDoctor extends React.Component {
                         onStarClick={this.onStarClickDoctor.bind(this)}/>  
                     </div>                             
                     <hr/>
-                    <Button className="btn rate-btn" onClick={() => this.rateDoctor()}>Update</Button>
+                    <Button disabled={!this.state.rating} className="btn rate-btn" onClick={() => this.rateDoctor()}>Update</Button>
                 <br /></div>
             </div>
         );
