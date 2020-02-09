@@ -56,6 +56,8 @@ class QuickReservation extends React.Component {
     var enMin = parseInt(String(this.state.endTime).substr(3, 2));
     if (st > en || (st == en && stMin >= enMin)) {
       NotificationManager.error('Start time must be set before end time.', 'Error!', 4000);
+    } if (new Date(this.state.date) <= new Date()) {
+      NotificationManager.error('Date has to be set today or after.', 'Error!', 4000);
     } else if (this.state.date == '') {
       NotificationManager.error('Date cannot be empty.', 'Error!', 4000);
     } else if (this.state.startTime == '' || this.state.startTime == '') {
@@ -109,8 +111,8 @@ class QuickReservation extends React.Component {
 
     if (e.target.name == "price") {
       this.setState({ ...this.state, doctor: '', ordination: '', price: e.target.value },
-      this.fetchDoctors(),
-      this.fetchOrdinations())
+        this.fetchDoctors(),
+        this.fetchOrdinations())
     } else {
       this.setState({ ...this.state, [e.target.name]: String(e.target.value) },
         this.fetchDoctors(),
@@ -123,7 +125,7 @@ class QuickReservation extends React.Component {
   }
 
   handleChangeTime = (e) => {
-    this.setState({ ...this.state, [e.target.name]: String(e.target.value), price: '', doctor: '', ordination: ''},
+    this.setState({ ...this.state, [e.target.name]: String(e.target.value), price: '', doctor: '', ordination: '' },
       this.fetchDoctors(),
       this.fetchOrdinations()
     );
@@ -131,11 +133,11 @@ class QuickReservation extends React.Component {
   }
 
   checkIfEmpty = () => {
-    if(this.state.doctors.length == 0){
-      this.setState({doctor: ''})
+    if (this.state.doctors.length == 0) {
+      this.setState({ doctor: '' })
     }
-    if(this.state.ordinations.length == 0){
-      this.setState({ordination: ''})
+    if (this.state.ordinations.length == 0) {
+      this.setState({ ordination: '' })
     }
   }
 
@@ -154,7 +156,6 @@ class QuickReservation extends React.Component {
   }
 
   fetchDoctors = () => {
-    console.log("DOCTOROOOOOS")
     axios.post("http://localhost:8080/api/available-doctors-by-date-and-time", {
       start: this.state.date + ' ' + this.state.startTime,
       end: this.state.date + ' ' + this.state.endTime
@@ -169,14 +170,13 @@ class QuickReservation extends React.Component {
         this.setState({
           doctors: tmpArray
         },
-        this.checkIfEmpty())
+          this.checkIfEmpty())
 
       })
       .catch((error) => console.log(error))
   }
 
   fetchOrdinations = () => {
-    console.log("ORDINATIOOOOOONS")
     axios.post("http://localhost:8080/api/appointment/available-ordinations-by-date", {
       startDateTime: this.state.date + ' ' + this.state.startTime,
       endDateTime: this.state.date + ' ' + this.state.endTime,
@@ -190,7 +190,7 @@ class QuickReservation extends React.Component {
         this.setState({
           ordinations: tmpArray
         },
-        this.checkIfEmpty())
+          this.checkIfEmpty())
 
       })
       .catch((error) => console.log(error))
@@ -207,13 +207,14 @@ class QuickReservation extends React.Component {
         this.setState({
           prices: tmpArray
         },
-        this.checkIfEmpty())
+          this.checkIfEmpty())
       })
       .catch((error) => console.log(error))
   }
 
   componentDidMount() {
 
+    console.log(new Date(this.state.date) < new Date())
     this.fetchOrdinations();
     this.fetchDoctors();
     this.fetchPrices();
@@ -258,7 +259,7 @@ class QuickReservation extends React.Component {
         }
       }
     }
-    
+
 
     var doctorError;
     if (this.state.price == '') {
@@ -270,6 +271,14 @@ class QuickReservation extends React.Component {
       doctorError = (<div>
         <label style={{ color: 'silver' }}>...</label>
         <p style={{ color: 'red' }}>There are no available specialized doctors during choosen time. Please change date or time.</p>
+      </div>)
+    }
+
+    var ordinationError;
+    if (ordinationsByTipe.length == 0) {
+      ordinationError = (<div>
+        <label style={{ color: 'silver' }}>...</label>
+        <p style={{ color: 'red' }}>There are no available ordinations. Please change the time or a doctor of the appointment.</p>
       </div>)
     }
 
@@ -387,6 +396,9 @@ class QuickReservation extends React.Component {
                     <option key={ord.id} selected={ord.id == this.state.ordination} value={ord.id}>{ord.number}</option>
                   ))}
                 </select>
+              </div>
+              <div className="col-6">
+                {ordinationError}
               </div>
             </div>
           </div>)

@@ -30,25 +30,25 @@ class UpdateAppointmentType extends React.Component {
                 found = true;
                 break;
             }
-            
+
         }
 
-        if(this.state.typeName == ''){
+        if (this.state.typeName == '') {
             NotificationManager.error('Name cannot be empty!', 'Error!', 4000);
             found = true;
-        }
-
-        if (found == false) {
-            var token = localStorage.getItem('token');
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.put("http://localhost:8080/api/type/" + this.state.appointmentTypeId, {
-                name: this.state.typeName,
-                clinicId: this.state.clinicId
-            }).then(() => {
-                NotificationManager.success('Successfully updated', 'Success!', 4000);
-                window.location.replace('/appointment-types');
+        } else {
+            if (found == false) {
+                var token = localStorage.getItem('token');
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                axios.put("http://localhost:8080/api/type/" + this.state.appointmentTypeId, {
+                    name: this.state.typeName,
+                    clinicId: this.state.clinicId
+                }).then(() => {
+                    NotificationManager.success('Successfully updated', 'Success!', 4000);
+                    window.location.replace('/appointment-types');
+                }
+                ).catch((error) => NotificationManager.error('Something went wrong', 'Error!', 4000))
             }
-            ).catch((error) => NotificationManager.error('Something went wrong', 'Error!', 4000))
         }
     }
 
