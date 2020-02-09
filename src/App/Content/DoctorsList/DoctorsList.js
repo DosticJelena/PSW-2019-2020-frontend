@@ -8,6 +8,7 @@ import Select from "react-select";
 import axios from 'axios'
 import { Link,withRouter } from 'react-router-dom'
 import { Button } from 'react-bootstrap';
+import Wrap from '../../UI/WrapComponent/Wrap';
 
 
 class DoctorsList extends React.Component{
@@ -223,13 +224,15 @@ class DoctorsList extends React.Component{
       },{
         Header:'Avaiable appoint.',
         Cell: row => (
-          <div>
+          <div className="">
                  { row.original.dto.map((t, index) => (
-                        <Button className="schedule-appointment-button" key={t.timeId} value={t.timeId} onClick={() => this.schedule1(row.original.id, t.time)}>{t.time.split(' ')[0]}</Button>
+                        <Button 
+                          className="schedule-appointment-button" key={t.timeId} value={t.timeId} onClick={() => this.schedule1(row.original.id, t.time)}>{t.time.split(' ')[0]}</Button>
                         )) } 
-
+                      
           </div>
-      ),filterable:false
+      ),filterable:false,
+      width:550
     }]
 
       var clinicDoctors;

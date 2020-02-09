@@ -132,7 +132,7 @@ class Login extends React.Component {
                         </div>
                         <div className="submitbtn">
                         <small id="newAccount" className="form-text text-muted"><Link to="/register">Don't have an account?</Link></small>
-                        <Button type="submit" className="btn">Log In</Button>
+                        <Button id="confirmButton" type="submit" className="btn">Log In</Button>
                         </div>
                     </form>
                 </div>
