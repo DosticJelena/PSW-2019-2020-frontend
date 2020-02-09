@@ -68,7 +68,7 @@ class RequestLeaveNurse extends React.Component {
 
       event.preventDefault();
       console.log(this.state);
-          axios.post("http://localhost:8080/api/nurse/request-leave", {
+          axios.post("https://psw-isa-tim3.herokuapp.com/api/nurse/request-leave", {
 
             startDateTime: this.state.startDate._d,
             endDateTime: this.state.endDate._d,

@@ -57,7 +57,7 @@ class NurseCalendar extends React.Component {
   }
 
   componentDidMount () {
-    axios.get('http://localhost:8080/api/appointment/get-nurse-appointments', {
+    axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/get-nurse-appointments', {
       responseType: 'json'
     })
           .then(response => {

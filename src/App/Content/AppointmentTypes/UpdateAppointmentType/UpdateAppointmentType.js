@@ -40,7 +40,7 @@ class UpdateAppointmentType extends React.Component {
             if (found == false) {
                 var token = localStorage.getItem('token');
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                axios.put("http://localhost:8080/api/type/" + this.state.appointmentTypeId, {
+                axios.put("https://psw-isa-tim3.herokuapp.com/api/type/" + this.state.appointmentTypeId, {
                     name: this.state.typeName,
                     clinicId: this.state.clinicId
                 }).then(() => {
@@ -61,7 +61,7 @@ class UpdateAppointmentType extends React.Component {
 
         if (this.props.reload == true && (window.location.pathname.split("/")[2] != (this.state.appointmentTypeId || undefined || ""))) {
             const appId = window.location.pathname.split("/")[2];
-            axios.get("http://localhost:8080/api/type/" + appId)
+            axios.get("https://psw-isa-tim3.herokuapp.com/api/type/" + appId)
                 .then(response => {
                     console.log(response);
                     this.setState({

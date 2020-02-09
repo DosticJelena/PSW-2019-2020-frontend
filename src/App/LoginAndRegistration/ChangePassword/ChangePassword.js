@@ -39,13 +39,13 @@ class ChangePassword extends React.Component {
     SendLoginRequest = event => {
         event.preventDefault();
 
-        axios.put("http://localhost:8080/auth/change-password", {
+        axios.put("https://psw-isa-tim3.herokuapp.com/auth/change-password", {
             newPassword: this.state.newPassword,
             oldPassword: this.state.oldPassword
         }).then((resp) => {
             console.log(this.state);
             NotificationManager.success('Your password has been changed. You can now log in to the Clinic Center with new password.', '', 4000);
-            axios.post("http://localhost:8080/auth/login", {
+            axios.post("https://psw-isa-tim3.herokuapp.com/auth/login", {
                 email: this.state.email,
                 password: this.state.newPassword
             }).then(() => {
@@ -62,7 +62,7 @@ class ChangePassword extends React.Component {
 
 
 componentDidMount() {
-    axios.get("http://localhost:8080/auth/getMyUser")
+    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
         .then(response => {
             console.log(response.data);
             this.setState({

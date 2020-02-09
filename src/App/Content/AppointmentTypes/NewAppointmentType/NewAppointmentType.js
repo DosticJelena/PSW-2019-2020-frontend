@@ -34,7 +34,7 @@ class NewAppointmentType extends React.Component {
 
         if (found == false){
             this.props.history.push("/appointment-types");
-            axios.post("http://localhost:8080/api/types/new",{
+            axios.post("https://psw-isa-tim3.herokuapp.com/api/types/new",{
                 clinicId: this.state.clinicId,
                 name: this.state.typeName
             })
@@ -49,7 +49,7 @@ class NewAppointmentType extends React.Component {
       componentDidMount() {
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/auth/getMyUser")  
+        axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")  
             .then(response => {
                 console.log(response.data);
                 this.setState({
@@ -58,7 +58,7 @@ class NewAppointmentType extends React.Component {
             })
         .then(() => {
 
-            axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
+            axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
             .then(response => {
                 console.log(response.data);
                 this.setState({
@@ -66,7 +66,7 @@ class NewAppointmentType extends React.Component {
                 })
             }).then(() => {
                 
-                axios.get("http://localhost:8080/api/clinic/"+ this.state.clinicId)
+                axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic/"+ this.state.clinicId)
                 .then(response => {
                         console.log(response.data);
                         this.setState({
@@ -74,7 +74,7 @@ class NewAppointmentType extends React.Component {
                         })
                 }).catch((error) => console.log(error))
 
-                axios.get("http://localhost:8080/api/types/" + this.state.clinicId)  
+                axios.get("https://psw-isa-tim3.herokuapp.com/api/types/" + this.state.clinicId)  
                     .then(response => {
                         let tmpArray = []
                         for (var i = 0; i < response.data.length; i++) {

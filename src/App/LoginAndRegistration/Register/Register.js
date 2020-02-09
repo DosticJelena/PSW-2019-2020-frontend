@@ -83,7 +83,7 @@ class Register extends React.Component {
         if (password !== passwordConfirm) {
             alert("Passwords don't match");
         } else {
-        axios.post("http://localhost:8080/auth/register", {
+        axios.post("https://psw-isa-tim3.herokuapp.com/auth/register", {
             email: this.state.email,
             password: this.state.password,
             firstName: this.state.firstName,

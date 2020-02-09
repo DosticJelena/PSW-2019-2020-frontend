@@ -74,7 +74,7 @@ class AbsenceRequest extends React.Component {
     console.log(this.state)
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("http://localhost:8080/auth/getMyUser")
+    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
       .then(response => {
         console.log(response);
         this.setState({
@@ -83,7 +83,7 @@ class AbsenceRequest extends React.Component {
       }).then(() => {
 
         if (this.state.role == "ROLE_NURSE") {
-          axios.post("http://localhost:8080/api/nurse/request-leave", {
+          axios.post("https://psw-isa-tim3.herokuapp.com/api/nurse/request-leave", {
 
             startDateTime: this.state.startDate._d,
             endDateTime: this.state.endDate._d,
@@ -99,7 +99,7 @@ class AbsenceRequest extends React.Component {
               NotificationManager.error(error.response.data, 'Error', 3000)
             })
         } else if (this.state.role == "ROLE_DOCTOR") {
-          axios.post("http://localhost:8080/api/doctor/request-leave", {
+          axios.post("https://psw-isa-tim3.herokuapp.com/api/doctor/request-leave", {
 
             startDateTime: this.state.startDate._d,
             endDateTime: this.state.endDate._d,

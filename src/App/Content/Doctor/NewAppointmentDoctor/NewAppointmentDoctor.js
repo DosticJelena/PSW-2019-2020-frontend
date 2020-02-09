@@ -54,7 +54,7 @@ class NewAppointmentDoctor extends React.Component {
     } else {
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.post("http://localhost:8080/api/doctor/schedule-appointment", {
+      axios.post("https://psw-isa-tim3.herokuapp.com/api/doctor/schedule-appointment", {
         patient: this.state.patient,
         startDateTime: this.state.date + ' ' + this.state.startTime,
         endDateTime: this.state.date + ' ' + this.state.endTime,
@@ -92,7 +92,7 @@ class NewAppointmentDoctor extends React.Component {
   componentDidMount() {
     const patientId = window.location.pathname.split("/")[2];
     var token = localStorage.getItem('token');
-    axios.get("http://localhost:8080/api/patients/" + patientId)
+    axios.get("https://psw-isa-tim3.herokuapp.com/api/patients/" + patientId)
       .then(response => {
         this.setState({
           patName: response.data.firstName + " " + response.data.lastName,
@@ -102,7 +102,7 @@ class NewAppointmentDoctor extends React.Component {
       .catch((error) => console.log(error))
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("http://localhost:8080/auth/getMyUser")
+    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
       .then(response => {
         this.setState({
           doctorId: response.data.id

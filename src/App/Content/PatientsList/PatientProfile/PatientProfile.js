@@ -32,7 +32,7 @@ class PatientProfile extends React.Component {
     this.setState({id: id});
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("http://localhost:8080/api/patients/" + id)  
+    axios.get("https://psw-isa-tim3.herokuapp.com/api/patients/" + id)  
       .then(response => {
           console.log(response.data);
           this.setState({

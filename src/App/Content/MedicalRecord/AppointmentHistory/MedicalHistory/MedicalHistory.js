@@ -33,7 +33,7 @@ class MedicalHistory extends React.Component{
             const id = window.location.pathname.split("/")[2];
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.get("http://localhost:8080/api/examination-report/" + id)
+            axios.get("https://psw-isa-tim3.herokuapp.com/api/examination-report/" + id)
                    .then(response => {
                        console.log(response.data);
                        this.setState({
@@ -46,7 +46,7 @@ class MedicalHistory extends React.Component{
 
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.get("http://localhost:8080/api/prescriptions/" + id)
+            axios.get("https://psw-isa-tim3.herokuapp.com/api/prescriptions/" + id)
                     .then(response => {
                         console.log(response.data);
                         this.setState({

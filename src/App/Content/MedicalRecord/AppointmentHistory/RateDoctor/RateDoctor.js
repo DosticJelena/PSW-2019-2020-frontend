@@ -42,10 +42,10 @@ class RateDoctor extends React.Component {
 
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("http://localhost:8080/auth/getMyUser")  
+        axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")  
           .then(response => {
 
-            axios.put("http://localhost:8080/api/voteDoctor" , {
+            axios.put("https://psw-isa-tim3.herokuapp.com/api/voteDoctor" , {
                 patientId: response.data.id,
                 forId: this.state.doctorId,
                 rating: this.state.rating
@@ -68,7 +68,7 @@ class RateDoctor extends React.Component {
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         const doctorId = window.location.pathname.split("/")[2];
-        axios.get("http://localhost:8080/api/doctors/" + doctorId)
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/doctors/" + doctorId)
             .then(response => {
                 console.log(response.data);
                 this.setState({
