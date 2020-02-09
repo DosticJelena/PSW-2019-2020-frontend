@@ -28,6 +28,7 @@ class Drug extends React.Component{
       constructor (props) {
           super(props);
           this.handleChange = this.handleChange.bind(this);
+          this.handleKeyUp = this.handleKeyUp.bind(this);
           this.addNewDrug = this.addNewDrug.bind(this);
           this.fetchData = this.fetchData.bind(this);
           this.openModal = this.openModal.bind(this);
@@ -56,13 +57,19 @@ class Drug extends React.Component{
                 description: '',
                 ingredient: ''
               },
+              formErrors: {
+                name: '',
+                description: '',
+                ingredient: ''
+              },
               id: '',
               name: '',
               description: '',
               ingredient: '',
               modalIsOpen: false,
               editModalIsOpen: false,
-              loading: false
+              loading: false,
+              disabled: true
           };
       }
 
@@ -76,6 +83,7 @@ class Drug extends React.Component{
         this.setState({ingredient: p_ingredient})
         this.setState({description: p_description})
         this.setState({editModalIsOpen: true});
+        this.setState({disabled: true});
       }
      
       closeModal() {
@@ -91,6 +99,7 @@ class Drug extends React.Component{
           ingredient: ""
         })
         this.setState({modalIsOpen: false});
+        this.setState({disabled: true});
       }
 
       closeEditModal() {
@@ -106,6 +115,7 @@ class Drug extends React.Component{
           ingredient: ""
         })
         this.setState({editModalIsOpen: false});
+        this.setState({disabled: true});
       }
 
       fetchData(state, instance) {
@@ -146,11 +156,54 @@ class Drug extends React.Component{
           })
       }
 
+      handleKeyUp = e => {
+        var empty = true;
+    
+        Object.keys(this.state.formErrors).forEach(e => 
+          {if(this.state.formErrors[e] != ""){
+            empty = false;
+          }
+        });
+    
+        if (!empty){
+            this.setState({disabled: true});
+            console.log('disabled');
+        }
+    
+        else{
+            if (this.state.name != "" && this.state.description != "" && this.state.ingredient != ""){
+              this.setState({disabled: false});
+              console.log('enabled');
+            }
+            else {
+              this.setState({disabled: true});
+              console.log('disabled');
+            }
+        }
+      }
+
       handleChange = e => {
         e.preventDefault();
-
-        this.setState({...this.state, [e.target.name]: e.target.value});
-        console.log(this.state)
+        const { name, value } = e.target;
+        let formErrors = { ...this.state.formErrors };
+    
+        switch (name) {
+          case "name":
+                formErrors.name =
+                value.length < 3 ? "minimum 3 characaters required" : "";
+            break;
+          case "description":
+                formErrors.description =
+                value.length < 10 ? "minimum 10 characaters required" : "";
+            break;
+          case "ingredient":
+                formErrors.ingredient =
+                value.length < 3 ? "minimum 3 characaters required" : "";
+            break;
+          default:
+            break;
+        }
+        this.setState({ formErrors, [name]: value}, () => console.log(this.state));
       }
 
       editDrug =  (id) => {
@@ -166,6 +219,7 @@ class Drug extends React.Component{
       }
 
       render() {
+        const { formErrors } = this.state;
         let { tableData } = this.state;
         return (
           <div className="AssignCCAdmin">
@@ -179,44 +233,59 @@ class Drug extends React.Component{
                   <div class="form-group">
                       <label htmlFor="name" class="col-form-label">Drug Name:</label>
                       <TextField
-                            id="outlined-multiline-flexible"
-                            name="name"
+                             className={formErrors.name.length > 0 ? "error" : null}
+                             id="outlined-multiline-flexible"
+                             name="name"
                              style={{ width: 550 }}
                              defaultValue={this.state.name}
                              onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Name"
                              variant="outlined"
                              required/>
+                        {formErrors.name.length > 0 && (
+                          <span className="errorMessage">{formErrors.name}</span>
+                        )}
                     </div>
                     <div class="form-group">
                       <label htmlFor="ingredient" class="col-form-label">Ingredient:</label>
                       <TextField 
-                            style={{ width: 550 }}
-                            id="outlined-multiline-flexible"
+                             className={formErrors.ingredient.length > 0 ? "error" : null}
+                             style={{ width: 550 }}
+                             id="outlined-multiline-flexible"
                              name="ingredient"
                              defaultValue={this.state.ingredient}
                              onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Ingredient"
                             variant="outlined"
                              required/>
-                    </div>
+                        {formErrors.ingredient.length > 0 && (
+                          <span className="errorMessage">{formErrors.ingredient}</span>
+                        )}
+                   </div>
                     <div class="form-group">
                       <label htmlFor="description" class="col-form-label">Description:</label>
                       <TextField 
-                            style={{ width: 550 }}
-                            id="outlined-multiline-flexible"
+                             className={formErrors.description.length > 0 ? "error" : null}
+                             style={{ width: 550 }}
+                             id="outlined-multiline-flexible"
                              name="description"
                              defaultValue={this.state.description}
                              onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Description"
                              multiline
                             rows="5"
                             variant="outlined"
                              required/>
+                        {formErrors.description.length > 0 && (
+                          <span className="errorMessage">{formErrors.description}</span>
+                        )}
                     </div>
                     <hr/>
                     <div>
-                      <Button onClick={() => this.editDrug(this.state.id)}>Save</Button>
+                      <Button disabled={this.state.disabled} onClick={() => this.editDrug(this.state.id)}>Save</Button>
                     </div>
         </Modal>
 
@@ -233,41 +302,58 @@ class Drug extends React.Component{
           <div class="form-group">
                       <label htmlFor="name" class="col-form-label">Drug Name:</label>
                       <TextField
-                            id="outlined-multiline-flexible"
-                            name="name"
+                             className={formErrors.name.length > 0 ? "error" : null}
+                             id="outlined-multiline-flexible"
+                             name="name"
+                             value={this.state.name}
                              style={{ width: 550 }}
                              onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Name"
                              variant="outlined"
                              required/>
+                        {formErrors.name.length > 0 && (
+                          <span className="errorMessage">{formErrors.name}</span>
+                        )}
                     </div>
                     <div class="form-group">
                       <label htmlFor="ingredient" class="col-form-label">Ingredient:</label>
                       <TextField 
-                            style={{ width: 550 }}
-                            id="outlined-multiline-flexible"
+                             className={formErrors.ingredient.length > 0 ? "error" : null}
+                             style={{ width: 550 }}
+                             id="outlined-multiline-flexible"
                              name="ingredient"
+                             value={this.state.ingredient}
                              onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Ingredient"
                             variant="outlined"
                              required/>
+                             {formErrors.ingredient.length > 0 && (
+                          <span className="errorMessage">{formErrors.ingredient}</span>
+                        )}
                     </div>
                     <div class="form-group">
                       <label htmlFor="description" class="col-form-label">Description:</label>
                       <TextField 
-                            style={{ width: 550 }}
-                            id="outlined-multiline-flexible"
+                             className={formErrors.description.length > 0 ? "error" : null}
+                             style={{ width: 550 }}
+                             id="outlined-multiline-flexible"
                              name="description"
+                             value={this.state.description}
                              onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Description"
                              multiline
                             rows="5"
                             variant="outlined"
                              required/>
+                                 {formErrors.description.length > 0 && (
+                          <span className="errorMessage">{formErrors.description}</span>)}
                     </div>
                     <hr/>
                     <div>
-                      <Button onClick={() => this.addNewDrug(this.state.name, this.state.ingredient, this.state.description)}>Save</Button>
+                      <Button disabled={this.state.disabled} onClick={() => this.addNewDrug(this.state.name, this.state.ingredient, this.state.description)}>Save</Button>
                   </div>
         </Modal>
           </div>

@@ -29,7 +29,7 @@ class Diagnosis extends React.Component{
       constructor (props) {
           super(props);
           this.handleChange = this.handleChange.bind(this);
-          this.handleEditChange = this.handleEditChange.bind(this);
+          this.handleKeyUp = this.handleKeyUp.bind(this);
           this.addNewDiagnosis = this.addNewDiagnosis.bind(this);
           this.fetchData = this.fetchData.bind(this);
 
@@ -51,12 +51,17 @@ class Diagnosis extends React.Component{
                 name: '',
                 description: ''
               },
+              formErrors: {
+                name: '',
+                description: ''
+              },
               modalIsOpen: false,
               editModalIsOpen: false,
               loading: false,
               id: '',
               name: '',
-              description: ''
+              description: '',
+              disabled: true
           };
           this.openModal = this.openModal.bind(this);
           this.openEditModal = this.openEditModal.bind(this);
@@ -67,6 +72,7 @@ class Diagnosis extends React.Component{
 
       openModal() {
         this.setState({modalIsOpen: true});
+        this.setState({disabled: true});
       }
 
       openEditModal(p_id, p_name, p_description) {
@@ -75,6 +81,7 @@ class Diagnosis extends React.Component{
         this.setState({name: p_name})
         this.setState({description: p_description})
         this.setState({editModalIsOpen: true});
+        this.setState({disabled: true});
       }
      
       closeModal() {
@@ -88,6 +95,7 @@ class Diagnosis extends React.Component{
           description: ""
         })
         this.setState({modalIsOpen: false});
+        this.setState({disabled: true});
       }
 
       closeEditModal() {
@@ -101,6 +109,7 @@ class Diagnosis extends React.Component{
           description: ""
         })
         this.setState({editModalIsOpen: false});
+        this.setState({disabled: true});
       }
 
       fetchData(state, instance) {
@@ -143,18 +152,50 @@ class Diagnosis extends React.Component{
       
       }
 
-      handleChange(e) {
-        e.preventDefault();
-
-        this.setState({...this.state, [e.target.name]: e.target.value});
-        console.log(this.state)
+      handleKeyUp = e => {
+        var empty = true;
+    
+        Object.keys(this.state.formErrors).forEach(e => 
+          {if(this.state.formErrors[e] != ""){
+            empty = false;
+          }
+        });
+    
+        if (!empty){
+            this.setState({disabled: true});
+            console.log('disabled');
+        }
+    
+        else{
+            if (this.state.name != "" && this.state.description != ""){
+              this.setState({disabled: false});
+              console.log('enabled');
+            }
+            else {
+              this.setState({disabled: true});
+              console.log('disabled');
+            }
+        }
       }
 
-      handleEditChange(e) {
+      handleChange = e => {
         e.preventDefault();
-
-        this.setState({...this.state, [e.target.name]: e.target.value});
-        console.log(this.state)
+        const { name, value } = e.target;
+        let formErrors = { ...this.state.formErrors };
+    
+        switch (name) {
+          case "name":
+                formErrors.name =
+                value.length < 3 ? "minimum 3 characaters required" : "";
+            break;
+          case "description":
+                formErrors.description =
+                value.length < 5 ? "minimum 5 characaters required" : "";
+            break;
+          default:
+            break;
+        }
+        this.setState({ formErrors, [name]: value}, () => console.log(this.state));
       }
 
       editDiagnosis =  (id) => {
@@ -174,6 +215,7 @@ class Diagnosis extends React.Component{
 
       render() {
         let { tableData } = this.state;
+        const { formErrors } = this.state;
         return (
           <div className="AssignCCAdmin">
           <Header/>
@@ -190,31 +232,38 @@ class Diagnosis extends React.Component{
                     <div class="form-group">
                       <label htmlFor="name" class="col-form-label">Name:</label>
                       <TextField 
+                             className={formErrors.name.length > 0 ? "error" : null}
                              id="name"
                              name="name"
                              defaultValue={this.state.name}
-                             onChange={this.handleEditChange}
+                             onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Name"
                              variant="outlined"
                              style={{ width: 550 }}
                              required/>
-                    </div>
+                        {formErrors.name.length > 0 && (
+                          <span className="errorMessage">{formErrors.name}</span>
+                        )}                    </div>
                     <div class="form-group">
                       <label htmlFor="description" class="col-form-label">Description:</label>
                       <TextField 
-                      
+                             className={formErrors.description.length > 0 ? "error" : null}
                              id="description"
                              name="description"
                              defaultValue={this.state.description}
-                             onChange={this.handleEditChange}
+                             onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Description"
                              variant="outlined"
                              style={{ width: 550 }}
                              required/>
-                    </div>
+                        {formErrors.description.length > 0 && (
+                          <span className="errorMessage">{formErrors.description}</span>
+                        )}                    </div>
                     <hr/>
                     <div>
-                      <Button onClick={() => this.editDiagnosis(this.state.id)}>Save</Button>
+                      <Button disabled={this.state.disabled} onClick={() => this.editDiagnosis(this.state.id)}>Save</Button>
                     </div>
         </Modal>
 
@@ -232,30 +281,38 @@ class Diagnosis extends React.Component{
                     <div>
                       <label htmlFor="name" class="col-form-label">Name:</label>
                       <TextField
+                             className={formErrors.name.length > 0 ? "error" : null}
                              id="name"
                              name="name"
                              style={{ width: 550 }}
                              onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Name"
                              variant="outlined"
                              required/>
-                    </div>
+                        {formErrors.name.length > 0 && (
+                          <span className="errorMessage">{formErrors.name}</span>
+                        )}                       </div>
                     <div>
                       <label htmlFor="description" class="col-form-label">Description:</label>
-                      <TextField 
-                            style={{ width: 550 }}
+                      <TextField
+                             className={formErrors.description.length > 0 ? "error" : null}
+                             style={{ width: 550 }}
                             id="outlined-multiline-flexible"
                              name="description"
                              onChange={this.handleChange}
+                             onKeyUp={this.handleKeyUp}
                              placeholder="Enter Description"
                              multiline
                             rows="5"
                             variant="outlined"
-                             required/>
-                    </div>
+                            required/>
+                            {formErrors.description.length > 0 && (
+                              <span className="errorMessage">{formErrors.description}</span>
+                            )}                       </div>
                     <hr/>
                     <div>
-                      <Button onClick={() => this.addNewDiagnosis(this.state.name, this.state.description)}>>Save</Button>
+                      <Button disabled={this.state.disabled} onClick={() => this.addNewDiagnosis(this.state.name, this.state.description)}>Save</Button>
                     </div>
             </div>
         </Modal>
