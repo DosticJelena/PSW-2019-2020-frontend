@@ -110,7 +110,7 @@ class Drug extends React.Component{
 
       fetchData(state, instance) {
         this.setState({ loading: true });
-        axios.get('http://localhost:8080/api/cc-admin/get-all-drugs', {
+        axios.get('https://psw-isa-tim3.herokuapp.com/api/cc-admin/get-all-drugs', {
               responseType: 'json'
           }).then(response => {
               this.setState({ tableData: response.data, loading: false });
@@ -120,7 +120,7 @@ class Drug extends React.Component{
       addNewDrug =  (name, ingredient, description) => {
         this.setState({modalIsOpen: false});
         console.log(this.state);
-        axios.post("http://localhost:8080/api/cc-admin/add-drug/", {
+        axios.post("https://psw-isa-tim3.herokuapp.com/api/cc-admin/add-drug/", {
           name: name,
           description: description,
           ingredient: ingredient
@@ -134,7 +134,7 @@ class Drug extends React.Component{
       }
 
       deleteDrug = (id) =>{
-        axios.put("http://localhost:8080/api/cc-admin/delete-drug/" + id).then(response => {
+        axios.put("https://psw-isa-tim3.herokuapp.com/api/cc-admin/delete-drug/" + id).then(response => {
 
           this.fetchData(this.state);
 
@@ -155,7 +155,7 @@ class Drug extends React.Component{
 
       editDrug =  (id) => {
         this.setState({editModalIsOpen: false});
-        axios.put("http://localhost:8080/api/cc-admin/update-drug/" + id, {
+        axios.put("https://psw-isa-tim3.herokuapp.com/api/cc-admin/update-drug/" + id, {
           name: this.state.name,
           description: this.state.description,
           ingredient: this.state.ingredient

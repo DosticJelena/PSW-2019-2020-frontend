@@ -39,7 +39,7 @@ class PredefinedExaminations extends React.Component {
     componentDidMount() {
 
         const id = window.location.pathname.split("/")[2];
-        axios.get("http://localhost:8080/api/predefined-appointments/"+id).then(response => {
+        axios.get("https://psw-isa-tim3.herokuapp.com/api/predefined-appointments/"+id).then(response => {
             console.log(response.data);
             let tmpArray = []
             for (var i = 0; i < response.data.length; i++) {
@@ -56,7 +56,7 @@ class PredefinedExaminations extends React.Component {
   fetchData(state, instance) {
     this.setState({ loading: true });
     const id = window.location.pathname.split("/")[2];
-    axios.get('http://localhost:8080/api/predefined-appointments/'+id, {
+    axios.get('https://psw-isa-tim3.herokuapp.com/api/predefined-appointments/'+id, {
           responseType: 'json'
       }).then(response => {
           this.setState({ examinations: response.data, loading: false });
@@ -89,10 +89,10 @@ class PredefinedExaminations extends React.Component {
 schedule = (id) =>{
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("http://localhost:8080/auth/getMyUser")  
+    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")  
     .then(response => {
       
-        axios.post("http://localhost:8080/api/schedule-predefined-appointment",{
+        axios.post("https://psw-isa-tim3.herokuapp.com/api/schedule-predefined-appointment",{
              appointmentId: id,
              patientId: response.data.id
         }).then(response => {

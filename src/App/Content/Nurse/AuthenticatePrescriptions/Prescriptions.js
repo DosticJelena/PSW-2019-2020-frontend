@@ -30,7 +30,7 @@ class Prescriptions extends React.Component{
 
     fetchData(state, instance) {
       this.setState({ loading: true });
-        axios.get('http://localhost:8080/api/nurse/get-awaiting-prescriptions', {
+        axios.get('https://psw-isa-tim3.herokuapp.com/api/nurse/get-awaiting-prescriptions', {
             responseType: 'json'
         }).then(response => {
             this.setState({ 
@@ -44,7 +44,7 @@ class Prescriptions extends React.Component{
     }
 
     authenticate = (id) =>{
-      axios.post("http://localhost:8080/api/nurse/authenticate/" + id).then(response => {
+      axios.post("https://psw-isa-tim3.herokuapp.com/api/nurse/authenticate/" + id).then(response => {
         this.fetchData(this.state)
       }).then(response => {
         NotificationManager.success('Diagnosis successfuly authenticated', '', 3000);
