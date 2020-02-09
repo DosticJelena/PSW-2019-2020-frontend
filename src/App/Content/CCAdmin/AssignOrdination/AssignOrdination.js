@@ -131,11 +131,11 @@ class AssignOrdination extends React.Component {
     }
     else{
         if (this.state.doctorIds.length == 0){
-          this.setState({disabled: false});
+          this.setState({disabled: true});
           console.log('enabled');
         }
         else {
-          this.setState({disabled: true});
+          this.setState({disabled: false});
           console.log('disabled');
         }
     }
@@ -189,6 +189,8 @@ class AssignOrdination extends React.Component {
                     getOptionLabel={option => option.firstName + " " + option.lastName}
                     style={{ width: 400 }}
                     onChange={this.handleDoctorIds}
+                    onPointerLeave={this.checkEnabled}
+                    onPointerEnter={this.checkEnabled}
                     className={this.state.doctorIds.length > 0 ? "error" : null}
                     renderOption={(option, { selected }) => (
                       <React.Fragment>

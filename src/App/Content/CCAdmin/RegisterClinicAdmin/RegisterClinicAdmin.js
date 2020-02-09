@@ -238,7 +238,8 @@ class RegisterClinicAdmin extends React.Component {
                 getOptionLabel={option => option.name + "(" + option.city + ")"}
                 style={{ width: 400 }}
                 onChange={this.handleClinic}
-                onPointerOut={this.handleKeyUp}
+                onPointerLeave={this.handleKeyUp}
+                onPointerEnter={this.handleKeyUp}
                 renderInput={params => (
                     <TextField {...params} 
                       label="Choose clinic" 

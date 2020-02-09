@@ -206,7 +206,8 @@ class AbsenceRequest extends React.Component {
                       options={this.state.types}
                       style={{ width: 400 }}
                       onChange={this.handleType}
-                      onKeyUp={this.handleKeyUp}
+                      onPointerLeave={this.handleKeyUp}
+                      onPointerEnter={this.handleKeyUp}
                       renderInput={params => (
                         <TextField {...params} label="Choose type" variant="outlined" fullWidth
                           name="typeId"
