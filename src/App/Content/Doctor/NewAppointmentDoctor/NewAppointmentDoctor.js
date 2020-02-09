@@ -45,6 +45,8 @@ class NewAppointmentDoctor extends React.Component {
     var enMin = parseInt(String(this.state.endTime).substr(3, 2));
     if (st > en || (st == en && stMin >= enMin)) {
       NotificationManager.error('Start time must be set before end time.', 'Error!', 4000);
+    } if (new Date(this.state.date) <= new Date()) {
+      NotificationManager.error('Date has to be set today or after.', 'Error!', 4000);
     } else if (this.state.date == '') {
       NotificationManager.error('Date cannot be empty.', 'Error!', 4000);
     } else if (this.state.startTime == '' || this.state.startTime == '') {

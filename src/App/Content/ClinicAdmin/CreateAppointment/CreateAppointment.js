@@ -52,6 +52,8 @@ class CreateAppointment extends React.Component {
         var enMin = parseInt(String(this.state.endTime).substr(3, 2));
         if (st > en || (st == en && stMin >= enMin)) {
             NotificationManager.error('Start time must be set before end time!', 'Error!', 4000);
+        } else if (new Date(this.state.date) <= new Date()) {
+            NotificationManager.error('Date has to be set today or after.', 'Error!', 4000);
         } else if (this.state.ordination == '') {
             NotificationManager.error('Ordination cannot be empty!', 'Error!', 4000);
         } else if (this.state.doctorId == '') {
@@ -164,7 +166,6 @@ class CreateAppointment extends React.Component {
     }
 
     fetchOrdinations = () => {
-        console.log("ORDINACIJEEEEE")
         axios.post("http://localhost:8080/api/appointment/available-ordinations-by-date", {
             startDateTime: this.state.date + ' ' + this.state.startTime,
             endDateTime: this.state.date + ' ' + this.state.endTime,
