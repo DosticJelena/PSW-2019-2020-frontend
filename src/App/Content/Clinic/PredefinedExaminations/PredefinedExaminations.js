@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom'
+import { NotificationManager } from 'react-notifications';
 
 class PredefinedExaminations extends React.Component {
 
@@ -87,7 +88,9 @@ schedule = (id) =>{
         examinations.pop(response.data);
         this.setState({examinations});
         }).then((resp) => {
+            NotificationManager.success('You have scheduled appointment succesfully!', 'Success!', 4000);
             console.log('Id: ' + id);
+            
         })
     }).catch((error) => console.log(error))
 
