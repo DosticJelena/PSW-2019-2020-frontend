@@ -29,7 +29,7 @@ class CalendarEventClickWindow extends React.Component {
         const appointmentId = window.location.pathname.split("/")[2];
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/get-appointment/' + appointmentId, {
+        axios.get('https://deployment-isa.herokuapp.com/api/appointment/get-appointment/' + appointmentId, {
           responseType: 'json'
         })
               .then(response => {

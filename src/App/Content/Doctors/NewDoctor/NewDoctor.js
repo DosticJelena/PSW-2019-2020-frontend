@@ -81,7 +81,7 @@ class NewDoctor extends React.Component {
 
         if (found == false) {
             this.props.history.push("/doctors");
-            axios.post("https://psw-isa-tim3.herokuapp.com/api/doctor/new", {
+            axios.post("https://deployment-isa.herokuapp.com/api/doctor/new", {
                 clinicId: this.state.clinicId,
                 username: this.state.email,
                 firstName: this.state.firstName,
@@ -105,7 +105,7 @@ class NewDoctor extends React.Component {
     componentDidMount() {
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+        axios.get("https://deployment-isa.herokuapp.com/auth/getMyUser")
             .then(response => {
                 console.log(response.data);
                 this.setState({
@@ -114,7 +114,7 @@ class NewDoctor extends React.Component {
             })
             .then(() => {
 
-                axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)
+                axios.get("https://deployment-isa.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)
                     .then(response => {
                         console.log(response.data);
                         this.setState({
@@ -122,7 +122,7 @@ class NewDoctor extends React.Component {
                         })
                     }).then(() => {
 
-                        axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic/" + this.state.clinicId)
+                        axios.get("https://deployment-isa.herokuapp.com/api/clinic/" + this.state.clinicId)
                             .then(response => {
                                 console.log(response.data);
                                 this.setState({
@@ -130,7 +130,7 @@ class NewDoctor extends React.Component {
                                 })
                             }).catch((error) => console.log(error))
 
-                        axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-doctors/" + this.state.clinicId)
+                        axios.get("https://deployment-isa.herokuapp.com/api/clinic-doctors/" + this.state.clinicId)
                             .then(response => {
                                 let tmpArray = []
                                 for (var i = 0; i < response.data.length; i++) {
@@ -143,7 +143,7 @@ class NewDoctor extends React.Component {
                             })
                             .catch((error) => console.log(error))
 
-                        axios.get("https://psw-isa-tim3.herokuapp.com/api/types/" + this.state.clinicId)
+                        axios.get("https://deployment-isa.herokuapp.com/api/types/" + this.state.clinicId)
                             .then(response => {
                                 this.setState({
                                     types: response.data

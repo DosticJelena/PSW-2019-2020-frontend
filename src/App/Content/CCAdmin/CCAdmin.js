@@ -20,7 +20,7 @@ class CCAdmin extends React.Component {
     }
 
     componentDidMount() {
-        axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+        axios.get("https://deployment-isa.herokuapp.com/auth/getMyUser")
                 .then((resp) => {
                     this.setState({
                         email: resp.data.username

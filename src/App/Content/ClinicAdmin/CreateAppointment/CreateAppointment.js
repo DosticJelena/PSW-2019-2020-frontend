@@ -62,7 +62,7 @@ class CreateAppointment extends React.Component {
             console.log(this.state);
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.post("https://psw-isa-tim3.herokuapp.com/api/appointment/new", {
+            axios.post("https://deployment-isa.herokuapp.com/api/appointment/new", {
                 startDateTime: this.state.start,
                 endDateTime: this.state.end,
                 patientId: this.state.patientId,
@@ -117,7 +117,7 @@ class CreateAppointment extends React.Component {
 
     fetchDoctors = () => {
         console.log(this.state)
-        axios.post("https://psw-isa-tim3.herokuapp.com/api/available-doctors-by-date-and-time", {
+        axios.post("https://deployment-isa.herokuapp.com/api/available-doctors-by-date-and-time", {
             start: this.state.date + ' ' + this.state.startTime,
             end: this.state.date + ' ' + this.state.endTime
         })
@@ -151,7 +151,7 @@ class CreateAppointment extends React.Component {
     }
 
     fetchPrices = () => {
-        axios.get("https://psw-isa-tim3.herokuapp.com/api/get-appointment-prices")
+        axios.get("https://deployment-isa.herokuapp.com/api/get-appointment-prices")
             .then(response => {
                 let tmpArray = []
                 for (var i = 0; i < response.data.length; i++) {
@@ -166,7 +166,7 @@ class CreateAppointment extends React.Component {
     }
 
     fetchOrdinations = () => {
-        axios.post("https://psw-isa-tim3.herokuapp.com/api/appointment/available-ordinations-by-date", {
+        axios.post("https://deployment-isa.herokuapp.com/api/appointment/available-ordinations-by-date", {
             startDateTime: this.state.date + ' ' + this.state.startTime,
             endDateTime: this.state.date + ' ' + this.state.endTime,
             appType: this.state.type
@@ -198,7 +198,7 @@ class CreateAppointment extends React.Component {
         if (this.props.reload == true && (window.location.pathname.split("/")[2] != (this.state.appReqId || undefined || ""))) {
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.get("https://psw-isa-tim3.herokuapp.com/api/appointment-request/" + window.location.pathname.split("/")[2])
+            axios.get("https://deployment-isa.herokuapp.com/api/appointment-request/" + window.location.pathname.split("/")[2])
                 .then(response => {
                     console.log(response);
                     var typee;

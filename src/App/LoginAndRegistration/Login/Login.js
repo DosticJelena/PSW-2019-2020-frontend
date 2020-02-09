@@ -29,11 +29,11 @@ class Login extends React.Component {
 
     SendLoginRequest = event => {
         event.preventDefault();
-        axios.post("https://psw-isa-tim3.herokuapp.com/auth/login", this.state)
+        axios.post("https://deployment-isa.herokuapp.com/auth/login", this.state)
         .then((resp) => {
             localStorage.setItem('token', resp.data.accessToken)
             axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
-            axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+            axios.get("https://deployment-isa.herokuapp.com/auth/getMyUser")
                 .then((resp) => {
                     console.log(resp.data)
                     if ((resp.data.authorities[0].name == "ROLE_DOCTOR" 

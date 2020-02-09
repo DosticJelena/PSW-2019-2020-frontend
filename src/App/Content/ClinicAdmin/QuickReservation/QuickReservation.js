@@ -71,7 +71,7 @@ class QuickReservation extends React.Component {
     } else {
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.post("https://psw-isa-tim3.herokuapp.com/api/clinic-admin/quick-reservation", {
+      axios.post("https://deployment-isa.herokuapp.com/api/clinic-admin/quick-reservation", {
         startDateTime: this.state.date + ' ' + this.state.startTime,
         endDateTime: this.state.date + ' ' + this.state.endTime,
         type: this.state.type,
@@ -156,7 +156,7 @@ class QuickReservation extends React.Component {
   }
 
   fetchDoctors = () => {
-    axios.post("https://psw-isa-tim3.herokuapp.com/api/available-doctors-by-date-and-time", {
+    axios.post("https://deployment-isa.herokuapp.com/api/available-doctors-by-date-and-time", {
       start: this.state.date + ' ' + this.state.startTime,
       end: this.state.date + ' ' + this.state.endTime
     })
@@ -177,7 +177,7 @@ class QuickReservation extends React.Component {
   }
 
   fetchOrdinations = () => {
-    axios.post("https://psw-isa-tim3.herokuapp.com/api/appointment/available-ordinations-by-date", {
+    axios.post("https://deployment-isa.herokuapp.com/api/appointment/available-ordinations-by-date", {
       startDateTime: this.state.date + ' ' + this.state.startTime,
       endDateTime: this.state.date + ' ' + this.state.endTime,
       appType: this.state.type
@@ -197,7 +197,7 @@ class QuickReservation extends React.Component {
   }
 
   fetchPrices = () => {
-    axios.get("https://psw-isa-tim3.herokuapp.com/api/get-appointment-prices")
+    axios.get("https://deployment-isa.herokuapp.com/api/get-appointment-prices")
       .then(response => {
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {

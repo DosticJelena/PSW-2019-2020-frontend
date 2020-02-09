@@ -36,7 +36,7 @@ class EditPersonalProfile extends React.Component {
     componentDidMount() {
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+        axios.get("https://deployment-isa.herokuapp.com/auth/getMyUser")
             .then(response => {
                 this.setState({
                     accountId: response.data.id,
@@ -60,7 +60,7 @@ class EditPersonalProfile extends React.Component {
         } else {
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.put("https://psw-isa-tim3.herokuapp.com/api/update-personal-info/" + this.state.accountId, {
+            axios.put("https://deployment-isa.herokuapp.com/api/update-personal-info/" + this.state.accountId, {
                 password: this.state.password,
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,

@@ -45,7 +45,7 @@ class AppointmentTypes extends React.Component {
 
   deleteType = (typeId) => {
 
-    axios.put("https://psw-isa-tim3.herokuapp.com/api/app-type/delete/" + typeId, {
+    axios.put("https://deployment-isa.herokuapp.com/api/app-type/delete/" + typeId, {
       responseType: 'json'
     })
       .then(response => {
@@ -76,7 +76,7 @@ class AppointmentTypes extends React.Component {
   }
 
   fetchDoctors = () => {
-    axios.get("https://psw-isa-tim3.herokuapp.com/api/doctors-by-specialization/" + window.location.pathname.split("/")[2])
+    axios.get("https://deployment-isa.herokuapp.com/api/doctors-by-specialization/" + window.location.pathname.split("/")[2])
       .then(response => {
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {
@@ -95,7 +95,7 @@ class AppointmentTypes extends React.Component {
 
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+    axios.get("https://deployment-isa.herokuapp.com/auth/getMyUser")
       .then(response => {
         console.log(response.data);
         this.setState({
@@ -103,7 +103,7 @@ class AppointmentTypes extends React.Component {
         })
       })
       .then(() => {
-        axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)
+        axios.get("https://deployment-isa.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)
           .then(response => {
             console.log(response.data);
             this.setState({
@@ -112,7 +112,7 @@ class AppointmentTypes extends React.Component {
           })
           .then(() => {
 
-            axios.get("https://psw-isa-tim3.herokuapp.com/api/types/" + this.state.id)
+            axios.get("https://deployment-isa.herokuapp.com/api/types/" + this.state.id)
               .then(response => {
                 this.setState({
                   types: response.data

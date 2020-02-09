@@ -50,7 +50,7 @@ class ExaminationReport extends React.Component {
    }
 
    componentDidMount () {
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/cc-admin/get-all-diagnosis', {
+    axios.get('https://deployment-isa.herokuapp.com/api/cc-admin/get-all-diagnosis', {
       responseType: 'json'
     })
           .then(response => {
@@ -59,7 +59,7 @@ class ExaminationReport extends React.Component {
     })
     .catch((error) => console.log)
 
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/cc-admin/get-all-drugs', {
+    axios.get('https://deployment-isa.herokuapp.com/api/cc-admin/get-all-drugs', {
       responseType: 'json'
     })
           .then(response => {
@@ -72,7 +72,7 @@ class ExaminationReport extends React.Component {
     const appointmentId = window.location.pathname.split("/")[2];
 
 
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/get-appointment/' + appointmentId, {
+    axios.get('https://deployment-isa.herokuapp.com/api/appointment/get-appointment/' + appointmentId, {
       responseType: 'json'
     })
           .then(response => {
@@ -93,7 +93,7 @@ class ExaminationReport extends React.Component {
       event.preventDefault();
       console.log(this.state);
       if (formValid(this.state)) {
-          axios.post("https://psw-isa-tim3.herokuapp.com/api/examination-report/create/" + this.state.appointment.id, {
+          axios.post("https://deployment-isa.herokuapp.com/api/examination-report/create/" + this.state.appointment.id, {
             comment: this.state.comment,
             diagnosisId: this.state.diagnosisId.id,
             drugIds: this.state.drugIds

@@ -26,7 +26,7 @@ class EditClinicPage extends React.Component {
         const { clinicId } = this.props.location.state;
         this.setState({ clinicId: clinicId });
 
-        axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic/" + clinicId)
+        axios.get("https://deployment-isa.herokuapp.com/api/clinic/" + clinicId)
             .then(response => {
                 console.log(response.data);
                 this.setState({
@@ -42,7 +42,7 @@ class EditClinicPage extends React.Component {
         event.preventDefault();
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.put("https://psw-isa-tim3.herokuapp.com/api/clinic/" + this.state.clinicId, {
+        axios.put("https://deployment-isa.herokuapp.com/api/clinic/" + this.state.clinicId, {
             name: this.state.name,
             address: this.state.address,
             city: this.state.city,

@@ -60,143 +60,98 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Switch>
-        <Route exact path="/">
-            <Login />
+        <Route exact path="/" component={Login}>
           </Route>
-          <Route path="/login">
-            <Login />
+          <Route path="/login" component={Login}>
           </Route>
-          <Route path="/register">
-            <Register />
+          <Route path="/register" component={Register}>
           </Route>
-          <Route path="/my-profile">
-            <PersonalProfile />
+          <Route path="/my-profile" component={PersonalProfile}>
           </Route>
-          <Route path="/nurse">
-            <Nurse />
+          <Route path="/nurse" component={Nurse}>
           </Route>
-          <Route path="/doctor">
-            <Doctor />
+          <Route path="/doctor" component={Doctor}>
           </Route>
-          <Route path="/patients">
-            <PatientsList />
+          <Route path="/patients" component={PatientsList}>
           </Route>
-          <Route path="/absence-request">
-            <AbsenceRequest />
+          <Route path="/absence-request" component={AbsenceRequest}>
           </Route>
           <Route path="/new-appointment-doctor" component={NewAppointmentDoctor}/>
-          <Route path="/work-calendar">
-            <WorkCalendar />
+          <Route path="/work-calendar" component={WorkCalendar}>
           </Route>
-          <Route path="/patient">
-            <Patient />
+          <Route path="/patient" component={Patient}>
           </Route>
-          <Route path="/clinics">
-            <ClinicsList />
+          <Route path="/clinics" component={ClinicsList}>
           </Route>
-          <Route path="/doctors">
-            <Doctors />
+          <Route path="/doctors" component={Doctors}>
           </Route>
-          <Route path="/appointment-types">
-            <AppointmentTypes />
+          <Route path="/appointment-types" component={AppointmentTypes}>
           </Route>
-          <Route path="/appointment-history">
-            <AppointmentHistory />
+          <Route path="/appointment-history" component={AppointmentHistory}>
           </Route>
-          <Route path="/medical-record">
-            <MedicalRecord />
+          <Route path="/medical-record" component={MedicalRecord}>
           </Route>
-          <Route path="/ccadmin">
-            <CCAdmin />
+          <Route path="/ccadmin" component={CCAdmin}>
           </Route>
-          <Route path="/clinic-admin">
-            <ClinicAdmin />
+          <Route path="/clinic-admin" component={ClinicAdmin}>
           </Route>
-          <Route path="/absence-requests">
-            <AbsenceRequests />
+          <Route path="/absence-requests" component={AbsenceRequests}>
           </Route>
-          <Route path="/quick-reservation">
-            <QuickReservation />
+          <Route path="/quick-reservation" component={QuickReservation}>
           </Route>
-          <Route path="/edit-personal-page">
-            <EditPersonalProfile />
+          <Route path="/edit-personal-page" component={EditPersonalProfile}>
           </Route>
-          <Route path="/assign-ccadmin">
-            <NonCCAdmins />
+          <Route path="/assign-ccadmin" component={NonCCAdmins}>
           </Route>
-          <Route path="/change-password">
-            <ChangePassword />
+          <Route path="/change-password" component={ChangePassword}>
           </Route>
-          <Route path="/clinic">
-            <ClinicPage />
+          <Route path="/clinic" component={ClinicPage}>
           </Route>
           <Route path='/edit-clinic' component={EditClinicPage} />
           <Route path="/business-report"component={BusinessReport}/>
-          <Route path="/predefined-examinations">
-            <PredefinedExaminations />
+          <Route path="/predefined-examinations" component={PredefinedExaminations}>
           </Route>
-          <Route path="/drugs">
-            <Drug />
+          <Route path="/drugs" component={Drug}>
           </Route>
-          <Route path="/diagnosis">
-            <Diagnosis />
+          <Route path="/diagnosis" component={Diagnosis}>
           </Route>
-          <Route path="/register-ccadmin">
-            <RegisterNewCCAdmin/>
+          <Route path="/register-ccadmin" component={RegisterNewCCAdmin}>
           </Route>
-          <Route path="/reservation-requests">
-            <ReservationRequests />
+          <Route path="/reservation-requests" component={ReservationRequests}>
           </Route>
-          <Route path="/ccadmin-registration-requests">
-            <CCAdminRegistrationRequests/>
+          <Route path="/ccadmin-registration-requests" component={CCAdminRegistrationRequests}>
           </Route>
-          <Route path="/register-clinic">
-            <RegisterClinic/>
+          <Route path="/register-clinic" component={RegisterClinic}>
           </Route>
-          <Route path="/doctor-calendar">
-            <DoctorCalendar/>
+          <Route path="/doctor-calendar" component={DoctorCalendar}>
           </Route>
-          <Route path="/authenticate-prescriptions">
-            <Prescriptions/>
+          <Route path="/authenticate-prescriptions" component={Prescriptions}>
           </Route>
-          <Route path="/doctors-list">
-            <DoctorsList/>
+          <Route path="/doctors-list" component={DoctorsList}>
 		  </Route>
-          <Route path="/examination-report">
-            <ExaminationReport/>
+          <Route path="/examination-report" component={ExaminationReport}>
           </Route>
-          <Route path="/verify">
-            <VerifyEmail/>
+          <Route path="/verify" component={VerifyEmail}>
           </Route>
-          <Route path="/doctor-calendar-event">
-            <CalendarEventClickWindow/>
+          <Route path="/doctor-calendar-event" component={CalendarEventClickWindow}>
           </Route>
-          <Route path="/medical-card">
-            <MedicalCard/>
+          <Route path="/medical-card" component={MedicalCard}>
           </Route>
-          <Route path="/patient-profile">
-            <PatientProfile/>
+          <Route path="/patient-profile" component={PatientProfile}>
           </Route>
-          <Route path="/edit-examination-report">
-            <EditExaminationReport/>
+          <Route path="/edit-examination-report" component={EditExaminationReport}>
           </Route>
-          <Route path="/ordinations">
-            <Ordinations/>
+          <Route path="/ordinations" component={Ordinations}>
           </Route>
-          <Route path="/register-clinic-admin">
-            <RegisterClinicAdmin/>
+          <Route path="/register-clinic-admin" component={RegisterClinicAdmin}>
           </Route>
-          <Route path="/request-leave-nurse">
-            <RequestLeaveNurse/>
+          <Route path="/request-leave-nurse" component={RequestLeaveNurse}>
           </Route>
-          <Route path="/nurse-calendar">
-            <NurseCalendar/>
+          <Route path="/nurse-calendar" component={NurseCalendar}>
           </Route>
-          <Route path="/scheduling-form">
-            <SchedulingForm/>
+          <Route path="/scheduling-form" component={SchedulingForm}>
           </Route>
-          <Route path="/assign-ordination">
-            <AssignOrdination/>
+          <Route path="/assign-ordination" component={AssignOrdination}>
           </Route>
         </Switch>
         <NotificationContainer />

@@ -33,7 +33,7 @@ class BusinessReport extends React.Component {
         console.log(this.props.location);
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+        axios.get("https://deployment-isa.herokuapp.com/auth/getMyUser")
             .then(response => {
                 console.log(response.data);
                 this.setState({
@@ -41,7 +41,7 @@ class BusinessReport extends React.Component {
                 })
             })
             .then(() => {
-                axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)
+                axios.get("https://deployment-isa.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)
                     .then(response => {
                         console.log(response.data);
                         this.setState({
@@ -50,7 +50,7 @@ class BusinessReport extends React.Component {
                     })
                     .then(() => {
 
-                        axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-doctors")
+                        axios.get("https://deployment-isa.herokuapp.com/api/clinic-doctors")
                             .then(response => {
                                 console.log(response);
                                 let tmpArray = []
@@ -64,7 +64,7 @@ class BusinessReport extends React.Component {
                             })
                             .catch((error) => console.log(error))
 
-                            axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-income")
+                            axios.get("https://deployment-isa.herokuapp.com/api/clinic-income")
                             .then(response => {
                                 console.log(response);
                                 

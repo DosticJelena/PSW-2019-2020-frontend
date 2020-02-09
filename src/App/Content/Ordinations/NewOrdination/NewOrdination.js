@@ -36,7 +36,7 @@ class NewOrdination extends React.Component {
 
         if (found == false){
             this.props.history.push("/ordinations");
-            axios.post("https://psw-isa-tim3.herokuapp.com/api/ordination/new",{
+            axios.post("https://deployment-isa.herokuapp.com/api/ordination/new",{
                 clinicId: this.state.clinicId,
                 number: this.state.number,
                 type: this.state.type
@@ -52,7 +52,7 @@ class NewOrdination extends React.Component {
       componentDidMount() {
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")  
+        axios.get("https://deployment-isa.herokuapp.com/auth/getMyUser")  
             .then(response => {
                 console.log(response.data);
                 this.setState({
@@ -61,7 +61,7 @@ class NewOrdination extends React.Component {
             })
         .then(() => {
 
-            axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
+            axios.get("https://deployment-isa.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)  
             .then(response => {
                 console.log(response.data);
                 this.setState({
@@ -69,7 +69,7 @@ class NewOrdination extends React.Component {
                 })
             }).then(() => {
                 
-                axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic/"+ this.state.clinicId)
+                axios.get("https://deployment-isa.herokuapp.com/api/clinic/"+ this.state.clinicId)
                 .then(response => {
                         console.log(response.data);
                         this.setState({
@@ -77,7 +77,7 @@ class NewOrdination extends React.Component {
                         })
                 }).catch((error) => console.log(error))
 
-                axios.get("https://psw-isa-tim3.herokuapp.com/api/ordination/clinic-ordinations/" + this.state.clinicId)  
+                axios.get("https://deployment-isa.herokuapp.com/api/ordination/clinic-ordinations/" + this.state.clinicId)  
                     .then(response => {
                         let tmpArray = []
                         for (var i = 0; i < response.data.length; i++) {
