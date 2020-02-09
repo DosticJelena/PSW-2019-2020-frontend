@@ -159,6 +159,12 @@ class Doctors extends React.Component {
         accessor: 'specialization'
       }, {
         Header: '',
+        accessor: 'workTimeStart'
+      }, {
+        Header: '',
+        accessor: 'workTimeEnd'
+      }, {
+        Header: '',
         width: 100,
         Cell: row => (
           <div>
