@@ -6,6 +6,7 @@ import './RegisterClinicAdmin.css'
 import {NotificationManager} from 'react-notifications';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Link, withRouter } from 'react-router-dom'
 
 
 const emailRegex = RegExp(
@@ -98,7 +99,7 @@ class RegisterClinicAdmin extends React.Component {
             clinicId: this.state.clinicId.id
 
         }).then((resp) => {
-          //this.props.history.push('/ccadmin');
+          this.props.history.push('/ccadmin');
           NotificationManager.success('Clinic Admin registration request has been sucessfull. \n Confirmation email has been sent', '', 3000);
         }) 
         .catch((error)=> {
@@ -212,8 +213,12 @@ class RegisterClinicAdmin extends React.Component {
 
     this.setState({ formErrors, clinicId: values}, () => console.log(this.state));
 
-    //this.handleKeyUp();
+    const { name, value } = e.target;
 
+      this.setState({
+         [name]: value,
+      })
+    this.handleKeyUp();
   }
 
   render() {
@@ -242,7 +247,6 @@ class RegisterClinicAdmin extends React.Component {
                       name="clinicId"
                       placeholder="Choose Clinic"
                       className={formErrors.clinicId.length > 0 ? "error" : null}
-                      onInputChange={this.handleChange}
                     />
                 )}
                 />
@@ -367,4 +371,4 @@ class RegisterClinicAdmin extends React.Component {
 }
 }
 
-export default RegisterClinicAdmin;
+export default withRouter(RegisterClinicAdmin);

@@ -4,7 +4,7 @@ import './Login.css'
 import Swal from 'sweetalert2';
 import { Button} from 'react-bootstrap';
 import withReactContent from 'sweetalert2-react-content';
-import axios from 'axios'
+import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import {NotificationManager} from 'react-notifications';
 

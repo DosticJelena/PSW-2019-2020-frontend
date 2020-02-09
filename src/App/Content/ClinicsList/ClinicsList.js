@@ -280,7 +280,7 @@ class ClinicsList extends React.Component{
                           <select required className="custom-select mr-sm-2" name="type" id="type" onChange={this.handleChange} >
                             <option defaultValue="0"></option>
                             {this.state.types.map((type, index) => (
-                              <option key={type.name} value={type.name}>{type.name}</option>
+                              <option id="optionSelected" key={type.name} value={type.name}>{type.name}</option>
                             ))}  
                           </select>
                         </div>
@@ -295,7 +295,7 @@ class ClinicsList extends React.Component{
                     </div>
                     <div className="col-2">
                       <br/>
-                      <Button type="submit" className="btn clinics-list-button">Filter</Button>
+                      <Button id="filterButton" type="submit" className="btn clinics-list-button">Filter</Button>
                       <Button className="btn clinics-list-all " onClick={() => this.allClinics()}>All</Button>
                     </div>
                      </div>       

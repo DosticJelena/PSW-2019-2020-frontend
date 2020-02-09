@@ -50,7 +50,7 @@ class SchedulingForm extends React.Component {
             doctorsId: window.location.pathname.split("/")[2]
 
             }).then((resp) => {
-            NotificationManager.success('Successfuly sent request. ', 'Success!', 4000);
+            NotificationManager.success('Successfuly sent request. ', 'Success!', 8000);
             })
             .catch((error)=> NotificationManager.error('Somthing went wrong. Try later.', 'Error!', 4000))
         }

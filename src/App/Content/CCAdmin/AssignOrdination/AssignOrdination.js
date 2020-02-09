@@ -171,10 +171,11 @@ class AssignOrdination extends React.Component {
                 <span>
                   <strong style={{ color: 'red' }}>{appointment.title}</strong>
                   <em>
-                    <br></br> Start: <em style={{ color: 'red' }}>{appointment.start}</em>
-                    <br></br> End: <em style={{ color: 'red' }}>{appointment.end}</em>
-                    <br></br> Ordination: <em style={{ color: 'red' }}>{this.state.ordination.number}</em>
-                    <br></br> Patient: <em style={{ color: 'red' }}>{appointment.patient} </em>
+                  <hr></hr>
+                    <br></br> Appointment Start: <em style={{ color: 'red' }}>{appointment.start}</em>
+                    <br></br> Appointment End: <em style={{ color: 'red' }}>{appointment.end}</em>
+                    <br></br> Appointment Ordination: <em style={{ color: 'red' }}>{this.state.ordination.number}</em>
+                    <br></br> Appointment Patient: <em style={{ color: 'red' }}>{appointment.patient} </em>
                   </em>
                 </span>
             <div>
@@ -212,6 +213,7 @@ class AssignOrdination extends React.Component {
                 <span className="errorMessage">{formErrors.doctorIds}</span>
                 )}
             </div>
+            <hr></hr>
                 <div className="buttons">
                   <Button disabled={this.state.disabled} className="publishExaminationReport" type="submit">Assign</Button>
                   </div>

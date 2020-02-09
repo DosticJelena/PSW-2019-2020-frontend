@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from '../../Header/Header';
 import './RegisterNewCCAdmin.css'
 import {NotificationManager} from 'react-notifications';
+import { Link, withRouter } from 'react-router-dom'
 
 const emailRegex = RegExp(
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -78,7 +79,7 @@ class RegisterNewCCAdmin extends React.Component {
             phoneNumber: this.state.phoneNumber
 
         }).then((resp) => {
-          this.props.history.push('/ccadmin');
+          this.props.history.push('/ccadmin')
           NotificationManager.success('Clinic Center Admin registration request has been sucessfull. \n Confirmation email has been sent', '', 3000);
         }) 
         .catch((error)=> {
@@ -293,4 +294,4 @@ class RegisterNewCCAdmin extends React.Component {
 }
 }
 
-export default RegisterNewCCAdmin;
+export default withRouter(RegisterNewCCAdmin);

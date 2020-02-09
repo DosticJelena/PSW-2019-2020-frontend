@@ -20,7 +20,8 @@ class CalendarEventClickWindow extends React.Component {
                 end: '',
                 ordination: '',
                 patient: ''
-            }
+            },
+            buttonTitle: 'You can only start the appointment after intended start time'
         }
     }
 
@@ -44,17 +45,26 @@ class CalendarEventClickWindow extends React.Component {
                 var now = new Date()
                 var appointment_end_check = new Date(response.data.end);
                 appointment_end_check.setMinutes(appointment_end_check.getMinutes() + 30);
+
                 var disabled = true;
+                var buttonTitle = this.state.buttonTitle;
+                
                 if ((now.getTime() >= (new Date(response.data.start)).getTime()) && (now.getTime() <= appointment_end_check.getTime())){
                     disabled = false;
+                }
+                if (response.data.examinationReportIssued === "issued"){
+                    disabled = true;
+                    buttonTitle = "You have already issued an examination report for this appointment. Please navigate to medical card page if you want to edit the examination report"
                 }
                 this.setState({
                     disabled: disabled
                 })
+                this.setState({
+                    buttonTitle: buttonTitle
+                })
                 console.log(this.state.appointment);
         })
         .catch((error) => console.log(error))
-    
       }
 
     render() {
@@ -77,7 +87,7 @@ class CalendarEventClickWindow extends React.Component {
                                 ariant="contained" color="darkcyan" className="medicalCard">
                                 Edit Medical Card
                             </Button>
-                            <Tooltip title="You can only start the appointment after intended start time">
+                            <Tooltip title={this.state.buttonTitle}>
                             <span>
                                 <Button
                                 href={`/examination-report/${this.state.appointment.id}`}

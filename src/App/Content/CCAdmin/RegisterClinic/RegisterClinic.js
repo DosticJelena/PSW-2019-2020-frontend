@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from '../../Header/Header';
 import './RegisterClinic.css'
 import {NotificationManager} from 'react-notifications';
+import { Link, withRouter } from 'react-router-dom'
 
 const formValid = ({ formErrors, ...rest }) => {
     let valid = true;
@@ -72,6 +73,7 @@ class RegisterClinic extends React.Component {
             city: this.state.city
 
         }).then((resp) => {
+          this.props.history.push('/ccadmin')
           NotificationManager.success('Clinic has been successfully added.', '', 3000);
           console.log(resp);
         }) 
@@ -220,4 +222,4 @@ class RegisterClinic extends React.Component {
 }
 }
 
-export default RegisterClinic;
+export default withRouter(RegisterClinic);
