@@ -42,7 +42,8 @@ class QuickReservation extends React.Component {
       priceSpec: '',
       priceValue: '',
       date: '2020-02-24',
-      doctorError: true
+      doctorError: true,
+      doctorsBySpec: []
     }
 
   }
@@ -51,8 +52,10 @@ class QuickReservation extends React.Component {
     event.preventDefault();
     var st = parseInt(String(this.state.startTime).substr(0, 2));
     var en = parseInt(String(this.state.endTime).substr(0, 2));
-    if (st > en) {
-      NotificationManager.error('Start time must be before end time.', 'Error!', 4000);
+    var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+    var enMin = parseInt(String(this.state.endTime).substr(3, 2));
+    if (st > en || (st == en && stMin >= enMin)) {
+      NotificationManager.error('Start time must be set before end time.', 'Error!', 4000);
     } else if (this.state.date == '') {
       NotificationManager.error('Date cannot be empty.', 'Error!', 4000);
     } else if (this.state.startTime == '' || this.state.startTime == '') {
@@ -77,7 +80,7 @@ class QuickReservation extends React.Component {
         discount: 5
       })
         .then((resp) => {
-          NotificationManager.success('You have created appointment succesfully!', 'Success!', 4000)
+          NotificationManager.success('You have created quick reservation appointment succesfully!', 'Success!', 4000)
           this.props.history.push('/clinic-admin');
         })
         .catch((error) => NotificationManager.error('Incorect values!', 'Error!', 4000))
@@ -86,40 +89,64 @@ class QuickReservation extends React.Component {
 
   }
 
+  handleTypeChange = e => {
+    this.setState({ price: '', type: e.target.value })
+  }
+
   handleChange = e => {
 
     if (e.target.name == "ordination") {
       for (var i = 0; i < this.state.ordinations.length; i++) {
         if (this.state.ordinations[i].id == e.target.value) {
-          console.log(this.state.ordinations[i].type)
           if (this.state.ordinations[i].type == "OPERATION") {
-            this.setState({ type: '1' });
+            this.setState({ type: '1', ordination: e.target.value });
           } else if (this.state.ordinations[i].type == "EXAMINATION") {
-            this.setState({ type: '0' });
+            this.setState({ type: '0', ordination: e.target.value });
           }
         }
       }
     }
 
-    this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
+    if (e.target.name == "price") {
+      this.setState({ ...this.state, doctor: '', ordination: '', price: e.target.value },
+      this.fetchDoctors(),
+      this.fetchOrdinations())
+    } else {
+      this.setState({ ...this.state, [e.target.name]: String(e.target.value) },
+        this.fetchDoctors(),
+        this.fetchOrdinations()
+      );
+
+    }
+
+    console.log(this.state)
   }
 
-  handleChangeTime = e => {
-    this.setState({ ...this.state, [e.target.name]: String(e.target.value) });
-    this.fetchDoctors();
-    this.fetchOrdinations();
+  handleChangeTime = (e) => {
+    this.setState({ ...this.state, [e.target.name]: String(e.target.value), price: '', doctor: '', ordination: ''},
+      this.fetchDoctors(),
+      this.fetchOrdinations()
+    );
+
+  }
+
+  checkIfEmpty = () => {
+    if(this.state.doctors.length == 0){
+      this.setState({doctor: ''})
+    }
+    if(this.state.ordinations.length == 0){
+      this.setState({ordination: ''})
+    }
   }
 
   handleDateChange(e) {
     var value = String(e.target.value);
     value = value.substr(0, 10) + ' ' + value.substr(11);
     var name = e.target.name;
-    console.log(name);
     this.setState({ ...this.state, [e.target.name]: value });
   }
 
   setStartDate = (date) => {
-    console.log(date);
     var newTime = new Date();
     newTime.setHours(String(date).substr(15, 2))
     newTime.setMinutes(String(date).substr(19, 2))
@@ -127,6 +154,7 @@ class QuickReservation extends React.Component {
   }
 
   fetchDoctors = () => {
+    console.log("DOCTOROOOOOS")
     axios.post("http://localhost:8080/api/available-doctors-by-date-and-time", {
       start: this.state.date + ' ' + this.state.startTime,
       end: this.state.date + ' ' + this.state.endTime
@@ -140,12 +168,15 @@ class QuickReservation extends React.Component {
 
         this.setState({
           doctors: tmpArray
-        })
+        },
+        this.checkIfEmpty())
+
       })
       .catch((error) => console.log(error))
   }
 
   fetchOrdinations = () => {
+    console.log("ORDINATIOOOOOONS")
     axios.post("http://localhost:8080/api/appointment/available-ordinations-by-date", {
       startDateTime: this.state.date + ' ' + this.state.startTime,
       endDateTime: this.state.date + ' ' + this.state.endTime,
@@ -158,7 +189,9 @@ class QuickReservation extends React.Component {
         }
         this.setState({
           ordinations: tmpArray
-        })
+        },
+        this.checkIfEmpty())
+
       })
       .catch((error) => console.log(error))
   }
@@ -173,7 +206,8 @@ class QuickReservation extends React.Component {
 
         this.setState({
           prices: tmpArray
-        })
+        },
+        this.checkIfEmpty())
       })
       .catch((error) => console.log(error))
   }
@@ -224,16 +258,17 @@ class QuickReservation extends React.Component {
         }
       }
     }
+    
 
     var doctorError;
     if (this.state.price == '') {
       doctorError = (<div>
-        <label style={{ color: 'white' }}>...</label>
+        <label style={{ color: 'silver' }}>...</label>
         <p style={{ color: 'red' }}>You have to choose specialization first.</p>
       </div>)
     } else if (doctorsBySpec.length == 0) {
       doctorError = (<div>
-        <label style={{ color: 'white' }}>...</label>
+        <label style={{ color: 'silver' }}>...</label>
         <p style={{ color: 'red' }}>There are no available specialized doctors during choosen time. Please change date or time.</p>
       </div>)
     }
@@ -241,9 +276,11 @@ class QuickReservation extends React.Component {
     var timeError;
     var st = parseInt(String(this.state.startTime).substr(0, 2));
     var en = parseInt(String(this.state.endTime).substr(0, 2));
-    if (st >= en) {
+    var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+    var enMin = parseInt(String(this.state.endTime).substr(3, 2));
+    if (st > en || (st == en && stMin >= enMin)) {
       timeError = (<div>
-        <label style={{ color: 'white' }}>...</label>
+        <label style={{ color: 'silver' }}>...</label>
         <p style={{ color: 'red' }}>Start time must be set before end time.</p>
       </div>)
     }
@@ -299,11 +336,11 @@ class QuickReservation extends React.Component {
               <div className="form-group col-md-4">
                 <label htmlFor="type">Type</label>
                 <div className="form-check form-check">
-                  <input defaultChecked={this.state.type == "0"} onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0" />
+                  <input defaultChecked={this.state.type == "0"} onChange={this.handleTypeChange} className="form-check-input" type="radio" name="type" id="inlineRadio1" value="0" />
                   <label className="form-check-label" htmlFor="examination">Examination</label>
                 </div>
                 <div className="form-check form-check">
-                  <input defaultChecked={this.state.type == "1"} onChange={this.handleChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1" />
+                  <input defaultChecked={this.state.type == "1"} onChange={this.handleTypeChange} className="form-check-input" type="radio" name="type" id="inlineRadio2" value="1" />
                   <label className="form-check-label" htmlFor="operation">Operation</label>
                 </div>
               </div>
