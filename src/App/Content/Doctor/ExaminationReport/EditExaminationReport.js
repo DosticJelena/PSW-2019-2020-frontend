@@ -70,7 +70,7 @@ class EditExaminationReport extends React.Component {
    }
 
    componentDidMount () {
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/cc-admin/get-all-diagnosis', {
+    axios.get('http://localhost:8080/api/cc-admin/get-all-diagnosis', {
       responseType: 'json'
     })
           .then(response => {
@@ -82,7 +82,7 @@ class EditExaminationReport extends React.Component {
     const examinationReportId = window.location.pathname.split("/")[2];
 
 
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/examination-report/get-examination-report/' + examinationReportId, { 
+    axios.get('http://localhost:8080/api/examination-report/get-examination-report/' + examinationReportId, { 
       responseType: 'json'
     })
           .then(response => {
@@ -117,7 +117,7 @@ class EditExaminationReport extends React.Component {
       const examinationReportId = window.location.pathname.split("/")[2];
       console.log(this.state);
       if (formValid(this.state)) {
-          axios.put("https://psw-isa-tim3.herokuapp.com/api/examination-report/edit/" + examinationReportId, {
+          axios.put("http://localhost:8080/api/examination-report/edit/" + examinationReportId, {
             comment: this.state.comment,
             diagnosisId: this.state.diagnosisId.id,
         }).then((resp) => {NotificationManager.success('Examination Report Edited', 'Success', 3000);

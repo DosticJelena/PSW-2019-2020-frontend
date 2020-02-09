@@ -22,10 +22,10 @@ class PatientsList extends React.Component {
   }
 
   componentDidMount() {
-    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+    axios.get("http://localhost:8080/auth/getMyUser")
       .then((resp) => {
                         if (resp.data.authorities[0].name == "ROLE_DOCTOR"){
-                          axios.get("https://psw-isa-tim3.herokuapp.com/api/doctor-patients")
+                          axios.get("http://localhost:8080/api/doctor-patients")
                           .then(response => {
                             console.log(response)
                             let tmpArray = []
@@ -39,7 +39,7 @@ class PatientsList extends React.Component {
                           })
                           .catch((error) => console.log(error))}
                         if (resp.data.authorities[0].name == "ROLE_NURSE"){
-                          axios.get("https://psw-isa-tim3.herokuapp.com/api/nurse-patients")
+                          axios.get("http://localhost:8080/api/nurse-patients")
                           .then(response => {
                             console.log(response)
                             let tmpArray = []
@@ -66,7 +66,7 @@ class PatientsList extends React.Component {
 
     this.cancel = axios.CancelToken.source();
 
-    axios.get("https://psw-isa-tim3.herokuapp.com/api/patients", { //inace searchUrl
+    axios.get("http://localhost:8080/api/patients", { //inace searchUrl
       cancelToken: this.cancel.token
     })
       .then(res => {

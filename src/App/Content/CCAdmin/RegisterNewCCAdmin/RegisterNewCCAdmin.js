@@ -68,7 +68,7 @@ class RegisterNewCCAdmin extends React.Component {
 
       event.preventDefault();
       if (formValid(this.state)) {
-          axios.post("https://psw-isa-tim3.herokuapp.com/api/cc-admin/register-cc-admin", {
+          axios.post("http://localhost:8080/api/cc-admin/register-cc-admin", {
             email: this.state.email,
             firstName: this.state.firstName,
             lastName: this.state.lastName,

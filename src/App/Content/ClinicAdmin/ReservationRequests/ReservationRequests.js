@@ -61,7 +61,7 @@ class ReservationRequests extends React.Component {
     this.modalClosedHandler();
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+    axios.get("http://localhost:8080/auth/getMyUser")
       .then(response => {
         console.log(response);
         this.setState({
@@ -73,7 +73,7 @@ class ReservationRequests extends React.Component {
 
         if (this.state.role == "ROLE_CLINIC_ADMIN") {
 
-          axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-app-requests-ca")
+          axios.get("http://localhost:8080/api/clinic-app-requests-ca")
             .then(response => {
               console.log(response);
               this.setState({
@@ -84,7 +84,7 @@ class ReservationRequests extends React.Component {
 
         } else if (this.state.role == "ROLE_DOCTOR") {
 
-          axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-app-requests-doc")
+          axios.get("http://localhost:8080/api/clinic-app-requests-doc")
             .then(response => {
               console.log(response);
               this.setState({

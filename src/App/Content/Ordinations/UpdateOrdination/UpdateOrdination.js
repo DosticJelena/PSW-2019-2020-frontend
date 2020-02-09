@@ -38,7 +38,7 @@ class UpdateOrdination extends React.Component {
         if (found == false){
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.put("https://psw-isa-tim3.herokuapp.com/api/ordination/" + this.state.ordinationId, {
+            axios.put("http://localhost:8080/api/ordination/" + this.state.ordinationId, {
                 number: this.state.number,
                 type: this.state.type,
                 clinicId: this.state.clinicId
@@ -59,7 +59,7 @@ class UpdateOrdination extends React.Component {
 
         if (this.props.reload == true && (window.location.pathname.split("/")[2] != (this.state.ordinationId || undefined || ""))) {
             const ordId = window.location.pathname.split("/")[2];
-            axios.get("https://psw-isa-tim3.herokuapp.com/api/ordination/" + ordId)
+            axios.get("http://localhost:8080/api/ordination/" + ordId)
                 .then(response => {
                     var type;
                     var exam = false;

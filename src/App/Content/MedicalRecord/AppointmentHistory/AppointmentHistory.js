@@ -62,12 +62,12 @@ class AppointmentHistory extends React.Component{
 
         var token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")  
+        axios.get("http://localhost:8080/auth/getMyUser")  
           .then(response => {
 
             var token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/history/' +response.data.id).then(response => {
+            axios.get('http://localhost:8080/api/appointment/history/' +response.data.id).then(response => {
 
                     let tmpArray = []
                     for (var i = 0; i < response.data.length; i++) {

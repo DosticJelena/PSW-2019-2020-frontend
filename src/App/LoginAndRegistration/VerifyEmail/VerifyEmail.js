@@ -16,7 +16,7 @@ class VerifyEmail extends React.Component {
         const patientId = window.location.pathname.split("/")[2];
         console.log(patientId);
 
-        axios.put('https://psw-isa-tim3.herokuapp.com/api/cc-admin/approve-registration-request/' + patientId, {
+        axios.put('http://localhost:8080/api/cc-admin/approve-registration-request/' + patientId, {
             responseType: 'json'
         }).then(response => {
             this.setState({

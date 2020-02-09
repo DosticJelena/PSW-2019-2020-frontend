@@ -105,7 +105,7 @@ class Diagnosis extends React.Component{
 
       fetchData(state, instance) {
         this.setState({ loading: true });
-        axios.get('https://psw-isa-tim3.herokuapp.com/api/cc-admin/get-all-diagnosis', {
+        axios.get('http://localhost:8080/api/cc-admin/get-all-diagnosis', {
               responseType: 'json'
           }).then(response => {
               this.setState({ tableData: response.data, loading: false});
@@ -115,7 +115,7 @@ class Diagnosis extends React.Component{
       addNewDiagnosis =  (name, description) => {
         this.setState({modalIsOpen: false});
         console.log(this.state);
-        axios.post("https://psw-isa-tim3.herokuapp.com/api/cc-admin/add-diagnosis/", {
+        axios.post("http://localhost:8080/api/cc-admin/add-diagnosis/", {
           name: name,
           description: description
         })
@@ -130,7 +130,7 @@ class Diagnosis extends React.Component{
 
       
       deleteDiagnosis = (id) =>{
-        axios.put("https://psw-isa-tim3.herokuapp.com/api/cc-admin/delete-diagnosis/" + id).then(response => {
+        axios.put("http://localhost:8080/api/cc-admin/delete-diagnosis/" + id).then(response => {
          
           this.fetchData(this.state)
 
@@ -159,7 +159,7 @@ class Diagnosis extends React.Component{
 
       editDiagnosis =  (id) => {
         this.setState({editModalIsOpen: false});
-        axios.put("https://psw-isa-tim3.herokuapp.com/api/cc-admin/update-diagnosis/" + id, {
+        axios.put("http://localhost:8080/api/cc-admin/update-diagnosis/" + id, {
           name: this.state.name,
           description: this.state.description
       }).then(response => {

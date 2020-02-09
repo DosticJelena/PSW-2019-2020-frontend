@@ -65,7 +65,7 @@ class AssignOrdination extends React.Component {
 
 
 
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/get-appointment-clinic-admin/' + appointmentId, {
+    axios.get('http://localhost:8080/api/appointment/get-appointment-clinic-admin/' + appointmentId, {
       responseType: 'json'
     })
           .then(response => {
@@ -80,7 +80,7 @@ class AssignOrdination extends React.Component {
     })
     .catch((error) => console.log(error))
 
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/get-specialized-doctors/' + appointmentId, {
+    axios.get('http://localhost:8080/api/appointment/get-specialized-doctors/' + appointmentId, {
       responseType: 'json'
     })
           .then(response => {
@@ -88,7 +88,7 @@ class AssignOrdination extends React.Component {
     })
     .catch((error) => console.log(error))
 
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/get-ordination/' + ordinationId, {
+    axios.get('http://localhost:8080/api/appointment/get-ordination/' + ordinationId, {
       responseType: 'json'
     })
           .then(response => {
@@ -101,7 +101,7 @@ class AssignOrdination extends React.Component {
       event.preventDefault();
       console.log(this.state);
       if (formValid(this.state)) {
-          axios.post("https://psw-isa-tim3.herokuapp.com/api/ordination/assign-operation-ordination", {
+          axios.post("http://localhost:8080/api/ordination/assign-operation-ordination", {
             appointmentId: this.state.appointmentId,
             ordinationId: this.state.ordinationId,
             doctorIds: this.state.doctorIds

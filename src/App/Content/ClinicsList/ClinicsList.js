@@ -46,7 +46,7 @@ class ClinicsList extends React.Component{
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       console.log(this.state.date);
       console.log(this.state.type);
-      axios.get("https://psw-isa-tim3.herokuapp.com/api/filter-clinics/"+this.state.date+'/'+this.state.type).then(response => {
+      axios.get("http://localhost:8080/api/filter-clinics/"+this.state.date+'/'+this.state.type).then(response => {
         console.log(response.data);
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {
@@ -68,7 +68,7 @@ class ClinicsList extends React.Component{
     componentDidMount() {
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.get("https://psw-isa-tim3.herokuapp.com/api/clinics").then(response => {
+      axios.get("http://localhost:8080/api/clinics").then(response => {
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {
             tmpArray.push(response.data[i])
@@ -83,7 +83,7 @@ class ClinicsList extends React.Component{
 
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("https://psw-isa-tim3.herokuapp.com/api/types")
+    axios.get("http://localhost:8080/api/types")
       .then(response => {
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {
@@ -135,7 +135,7 @@ class ClinicsList extends React.Component{
     allClinics = () =>{
       var token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
-      axios.get("https://psw-isa-tim3.herokuapp.com/api/clinics").then(response => {
+      axios.get("http://localhost:8080/api/clinics").then(response => {
         let tmpArray = []
         for (var i = 0; i < response.data.length; i++) {
           tmpArray.push(response.data[i])

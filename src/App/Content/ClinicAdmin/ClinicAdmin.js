@@ -22,7 +22,7 @@ class ClinicAdmin extends React.Component {
     componentDidMount(){
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")  
+    axios.get("http://localhost:8080/auth/getMyUser")  
         .then(response => {
             console.log(response.data);
             this.setState({

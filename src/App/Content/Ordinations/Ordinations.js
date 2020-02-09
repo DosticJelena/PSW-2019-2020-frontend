@@ -81,7 +81,7 @@ class Ordinations extends React.Component {
   deleteOrdination = (ordId) => {
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.put('https://psw-isa-tim3.herokuapp.com/api/ordination/delete/' + ordId, {
+    axios.put('http://localhost:8080/api/ordination/delete/' + ordId, {
       responseType: 'json'
     })
       .then(response => {
@@ -94,7 +94,7 @@ class Ordinations extends React.Component {
   getAppointmentsForOrdination = (ordId) => {
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/get-ordination-appointments/' + ordId, {
+    axios.get('http://localhost:8080/api/appointment/get-ordination-appointments/' + ordId, {
       responseType: 'json'
     })
       .then(response => {
@@ -122,14 +122,14 @@ class Ordinations extends React.Component {
 
     var token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("https://psw-isa-tim3.herokuapp.com/auth/getMyUser")
+    axios.get("http://localhost:8080/auth/getMyUser")
       .then(response => {
         this.setState({
           clinicAdmin: response.data.id
         })
       })
       .then(() => {
-        axios.get("https://psw-isa-tim3.herokuapp.com/api/clinic-admin-clinic/" + this.state.clinicAdmin)
+        axios.get("http://localhost:8080/api/clinic-admin-clinic/" + this.state.clinicAdmin)
           .then(response => {
             this.setState({
               id: response.data
@@ -137,7 +137,7 @@ class Ordinations extends React.Component {
           })
           .then(() => {
 
-            axios.get("https://psw-isa-tim3.herokuapp.com/api/ordination/clinic-ordinations/" + this.state.id)
+            axios.get("http://localhost:8080/api/ordination/clinic-ordinations/" + this.state.id)
               .then(response => {
                 let tmpArray = []
                 for (var i = 0; i < response.data.length; i++) {

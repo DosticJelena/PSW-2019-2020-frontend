@@ -102,7 +102,7 @@ class CCAdminRegistrationRequests extends React.Component{
 
       fetchData(state, instance) {
         this.setState({ loading: true });
-        axios.get('https://psw-isa-tim3.herokuapp.com/api/cc-admin/all-registration-requests', {
+        axios.get('http://localhost:8080/api/cc-admin/all-registration-requests', {
               responseType: 'json'
           }).then(response => {
               this.setState({ tableData: response.data, loading: false});
@@ -110,7 +110,7 @@ class CCAdminRegistrationRequests extends React.Component{
       }
 
       accept = (id) =>{
-        axios.put("https://psw-isa-tim3.herokuapp.com/api/cc-admin/send-verification-email/" + id).then(response => {
+        axios.put("http://localhost:8080/api/cc-admin/send-verification-email/" + id).then(response => {
 
           this.fetchData(this.state)
 
@@ -119,7 +119,7 @@ class CCAdminRegistrationRequests extends React.Component{
 
       reject = () =>{
         if (this.state.message != ""){
-          axios.put("https://psw-isa-tim3.herokuapp.com/api/cc-admin/reject-registration-request/" + this.state.id, this.state.message).then(response => {
+          axios.put("http://localhost:8080/api/cc-admin/reject-registration-request/" + this.state.id, this.state.message).then(response => {
             
           this.fetchData(this.state)
 

@@ -57,7 +57,7 @@ class DoctorCalendar extends React.Component {
   }
 
   componentDidMount () {
-    axios.get('https://psw-isa-tim3.herokuapp.com/api/appointment/get-doctor-appointments', {
+    axios.get('http://localhost:8080/api/appointment/get-doctor-appointments', {
       responseType: 'json'
     })
           .then(response => {
