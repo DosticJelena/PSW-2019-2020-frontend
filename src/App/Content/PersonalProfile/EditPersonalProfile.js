@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import './EditPersonalProfile.css';
 import { NotificationManager } from 'react-notifications';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 const UpdateInfoAlert = withReactContent(Swal)
 class EditPersonalProfile extends React.Component {
@@ -158,34 +158,6 @@ class EditPersonalProfile extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="form-row">
-                                <div className="col">
-                                    <div className="form-group">
-                                        <label htmlFor="password">Password</label>
-                                        <input type="password"
-                                            className="form-control form-control"
-                                            id="password"
-                                            name="password"
-                                            onChange={this.handleChange}
-                                            placeholder="Enter password"
-                                            defaultValue={this.state.password}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col">
-                                    <div className="form-group">
-                                        <label htmlFor="passwordConfirm">Confirm Password</label>
-                                        <input type="password"
-                                            className="form-control form-control"
-                                            id="passwordConfirm"
-                                            name="passwordConfirm"
-                                            onChange={this.handleChange}
-                                            placeholder="Enter password"
-                                            defaultValue={this.state.passwordConfirm}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
                             <hr />
                             <div className="form-row">
                                 <div className="col">
@@ -229,7 +201,8 @@ class EditPersonalProfile extends React.Component {
                                 </div>
                             </div>
                             <hr />
-                            <Button type="submit">Update</Button>
+                            <Button type="submit" className="change-pass">Update</Button>
+                            <Link className="btn change-pass" to="change-password">Change password</Link>
                         </form>
                         <br />
                     </div>
