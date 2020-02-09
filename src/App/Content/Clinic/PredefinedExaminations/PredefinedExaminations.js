@@ -9,11 +9,14 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom'
+import { NotificationManager } from 'react-notifications';
 
 class PredefinedExaminations extends React.Component {
 
     constructor(props){
         super(props);
+
+        this.fetchData = this.fetchData.bind(this);
 
         this.state={
             examinations: [{
@@ -50,6 +53,16 @@ class PredefinedExaminations extends React.Component {
       .catch((error) => console.log(error))
   }  
 
+  fetchData(state, instance) {
+    this.setState({ loading: true });
+    const id = window.location.pathname.split("/")[2];
+    axios.get('http://localhost:8080/api/predefined-appointments/'+id, {
+          responseType: 'json'
+      }).then(response => {
+          this.setState({ examinations: response.data, loading: false });
+      });
+  }
+
   onFilteredChangeCustom = (value, accessor) => {
     let filtered = this.state.filtered;
     let insertNewFilter = 1;
@@ -83,11 +96,15 @@ schedule = (id) =>{
              appointmentId: id,
              patientId: response.data.id
         }).then(response => {
-        const {examinations} = this.state;
-        examinations.pop(response.data);
-        this.setState({examinations});
+        //const {examinations} = this.state;
+        //examinations.pop(response.data);
+        //this.setState({examinations});
+        this.fetchData(this.state)
+        NotificationManager.success('You have scheduled appointment succesfully!', 'Success!', 4000);
         }).then((resp) => {
+            //NotificationManager.success('You have scheduled appointment succesfully!', 'Success!', 4000);
             console.log('Id: ' + id);
+            
         })
     }).catch((error) => console.log(error))
 
