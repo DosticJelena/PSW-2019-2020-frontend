@@ -41,8 +41,10 @@ class NewAppointmentDoctor extends React.Component {
     event.preventDefault();
     var st = parseInt(String(this.state.startTime).substr(0, 2));
     var en = parseInt(String(this.state.endTime).substr(0, 2));
-    if (st > en) {
-      NotificationManager.error('Start time must be before end time.', 'Error!', 4000);
+    var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+    var enMin = parseInt(String(this.state.endTime).substr(3, 2));
+    if (st > en || (st == en && stMin >= enMin)) {
+      NotificationManager.error('Start time must be set before end time.', 'Error!', 4000);
     } else if (this.state.date == '') {
       NotificationManager.error('Date cannot be empty.', 'Error!', 4000);
     } else if (this.state.startTime == '' || this.state.startTime == '') {
@@ -117,7 +119,9 @@ class NewAppointmentDoctor extends React.Component {
     var timeError;
     var st = parseInt(String(this.state.startTime).substr(0, 2));
     var en = parseInt(String(this.state.endTime).substr(0, 2));
-    if (st >= en) {
+    var stMin = parseInt(String(this.state.startTime).substr(3, 2));
+    var enMin = parseInt(String(this.state.endTime).substr(3, 2));
+    if (st > en || (st == en && stMin >= enMin)) {
       timeError = (<div>
         <p style={{ color: 'red' }}>Start time must be set before end time.</p>
       </div>)
